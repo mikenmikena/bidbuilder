@@ -26,6 +26,10 @@ export const useDataStore = () => {
     setRecords(prev => [newRecord, ...prev]);
   };
 
+  const updateRecord = (id: string, updatedData: Partial<DataRecord>) => {
+    setRecords(prev => prev.map(r => r.id === id ? { ...r, ...updatedData } : r));
+  };
+
   const deleteRecord = (id: string) => {
     setRecords(prev => prev.filter(r => r.id !== id));
   };
@@ -34,5 +38,5 @@ export const useDataStore = () => {
     setRecords(prev => [...newRecords, ...prev]);
   };
 
-  return { records, addRecord, deleteRecord, importRecords };
+  return { records, addRecord, updateRecord, deleteRecord, importRecords };
 };

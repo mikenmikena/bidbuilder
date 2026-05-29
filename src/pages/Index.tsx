@@ -6,12 +6,13 @@ import DataEntryForm from '@/components/DataEntryForm';
 import DataSummary from '@/components/DataSummary';
 import DataTable from '@/components/DataTable';
 import ExcelImport from '@/components/ExcelImport';
+import ExcelExport from '@/components/ExcelExport';
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import { LayoutDashboard, Database, FileSpreadsheet } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Index = () => {
-  const { records, addRecord, deleteRecord, importRecords } = useDataStore();
+  const { records, addRecord, updateRecord, deleteRecord, importRecords } = useDataStore();
 
   return (
     <div className="min-h-screen bg-[#f8fafc] pb-12">
@@ -26,7 +27,10 @@ const Index = () => {
               DataFlow Pro
             </h1>
           </div>
-          <ExcelImport onImport={importRecords} />
+          <div className="flex items-center gap-3">
+            <ExcelExport records={records} />
+            <ExcelImport onImport={importRecords} />
+          </div>
         </div>
       </header>
 
@@ -60,7 +64,7 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="records" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <DataTable records={records} onDelete={deleteRecord} />
+            <DataTable records={records} onDelete={deleteRecord} onUpdate={updateRecord} />
           </TabsContent>
         </Tabs>
       </main>

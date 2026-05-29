@@ -3,123 +3,113 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
-import { DataRecord } from '@/hooks/use-data-store';
-import { DollarSign, TrendingUp, ListChecks, AlertCircle } from 'lucide-react';
+import { BidRecord } from '@/hooks/use-data-store';
+import { DollarSign, Target, CheckCircle2, Clock } from 'lucide-react';
 
 interface DataSummaryProps {
-  records: DataRecord[];
+  records: BidRecord[];
 }
 
-const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e'];
+const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444'];
 
 const DataSummary = ({ records }: DataSummaryProps) => {
-  const totalAmount = records.reduce((sum, r) => sum + r.amount, 0);
-  const completedCount = records.filter(r => r.status === 'Completed').length;
-  const pendingCount = records.filter(r => r.status === 'Pending').length;
-
-  const categoryData = records.reduce((acc: any[], record) => {
-    const existing = acc.find(item => item.name === record.category);
-    if (existing) {
-      existing.value += record.amount;
-    } else {
-      acc.push({ name: record.category, value: record.amount });
-    }
-    return acc;
-  }, []);
+  const calculateTotal = (r: BidRecord) => r.quantity * r.unitCost * (1 + r.markup / 100);
+  
+  const totalBidValue = records.reduce((sum, r) => sum + calculateTotal(r), 0);
+  const wonValue = records.filter(r => r.status === 'Won').reduce((sum, r) => sum + calculateTotal(r), 0);
+  const winRate = records.length > 0 ? (records.filter(r => r.status === 'Won').length / records.length) * 100 : 0;
 
   const statusData = [
-    { name: 'Completed', value: completedCount },
-    { name: 'Pending', value: pendingCount },
-    { name: 'Cancelled', value: records.filter(r => r.status === 'Cancelled').length },
+    { name: 'Draft', value: records.filter(r => r.status === 'Draft').length },
+    { name: 'Won', value: records.filter(r => r.status === 'Won').length },
+    { name: 'Submitted', value: records.filter(r => r.status === 'Submitted').length },
+    { name: 'Lost', value: records.filter(r => r.status === 'Lost').length },
   ];
+
+  const projectData = records.reduce((acc: any[], record) => {
+    const existing = acc.find(item => item.name === record.projectName);
+    const val = calculateTotal(record);
+    if (existing) {
+      existing.value += val;
+    } else {
+      acc.push({ name: record.projectName, value: val });
+    }
+    return acc;
+  }, []).slice(0, 5);
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-none shadow-md bg-gradient-to-br from-indigo-500 to-indigo-600 text-white">
+        <Card className="border-none shadow-md bg-indigo-600 text-white">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-indigo-100 text-sm font-medium">Total Value</p>
-                <h3 className="text-2xl font-bold">${totalAmount.toLocaleString()}</h3>
+                <p className="text-indigo-100 text-sm font-medium">Total Pipeline</p>
+                <h3 className="text-2xl font-bold">${totalBidValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h3>
               </div>
-              <div className="p-3 bg-white/20 rounded-xl">
-                <DollarSign className="w-6 h-6" />
-              </div>
+              <DollarSign className="w-8 h-8 opacity-20" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-md bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
+        <Card className="border-none shadow-md bg-emerald-600 text-white">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-emerald-100 text-sm font-medium">Completed</p>
-                <h3 className="text-2xl font-bold">{completedCount}</h3>
+                <p className="text-emerald-100 text-sm font-medium">Won Value</p>
+                <h3 className="text-2xl font-bold">${wonValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h3>
               </div>
-              <div className="p-3 bg-white/20 rounded-xl">
-                <ListChecks className="w-6 h-6" />
-              </div>
+              <CheckCircle2 className="w-8 h-8 opacity-20" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-md bg-gradient-to-br from-amber-500 to-amber-600 text-white">
+        <Card className="border-none shadow-md bg-violet-600 text-white">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-amber-100 text-sm font-medium">Pending</p>
-                <h3 className="text-2xl font-bold">{pendingCount}</h3>
+                <p className="text-violet-100 text-sm font-medium">Win Rate</p>
+                <h3 className="text-2xl font-bold">{winRate.toFixed(1)}%</h3>
               </div>
-              <div className="p-3 bg-white/20 rounded-xl">
-                <TrendingUp className="w-6 h-6" />
-              </div>
+              <Target className="w-8 h-8 opacity-20" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-md bg-gradient-to-br from-rose-500 to-rose-600 text-white">
+        <Card className="border-none shadow-md bg-amber-600 text-white">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-rose-100 text-sm font-medium">Total Records</p>
-                <h3 className="text-2xl font-bold">{records.length}</h3>
+                <p className="text-amber-100 text-sm font-medium">Active Bids</p>
+                <h3 className="text-2xl font-bold">{records.filter(r => r.status === 'Submitted').length}</h3>
               </div>
-              <div className="p-3 bg-white/20 rounded-xl">
-                <AlertCircle className="w-6 h-6" />
-              </div>
+              <Clock className="w-8 h-8 opacity-20" />
             </div>
           </CardContent>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border-none shadow-lg bg-white/80 backdrop-blur-sm">
+        <Card className="border-none shadow-lg bg-white">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-gray-800">Spending by Category</CardTitle>
+            <CardTitle className="text-lg font-semibold">Value by Project</CardTitle>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={categoryData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} />
-                <YAxis axisLine={false} tickLine={false} />
-                <Tooltip 
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                />
-                <Bar dataKey="value" radius={[8, 8, 0, 0]}>
-                  {categoryData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Bar>
+              <BarChart data={projectData} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#f0f0f0" />
+                <XAxis type="number" hide />
+                <YAxis dataKey="name" type="category" width={100} axisLine={false} tickLine={false} />
+                <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
+                <Bar dataKey="value" fill="#6366f1" radius={[0, 8, 8, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-lg bg-white/80 backdrop-blur-sm">
+        <Card className="border-none shadow-lg bg-white">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-gray-800">Status Distribution</CardTitle>
+            <CardTitle className="text-lg font-semibold">Bid Status Distribution</CardTitle>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -137,9 +127,7 @@ const DataSummary = ({ records }: DataSummaryProps) => {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip 
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                />
+                <Tooltip />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>

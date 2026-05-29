@@ -9,15 +9,18 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle } from 'lucide-react';
+import { Briefcase, PlusCircle } from 'lucide-react';
 import { showSuccess } from '@/utils/toast';
 
 const formSchema = z.object({
   date: z.string().min(1, "Date is required"),
-  category: z.string().min(1, "Category is required"),
-  description: z.string().min(2, "Description is required"),
-  amount: z.coerce.number().min(0.01, "Amount must be greater than 0"),
-  status: z.enum(['Pending', 'Completed', 'Cancelled']),
+  projectName: z.string().min(2, "Project Name is required"),
+  client: z.string().min(2, "Client is required"),
+  item: z.string().min(2, "Item/Service is required"),
+  quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
+  unitCost: z.coerce.number().min(0, "Cost cannot be negative"),
+  markup: z.coerce.number().min(0, "Markup cannot be negative"),
+  status: z.enum(['Draft', 'Submitted', 'Won', 'Lost']),
 });
 
 interface DataEntryFormProps {
@@ -29,10 +32,13 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       date: new Date().toISOString().split('T')[0],
-      category: "",
-      description: "",
-      amount: 0,
-      status: 'Pending',
+      projectName: "",
+      client: "",
+      item: "",
+      quantity: 1,
+      unitCost: 0,
+      markup: 20,
+      status: 'Draft',
     },
   });
 
@@ -40,18 +46,19 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
     onAdd(values);
     form.reset({
       ...values,
-      description: "",
-      amount: 0,
+      item: "",
+      quantity: 1,
+      unitCost: 0,
     });
-    showSuccess("Record added successfully!");
+    showSuccess("Bid item added!");
   };
 
   return (
     <Card className="w-full border-none shadow-lg bg-white/50 backdrop-blur-sm">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl font-bold text-indigo-900">
-          <PlusCircle className="w-5 h-5" />
-          New Entry
+          <Briefcase className="w-5 h-5" />
+          Add Bid Item
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -59,12 +66,12 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="date"
+              name="projectName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Date</FormLabel>
+                  <FormLabel>Project Name</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} className="rounded-xl border-indigo-100 focus:ring-indigo-500" />
+                    <Input placeholder="e.g. SWIS Phase 1" {...field} className="rounded-xl border-indigo-100" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -72,35 +79,25 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
             />
             <FormField
               control={form.control}
-              name="category"
+              name="client"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="rounded-xl border-indigo-100">
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Sales">Sales</SelectItem>
-                      <SelectItem value="Marketing">Marketing</SelectItem>
-                      <SelectItem value="Operations">Operations</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Client</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Client Name" {...field} className="rounded-xl border-indigo-100" />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
-              name="description"
+              name="item"
               render={({ field }) => (
                 <FormItem className="md:col-span-2">
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Item / Service Description</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter details..." {...field} className="rounded-xl border-indigo-100" />
+                    <Input placeholder="What are you bidding for?" {...field} className="rounded-xl border-indigo-100" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -108,12 +105,38 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
             />
             <FormField
               control={form.control}
-              name="amount"
+              name="quantity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Amount ($)</FormLabel>
+                  <FormLabel>Quantity</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="unitCost"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Unit Cost ($)</FormLabel>
                   <FormControl>
                     <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="markup"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Markup (%)</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} className="rounded-xl border-indigo-100" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -132,17 +155,18 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Pending">Pending</SelectItem>
-                      <SelectItem value="Completed">Completed</SelectItem>
-                      <SelectItem value="Cancelled">Cancelled</SelectItem>
+                      <SelectItem value="Draft">Draft</SelectItem>
+                      <SelectItem value="Submitted">Submitted</SelectItem>
+                      <SelectItem value="Won">Won</SelectItem>
+                      <SelectItem value="Lost">Lost</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="md:col-span-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-6 text-lg font-semibold transition-all transform hover:scale-[1.01]">
-              Add Record
+            <Button type="submit" className="md:col-span-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-6 text-lg font-semibold transition-all">
+              Add to Bid
             </Button>
           </form>
         </Form>

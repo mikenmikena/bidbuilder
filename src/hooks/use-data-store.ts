@@ -2,31 +2,34 @@
 
 import { useState, useEffect } from 'react';
 
-export interface DataRecord {
+export interface BidRecord {
   id: string;
   date: string;
-  category: string;
-  description: string;
-  amount: number;
-  status: 'Pending' | 'Completed' | 'Cancelled';
+  projectName: string;
+  client: string;
+  item: string;
+  quantity: number;
+  unitCost: number;
+  markup: number; // Percentage
+  status: 'Draft' | 'Submitted' | 'Won' | 'Lost';
 }
 
 export const useDataStore = () => {
-  const [records, setRecords] = useState<DataRecord[]>(() => {
-    const saved = localStorage.getItem('app_records');
+  const [records, setRecords] = useState<BidRecord[]>(() => {
+    const saved = localStorage.getItem('bid_records');
     return saved ? JSON.parse(saved) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem('app_records', JSON.stringify(records));
+    localStorage.setItem('bid_records', JSON.stringify(records));
   }, [records]);
 
-  const addRecord = (record: Omit<DataRecord, 'id'>) => {
+  const addRecord = (record: Omit<BidRecord, 'id'>) => {
     const newRecord = { ...record, id: crypto.randomUUID() };
     setRecords(prev => [newRecord, ...prev]);
   };
 
-  const updateRecord = (id: string, updatedData: Partial<DataRecord>) => {
+  const updateRecord = (id: string, updatedData: Partial<BidRecord>) => {
     setRecords(prev => prev.map(r => r.id === id ? { ...r, ...updatedData } : r));
   };
 
@@ -34,7 +37,7 @@ export const useDataStore = () => {
     setRecords(prev => prev.filter(r => r.id !== id));
   };
 
-  const importRecords = (newRecords: DataRecord[]) => {
+  const importRecords = (newRecords: BidRecord[]) => {
     setRecords(prev => [...newRecords, ...prev]);
   };
 

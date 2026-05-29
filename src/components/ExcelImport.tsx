@@ -5,10 +5,10 @@ import * as XLSX from 'xlsx';
 import { Button } from "@/components/ui/button";
 import { FileUp } from 'lucide-react';
 import { showSuccess, showError } from '@/utils/toast';
-import { DataRecord } from '@/hooks/use-data-store';
+import { BidRecord } from '@/hooks/use-data-store';
 
 interface ExcelImportProps {
-  onImport: (records: DataRecord[]) => void;
+  onImport: (records: BidRecord[]) => void;
 }
 
 const ExcelImport = ({ onImport }: ExcelImportProps) => {
@@ -27,19 +27,22 @@ const ExcelImport = ({ onImport }: ExcelImportProps) => {
         const ws = wb.Sheets[wsname];
         const data = XLSX.utils.sheet_to_json(ws) as any[];
 
-        const formattedRecords: DataRecord[] = data.map((row) => ({
+        const formattedRecords: BidRecord[] = data.map((row) => ({
           id: crypto.randomUUID(),
           date: row.Date || new Date().toISOString().split('T')[0],
-          category: row.Category || 'Other',
-          description: row.Description || 'Imported record',
-          amount: Number(row.Amount) || 0,
-          status: (row.Status as any) || 'Completed',
+          projectName: row.Project || row['Project Name'] || 'Unknown Project',
+          client: row.Client || 'Unknown Client',
+          item: row.Item || row.Description || 'Bid Item',
+          quantity: Number(row.Quantity) || 1,
+          unitCost: Number(row.Cost) || Number(row['Unit Cost']) || 0,
+          markup: Number(row.Markup) || 20,
+          status: (row.Status as any) || 'Draft',
         }));
 
         onImport(formattedRecords);
-        showSuccess(`Successfully imported ${formattedRecords.length} records!`);
+        showSuccess(`Imported ${formattedRecords.length} bid items!`);
       } catch (err) {
-        showError("Failed to parse Excel file. Please check the format.");
+        showError("Failed to parse Excel file. Ensure columns match: Project, Client, Item, Quantity, Cost, Markup, Status.");
       }
     };
     reader.readAsBinaryString(file);
@@ -47,20 +50,10 @@ const ExcelImport = ({ onImport }: ExcelImportProps) => {
 
   return (
     <div>
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileUpload}
-        accept=".xlsx, .xls, .csv"
-        className="hidden"
-      />
-      <Button 
-        variant="outline" 
-        onClick={() => fileInputRef.current?.click()}
-        className="rounded-xl border-indigo-200 text-indigo-700 hover:bg-indigo-50"
-      >
+      <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept=".xlsx, .xls, .xlsm, .csv" className="hidden" />
+      <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="rounded-xl border-indigo-200 text-indigo-700">
         <FileUp className="w-4 h-4 mr-2" />
-        Import Excel
+        Import Bid Data
       </Button>
     </div>
   );

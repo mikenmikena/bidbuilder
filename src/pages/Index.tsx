@@ -1,30 +1,42 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useDataStore } from '@/hooks/use-data-store';
 import DataEntryForm from '@/components/DataEntryForm';
 import DataSummary from '@/components/DataSummary';
 import DataTable from '@/components/DataTable';
 import ExcelImport from '@/components/ExcelImport';
 import ExcelExport from '@/components/ExcelExport';
+import QuoteView from '@/components/QuoteView';
 import { MadeWithDyad } from "@/components/made-with-dyad";
-import { LayoutDashboard, Database, FileSpreadsheet } from 'lucide-react';
+import { LayoutDashboard, Database, FileSpreadsheet, Briefcase, ArrowLeft } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const { records, addRecord, updateRecord, deleteRecord, importRecords } = useDataStore();
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
+
+  const uniqueProjects = Array.from(new Set(records.map(r => r.projectName)));
+
+  const getProjectStats = (projectName: string) => {
+    const items = records.filter(r => r.projectName === projectName);
+    const total = items.reduce((sum, r) => sum + (r.quantity * r.unitCost * (1 + r.markup / 100)), 0);
+    return { count: items.length, total, client: items[0]?.client };
+  };
 
   return (
     <div className="min-h-screen bg-[#f8fafc] pb-12">
       {/* Header */}
-      <header className="bg-white border-b border-indigo-50 sticky top-0 z-10 backdrop-blur-md bg-white/80">
+      <header className="bg-white border-b border-indigo-50 sticky top-0 z-10 backdrop-blur-md bg-white/80 no-print">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="bg-indigo-600 p-2 rounded-xl">
               <Database className="w-6 h-6 text-white" />
             </div>
             <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">
-              DataFlow Pro
+              SWIS Bid Builder
             </h1>
           </div>
           <div className="flex items-center gap-3">
@@ -35,38 +47,98 @@ const Index = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Dashboard</h2>
-          <p className="text-gray-500 mt-1">Manage your records and visualize your data in real-time.</p>
-        </div>
-
-        <Tabs defaultValue="overview" className="space-y-8">
-          <TabsList className="bg-white p-1 rounded-2xl border border-indigo-50 shadow-sm inline-flex">
-            <TabsTrigger value="overview" className="rounded-xl px-6 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white transition-all">
-              <LayoutDashboard className="w-4 h-4 mr-2" />
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="records" className="rounded-xl px-6 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white transition-all">
-              <FileSpreadsheet className="w-4 h-4 mr-2" />
-              Records
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-1">
-                <DataEntryForm onAdd={addRecord} />
-              </div>
-              <div className="lg:col-span-2">
-                <DataSummary records={records} />
-              </div>
+        {selectedProject ? (
+          <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-300">
+            <Button 
+              variant="ghost" 
+              onClick={() => setSelectedProject(null)}
+              className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-xl no-print"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Dashboard
+            </Button>
+            <QuoteView projectName={selectedProject} records={records} />
+          </div>
+        ) : (
+          <>
+            <div className="mb-8 no-print">
+              <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Bid Dashboard</h2>
+              <p className="text-gray-500 mt-1">Track proposals, manage costs, and generate professional quotes.</p>
             </div>
-          </TabsContent>
 
-          <TabsContent value="records" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <DataTable records={records} onDelete={deleteRecord} onUpdate={updateRecord} />
-          </TabsContent>
-        </Tabs>
+            <Tabs defaultValue="overview" className="space-y-8 no-print">
+              <TabsList className="bg-white p-1 rounded-2xl border border-indigo-50 shadow-sm inline-flex">
+                <TabsTrigger value="overview" className="rounded-xl px-6 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white transition-all">
+                  <LayoutDashboard className="w-4 h-4 mr-2" />
+                  Overview
+                </TabsTrigger>
+                <TabsTrigger value="projects" className="rounded-xl px-6 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white transition-all">
+                  <Briefcase className="w-4 h-4 mr-2" />
+                  Projects
+                </TabsTrigger>
+                <TabsTrigger value="records" className="rounded-xl px-6 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white transition-all">
+                  <FileSpreadsheet className="w-4 h-4 mr-2" />
+                  All Items
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="overview" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  <div className="lg:col-span-1">
+                    <DataEntryForm onAdd={addRecord} />
+                  </div>
+                  <div className="lg:col-span-2">
+                    <DataSummary records={records} />
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="projects" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {uniqueProjects.map(project => {
+                    const stats = getProjectStats(project);
+                    return (
+                      <Card key={project} className="border-none shadow-lg hover:shadow-xl transition-all group">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-lg font-bold text-indigo-900 group-hover:text-indigo-600 transition-colors">
+                            {project}
+                          </CardTitle>
+                          <p className="text-sm text-gray-500">{stats.client}</p>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex justify-between items-end mt-4">
+                            <div>
+                              <p className="text-xs text-gray-400 uppercase font-bold">Total Bid</p>
+                              <p className="text-2xl font-black text-indigo-600">${stats.total.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                            </div>
+                            <Button 
+                              onClick={() => setSelectedProject(project)}
+                              className="bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-xl transition-all"
+                            >
+                              View Quote
+                            </Button>
+                          </div>
+                          <div className="mt-4 pt-4 border-t border-gray-50 text-xs text-gray-400">
+                            {stats.count} items in this proposal
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                  {uniqueProjects.length === 0 && (
+                    <div className="col-span-full text-center py-12 bg-white rounded-2xl border border-dashed border-indigo-200 text-gray-400">
+                      No projects found. Add items to start building a bid.
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="records" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <DataTable records={records} onDelete={deleteRecord} onUpdate={updateRecord} />
+              </TabsContent>
+            </Tabs>
+          </>
+        )}
       </main>
 
       <MadeWithDyad />

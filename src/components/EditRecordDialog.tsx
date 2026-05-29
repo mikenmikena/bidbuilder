@@ -9,19 +9,22 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DataRecord } from '@/hooks/use-data-store';
+import { BidRecord } from '@/hooks/use-data-store';
 import { showSuccess } from '@/utils/toast';
 
 const formSchema = z.object({
   date: z.string().min(1, "Date is required"),
-  category: z.string().min(1, "Category is required"),
-  description: z.string().min(2, "Description is required"),
-  amount: z.coerce.number().min(0.01, "Amount must be greater than 0"),
-  status: z.enum(['Pending', 'Completed', 'Cancelled']),
+  projectName: z.string().min(2, "Project Name is required"),
+  client: z.string().min(2, "Client is required"),
+  item: z.string().min(2, "Item/Service is required"),
+  quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
+  unitCost: z.coerce.number().min(0, "Cost cannot be negative"),
+  markup: z.coerce.number().min(0, "Markup cannot be negative"),
+  status: z.enum(['Draft', 'Submitted', 'Won', 'Lost']),
 });
 
 interface EditRecordDialogProps {
-  record: DataRecord | null;
+  record: BidRecord | null;
   isOpen: boolean;
   onClose: () => void;
   onUpdate: (id: string, data: z.infer<typeof formSchema>) => void;
@@ -32,9 +35,12 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
     resolver: zodResolver(formSchema),
     values: record ? {
       date: record.date,
-      category: record.category,
-      description: record.description,
-      amount: record.amount,
+      projectName: record.projectName,
+      client: record.client,
+      item: record.item,
+      quantity: record.quantity,
+      unitCost: record.unitCost,
+      markup: record.markup,
       status: record.status,
     } : undefined,
   });
@@ -42,61 +48,53 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (record) {
       onUpdate(record.id, values);
-      showSuccess("Record updated successfully!");
+      showSuccess("Bid item updated!");
       onClose();
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] rounded-2xl">
+      <DialogContent className="sm:max-w-[500px] rounded-2xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-indigo-900">Edit Record</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-indigo-900">Edit Bid Item</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-            <FormField
-              control={form.control}
-              name="date"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} className="rounded-xl border-indigo-100" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="projectName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project</FormLabel>
                     <FormControl>
-                      <SelectTrigger className="rounded-xl border-indigo-100">
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
+                      <Input {...field} className="rounded-xl border-indigo-100" />
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Sales">Sales</SelectItem>
-                      <SelectItem value="Marketing">Marketing</SelectItem>
-                      <SelectItem value="Operations">Operations</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="client"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client</FormLabel>
+                    <FormControl>
+                      <Input {...field} className="rounded-xl border-indigo-100" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
-              name="description"
+              name="item"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Item Description</FormLabel>
                   <FormControl>
                     <Input {...field} className="rounded-xl border-indigo-100" />
                   </FormControl>
@@ -104,19 +102,47 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="amount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Amount ($)</FormLabel>
-                  <FormControl>
-                    <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-3 gap-4">
+              <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Qty</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="unitCost"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Cost ($)</FormLabel>
+                    <FormControl>
+                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="markup"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Markup %</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="status"
@@ -130,9 +156,10 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Pending">Pending</SelectItem>
-                      <SelectItem value="Completed">Completed</SelectItem>
-                      <SelectItem value="Cancelled">Cancelled</SelectItem>
+                      <SelectItem value="Draft">Draft</SelectItem>
+                      <SelectItem value="Submitted">Submitted</SelectItem>
+                      <SelectItem value="Won">Won</SelectItem>
+                      <SelectItem value="Lost">Lost</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

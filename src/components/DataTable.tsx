@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2, Edit2, Search, Filter } from 'lucide-react';
+import { Trash2, Edit2, Search, Filter, Droplets, ArrowDownCircle } from 'lucide-react';
 import { BidRecord } from '@/hooks/use-data-store';
 import EditRecordDialog from './EditRecordDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -28,7 +28,15 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
     return matchesSearch && matchesStatus;
   });
 
-  const calculateTotal = (r: BidRecord) => r.linearFeet * r.unitCost * (1 + r.markup / 100);
+  const calculateGutterTotal = (r: BidRecord) => r.linearFeet * r.unitCost * (1 + r.markup / 100);
+  const calculateDownspoutTotal = (r: BidRecord) => {
+    const lf = r.downspoutLinearFeet || 0;
+    const chainLf = r.chainLinearFeet || 0;
+    const cost = r.downspoutUnitCost || 0;
+    const markup = r.downspoutMarkup || 0;
+    return (lf + chainLf) * cost * (1 + markup / 100);
+  };
+  const calculateTotal = (r: BidRecord) => calculateGutterTotal(r) + calculateDownspoutTotal(r);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -75,9 +83,8 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
             <TableRow>
               <TableHead className="font-bold text-indigo-900">Date</TableHead>
               <TableHead className="font-bold text-indigo-900">Client / Job</TableHead>
-              <TableHead className="font-bold text-indigo-900">Specifications</TableHead>
-              <TableHead className="font-bold text-indigo-900 text-right">LF x Cost</TableHead>
-              <TableHead className="font-bold text-indigo-900 text-right">Markup</TableHead>
+              <TableHead className="font-bold text-indigo-900">Gutter Details</TableHead>
+              <TableHead className="font-bold text-indigo-900">Downspout Details</TableHead>
               <TableHead className="font-bold text-indigo-900 text-right">Total Price</TableHead>
               <TableHead className="font-bold text-indigo-900">Status</TableHead>
               <TableHead className="font-bold text-indigo-900 text-right">Actions</TableHead>
@@ -86,7 +93,7 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
           <TableBody>
             {filteredRecords.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="text-center py-12 text-gray-400">
+                <TableCell colSpan={7} className="text-center py-12 text-gray-400">
                   No bid items found.
                 </TableCell>
               </TableRow>
@@ -98,18 +105,31 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
                     <div className="font-bold text-indigo-900">{record.client}</div>
                     <div className="text-xs text-indigo-500 font-medium">{record.job}</div>
                   </TableCell>
-                  <TableCell className="text-xs text-gray-500">
-                    <div className="font-medium text-indigo-600">{record.area || 'General Area'}</div>
-                    <div>
-                      {record.gutterProfile !== 'None' ? `${record.gutterProfile} ` : ''}
-                      {record.gutterColor}
-                    </div>
+                  <TableCell>
+                    {record.linearFeet > 0 ? (
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1 text-xs font-bold text-indigo-600">
+                          <Droplets className="w-3 h-3" />
+                          {record.area || 'General'}
+                        </div>
+                        <div className="text-[10px] text-gray-500">
+                          {record.linearFeet} LF @ ${record.unitCost} ({record.markup}%)
+                        </div>
+                      </div>
+                    ) : <span className="text-gray-300 text-xs">N/A</span>}
                   </TableCell>
-                  <TableCell className="text-right">
-                    <div className="text-sm">{record.linearFeet} LF x ${record.unitCost.toLocaleString()}</div>
-                  </TableCell>
-                  <TableCell className="text-right text-indigo-600 font-medium">
-                    {record.markup}%
+                  <TableCell>
+                    {(record.downspoutLinearFeet || 0) > 0 || (record.chainLinearFeet || 0) > 0 ? (
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1 text-xs font-bold text-violet-600">
+                          <ArrowDownCircle className="w-3 h-3" />
+                          {record.downspoutArea || 'General'}
+                        </div>
+                        <div className="text-[10px] text-gray-500">
+                          {(record.downspoutLinearFeet || 0) + (record.chainLinearFeet || 0)} LF @ ${record.downspoutUnitCost} ({record.downspoutMarkup}%)
+                        </div>
+                      </div>
+                    ) : <span className="text-gray-300 text-xs">N/A</span>}
                   </TableCell>
                   <TableCell className="text-right font-bold text-indigo-900">
                     ${calculateTotal(record).toLocaleString(undefined, { minimumFractionDigits: 2 })}

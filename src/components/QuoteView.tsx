@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BidRecord } from '@/hooks/use-data-store';
-import { FileText, Printer, Download, Building2, User, Droplets, Briefcase } from 'lucide-react';
+import { FileText, Printer, Download, Building2, User, Droplets, Briefcase, ArrowDownCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -17,10 +17,13 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
   const date = clientItems[0]?.date || new Date().toLocaleDateString();
   const jobName = clientItems[0]?.job || "Standard Project";
 
-  const calculateSellPrice = (r: BidRecord) => r.unitCost * (1 + r.markup / 100);
-  const calculateTotal = (r: BidRecord) => r.linearFeet * calculateSellPrice(r);
+  const calculateGutterSellPrice = (r: BidRecord) => r.unitCost * (1 + r.markup / 100);
+  const calculateGutterTotal = (r: BidRecord) => r.linearFeet * calculateGutterSellPrice(r);
   
-  const subtotal = clientItems.reduce((sum, r) => sum + calculateTotal(r), 0);
+  const calculateDownspoutSellPrice = (r: BidRecord) => (r.downspoutUnitCost || 0) * (1 + (r.downspoutMarkup || 0) / 100);
+  const calculateDownspoutTotal = (r: BidRecord) => ((r.downspoutLinearFeet || 0) + (r.chainLinearFeet || 0)) * calculateDownspoutSellPrice(r);
+
+  const subtotal = clientItems.reduce((sum, r) => sum + calculateGutterTotal(r) + calculateDownspoutTotal(r), 0);
   const tax = subtotal * 0.15; // Example 15% tax
   const total = subtotal + tax;
 
@@ -70,35 +73,63 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
           <Table>
             <TableHeader className="bg-gray-50">
               <TableRow>
-                <TableHead className="text-gray-900 font-bold">Gutter Specifications</TableHead>
-                <TableHead className="text-right text-gray-900 font-bold">Linear Feet</TableHead>
+                <TableHead className="text-gray-900 font-bold">Specifications</TableHead>
+                <TableHead className="text-right text-gray-900 font-bold">Quantity</TableHead>
                 <TableHead className="text-right text-gray-900 font-bold">Unit Price</TableHead>
                 <TableHead className="text-right text-gray-900 font-bold">Total</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {clientItems.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    <div className="font-bold text-indigo-900">{item.area || 'General Area'}</div>
-                    <div className="font-medium">
-                      {item.gutterProfile !== 'None' ? `${item.gutterProfile} Profile ` : 'Standard '}
-                      Gutter Installation
-                    </div>
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-xs text-indigo-600">
-                      <Droplets className="w-3 h-3" />
-                      <span>
-                        {item.gutterColor ? `${item.gutterColor} Color` : ''}
-                        {item.gutterCert !== 'None' ? ` • Cert: ${item.gutterCert}` : ''}
-                        {item.includeGutterDownspout === 'Yes' ? ` • Incl. Gutter/Downspout` : ''}
-                        {item.demolition === 'Yes' ? ` • Incl. Demolition` : ''}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right">{item.linearFeet}</TableCell>
-                  <TableCell className="text-right">${calculateSellPrice(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
-                  <TableCell className="text-right font-bold">${calculateTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
-                </TableRow>
+                <React.Fragment key={item.id}>
+                  {/* Gutter Row */}
+                  {item.linearFeet > 0 && (
+                    <TableRow>
+                      <TableCell>
+                        <div className="font-bold text-indigo-900">{item.area || 'General Area'} (Gutter)</div>
+                        <div className="font-medium">
+                          {item.gutterProfile !== 'None' ? `${item.gutterProfile} Profile ` : 'Standard '}
+                          Gutter Installation
+                        </div>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-xs text-indigo-600">
+                          <Droplets className="w-3 h-3" />
+                          <span>
+                            {item.gutterColor ? `${item.gutterColor} Color` : ''}
+                            {item.gutterCert !== 'None' ? ` • Cert: ${item.gutterCert}` : ''}
+                            {item.includeGutterDownspout === 'Yes' ? ` • Incl. Gutter/Downspout` : ''}
+                            {item.demolition === 'Yes' ? ` • Incl. Demolition` : ''}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">{item.linearFeet} LF</TableCell>
+                      <TableCell className="text-right">${calculateGutterSellPrice(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                      <TableCell className="text-right font-bold">${calculateGutterTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                    </TableRow>
+                  )}
+                  {/* Downspout Row */}
+                  {((item.downspoutLinearFeet || 0) > 0 || (item.chainLinearFeet || 0) > 0) && (
+                    <TableRow className="bg-indigo-50/20">
+                      <TableCell>
+                        <div className="font-bold text-violet-900">{item.downspoutArea || item.area || 'General Area'} (Downspout)</div>
+                        <div className="font-medium">
+                          {item.downspoutSize !== 'None' ? `${item.downspoutSize} ` : ''}
+                          Downspout Installation
+                        </div>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-xs text-violet-600">
+                          <ArrowDownCircle className="w-3 h-3" />
+                          <span>
+                            {item.downspoutColor ? `${item.downspoutColor} Color` : ''}
+                            {item.buildingStories ? ` • ${item.buildingStories} Stories` : ''}
+                            {item.chainLinearFeet ? ` • ${item.chainLinearFeet} LF Chain` : ''}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">{(item.downspoutLinearFeet || 0) + (item.chainLinearFeet || 0)} LF</TableCell>
+                      <TableCell className="text-right">${calculateDownspoutSellPrice(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                      <TableCell className="text-right font-bold">${calculateDownspoutTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                    </TableRow>
+                  )}
+                </React.Fragment>
               ))}
             </TableBody>
           </Table>

@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Briefcase, Droplets, Calendar } from 'lucide-react';
+import { Briefcase, Droplets, Calendar, ArrowDownCircle } from 'lucide-react';
 import { showSuccess } from '@/utils/toast';
 import { Separator } from "@/components/ui/separator";
 
@@ -17,9 +17,9 @@ const formSchema = z.object({
   date: z.string().min(1, "Date is required"),
   client: z.string().min(2, "Client is required"),
   job: z.string().min(2, "Job name is required"),
-  linearFeet: z.coerce.number().min(1, "Linear Feet must be at least 1"),
-  unitCost: z.coerce.number().min(0, "Cost cannot be negative"),
-  markup: z.coerce.number().min(0, "Markup cannot be negative"),
+  linearFeet: z.coerce.number().min(0),
+  unitCost: z.coerce.number().min(0),
+  markup: z.coerce.number().min(0),
   status: z.enum(['Draft', 'Submitted', 'Won', 'Lost']),
   area: z.string().optional(),
   gutterColor: z.string().optional(),
@@ -27,6 +27,15 @@ const formSchema = z.object({
   gutterCert: z.enum(['Box Level 1', 'Box Level 2', 'Box Level 3', 'K Level 1', 'K Level 2', 'K Level 3', 'None']).default('None'),
   includeGutterDownspout: z.enum(['Yes', 'No']).default('Yes'),
   demolition: z.enum(['Yes', 'No']).default('No'),
+  // Downspout fields
+  downspoutArea: z.string().optional(),
+  downspoutColor: z.string().optional(),
+  downspoutSize: z.enum(['2x3', '3x4', 'None']).default('None'),
+  downspoutLinearFeet: z.coerce.number().min(0).default(0),
+  chainLinearFeet: z.coerce.number().min(0).default(0),
+  buildingStories: z.coerce.number().min(1).default(1),
+  downspoutUnitCost: z.coerce.number().min(0).default(0),
+  downspoutMarkup: z.coerce.number().min(0).default(20),
 });
 
 interface DataEntryFormProps {
@@ -53,7 +62,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       date: new Date().toISOString().split('T')[0],
       client: "",
       job: "",
-      linearFeet: 1,
+      linearFeet: 0,
       unitCost: 0,
       markup: 20,
       status: 'Draft',
@@ -63,6 +72,14 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       gutterCert: 'None',
       includeGutterDownspout: 'Yes',
       demolition: 'No',
+      downspoutArea: "",
+      downspoutColor: "White (30) (stock)",
+      downspoutSize: 'None',
+      downspoutLinearFeet: 0,
+      chainLinearFeet: 0,
+      buildingStories: 1,
+      downspoutUnitCost: 0,
+      downspoutMarkup: 20,
     },
   });
 
@@ -88,8 +105,10 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
     onAdd(values);
     form.reset({
       ...values,
-      linearFeet: 1,
+      linearFeet: 0,
       unitCost: 0,
+      downspoutLinearFeet: 0,
+      chainLinearFeet: 0,
     });
     showSuccess("Bid item added!");
   };
@@ -104,7 +123,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <FormField
                 control={form.control}
@@ -147,6 +166,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
               />
             </div>
 
+            {/* Gutter Section */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-indigo-900 font-bold">
                 <Droplets className="w-4 h-4" />
@@ -174,27 +194,6 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Include gutter and downspout</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger className="rounded-xl border-indigo-100">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="Yes">Yes</SelectItem>
-                          <SelectItem value="No">No</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="demolition"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Demolition?</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="rounded-xl border-indigo-100">
@@ -282,44 +281,208 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                   )}
                 />
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="linearFeet"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Linear Feet</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="unitCost"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Unit Cost ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="markup"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Markup (%)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Downspout Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-indigo-900 font-bold">
+                <ArrowDownCircle className="w-4 h-4" />
+                <span>Downspout Section</span>
+              </div>
+              <Separator className="bg-indigo-50" />
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="downspoutArea"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Area</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. Front, Back, Garage" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="downspoutColor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Downspout Color</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select color" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {GUTTER_COLORS.map(color => (
+                            <SelectItem key={color} value={color}>{color}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="downspoutSize"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Downspout Size</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select size" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="None">N/A</SelectItem>
+                          <SelectItem value="2x3">2x3</SelectItem>
+                          <SelectItem value="3x4">3x4</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="downspoutLinearFeet"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Linear Feet</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="chainLinearFeet"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Chain Linear Feet</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="buildingStories"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Building Stories</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="downspoutUnitCost"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Unit Cost ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="downspoutMarkup"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Markup (%)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="linearFeet"
+                name="demolition"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Linear Feet</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="unitCost"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Unit Cost ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="markup"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Markup (%)</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
+                    <FormLabel>Demolition?</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="rounded-xl border-indigo-100">
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Yes">Yes</SelectItem>
+                        <SelectItem value="No">No</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

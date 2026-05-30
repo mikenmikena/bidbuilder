@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import { BidRecord } from '@/hooks/use-data-store';
-import { DollarSign, Target, CheckCircle2, Clock, MapPin, Check, Droplets, Edit2, Trash2 } from 'lucide-react';
+import { DollarSign, Target, CheckCircle2, Clock, MapPin, Check, Droplets, Edit2, Trash2, ArrowDownCircle } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -22,7 +22,15 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
   const [editingRecord, setEditingRecord] = useState<BidRecord | null>(null);
 
-  const calculateTotal = (r: BidRecord) => r.linearFeet * r.unitCost * (1 + r.markup / 100);
+  const calculateGutterTotal = (r: BidRecord) => r.linearFeet * r.unitCost * (1 + r.markup / 100);
+  const calculateDownspoutTotal = (r: BidRecord) => {
+    const lf = r.downspoutLinearFeet || 0;
+    const chainLf = r.chainLinearFeet || 0;
+    const cost = r.downspoutUnitCost || 0;
+    const markup = r.downspoutMarkup || 0;
+    return (lf + chainLf) * cost * (1 + markup / 100);
+  };
+  const calculateTotal = (r: BidRecord) => calculateGutterTotal(r) + calculateDownspoutTotal(r);
   
   const totalBidValue = records.reduce((sum, r) => sum + calculateTotal(r), 0);
   const wonValue = records.filter(r => r.status === 'Won').reduce((sum, r) => sum + calculateTotal(r), 0);
@@ -62,22 +70,24 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
     
     if (existing) {
       existing.value += val;
-      existing.linearFeet += record.linearFeet;
+      existing.linearFeet += record.linearFeet + (record.downspoutLinearFeet || 0) + (record.chainLinearFeet || 0);
       existing.recordCount += 1;
       if (record.demolition === 'Yes') existing.hasDemolition = true;
       if (record.gutterProfile && record.gutterProfile !== 'None') existing.profiles.add(record.gutterProfile);
       if (record.gutterColor) existing.colors.add(record.gutterColor);
+      if (record.downspoutColor) existing.colors.add(record.downspoutColor);
     } else {
       const profiles = new Set<string>();
       if (record.gutterProfile && record.gutterProfile !== 'None') profiles.add(record.gutterProfile);
       
       const colors = new Set<string>();
       if (record.gutterColor) colors.add(record.gutterColor);
+      if (record.downspoutColor) colors.add(record.downspoutColor);
 
       acc.push({ 
         name: areaName, 
         value: val, 
-        linearFeet: record.linearFeet,
+        linearFeet: record.linearFeet + (record.downspoutLinearFeet || 0) + (record.chainLinearFeet || 0),
         hasDemolition: record.demolition === 'Yes',
         profiles,
         colors,
@@ -214,19 +224,13 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
                           </div>
                           
                           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
-                            <span className="text-[10px] text-gray-500 font-medium">{area.linearFeet} LF</span>
+                            <span className="text-[10px] text-gray-500 font-medium">{area.linearFeet} LF Total</span>
                             
                             {area.profiles.size > 0 && (
                               <div className="flex items-center gap-1 text-[10px] text-indigo-500 font-bold">
                                 <Droplets className="w-2.5 h-2.5" />
                                 {Array.from(area.profiles).join(', ')}
                               </div>
-                            )}
-
-                            {area.colors.size > 0 && (
-                              <span className="text-[10px] text-gray-400 italic">
-                                {Array.from(area.colors).join(', ')}
-                              </span>
                             )}
 
                             {area.hasDemolition && (
@@ -258,7 +262,7 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
               <div key={record.id} className="flex items-center justify-between p-3 rounded-xl bg-indigo-50/50 border border-indigo-100">
                 <div>
                   <p className="font-bold text-indigo-900">{record.client}</p>
-                  <p className="text-xs text-indigo-500">{record.job} • {record.linearFeet} LF</p>
+                  <p className="text-xs text-indigo-500">{record.job} • {record.linearFeet + (record.downspoutLinearFeet || 0)} LF</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button 

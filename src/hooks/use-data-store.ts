@@ -42,6 +42,14 @@ export interface BidRecord {
   level3?: 'Yes' | 'No';
   cableUnitCost?: number;
   cableMarkup?: number;
+  // Snow Fence Fields
+  snowFenceColor?: string;
+  snowFenceRow1LF?: number;
+  snowFenceRow2LF?: number;
+  snowFenceRow3LF?: number;
+  snowFenceRoofType?: 'Asphalt Shingle' | 'Pro Panel' | 'Corrugated' | 'Raised Seam';
+  snowFenceUnitCost?: number;
+  snowFenceMarkup?: number;
 }
 
 export const useDataStore = () => {

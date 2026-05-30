@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BidRecord } from '@/hooks/use-data-store';
-import { FileText, Printer, Download, Building2, User, Droplets, Briefcase, ArrowDownCircle, ShieldCheck, Zap } from 'lucide-react';
+import { FileText, Printer, Download, Building2, User, Droplets, Briefcase, ArrowDownCircle, ShieldCheck, Zap, Snowflake } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -29,7 +29,10 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
   const calculateCableSellPrice = (r: BidRecord) => (r.cableUnitCost || 0) * (1 + (r.cableMarkup || 0) / 100);
   const calculateCableTotal = (r: BidRecord) => (r.cableLinearFeet || 0) * calculateCableSellPrice(r);
 
-  const subtotal = clientItems.reduce((sum, r) => sum + calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r), 0);
+  const calculateSnowFenceSellPrice = (r: BidRecord) => (r.snowFenceUnitCost || 0) * (1 + (r.snowFenceMarkup || 0) / 100);
+  const calculateSnowFenceTotal = (r: BidRecord) => ((r.snowFenceRow1LF || 0) + (r.snowFenceRow2LF || 0) + (r.snowFenceRow3LF || 0)) * calculateSnowFenceSellPrice(r);
+
+  const subtotal = clientItems.reduce((sum, r) => sum + calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r) + calculateSnowFenceTotal(r), 0);
   const tax = subtotal * 0.15; // Example 15% tax
   const total = subtotal + tax;
 
@@ -165,6 +168,25 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
                       <TableCell className="text-right">{item.cableLinearFeet} LF</TableCell>
                       <TableCell className="text-right">${calculateCableSellPrice(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                       <TableCell className="text-right font-bold">${calculateCableTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                    </TableRow>
+                  )}
+                  {/* Snow Fence Row */}
+                  {((item.snowFenceRow1LF || 0) + (item.snowFenceRow2LF || 0) + (item.snowFenceRow3LF || 0)) > 0 && (
+                    <TableRow className="bg-sky-50/20">
+                      <TableCell>
+                        <div className="font-bold text-sky-900">{item.area || 'General Area'} (Snow Fence)</div>
+                        <div className="font-medium">Snow Fence Installation</div>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-xs text-sky-600">
+                          <Snowflake className="w-3 h-3" />
+                          <span>
+                            {item.snowFenceColor ? `${item.snowFenceColor} Color` : ''}
+                            {item.snowFenceRoofType ? ` • Roof: ${item.snowFenceRoofType}` : ''}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">{(item.snowFenceRow1LF || 0) + (item.snowFenceRow2LF || 0) + (item.snowFenceRow3LF || 0)} LF</TableCell>
+                      <TableCell className="text-right">${calculateSnowFenceSellPrice(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                      <TableCell className="text-right font-bold">${calculateSnowFenceTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                     </TableRow>
                   )}
                 </React.Fragment>

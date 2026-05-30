@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2, Edit2, Search, Filter, Droplets, ArrowDownCircle, ShieldCheck, Zap } from 'lucide-react';
+import { Trash2, Edit2, Search, Filter, Droplets, ArrowDownCircle, ShieldCheck, Zap, Snowflake } from 'lucide-react';
 import { BidRecord } from '@/hooks/use-data-store';
 import EditRecordDialog from './EditRecordDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -38,7 +38,11 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
   };
   const calculateHelmetTotal = (r: BidRecord) => (r.helmetLinearFeet || 0) * (r.helmetUnitCost || 0) * (1 + (r.helmetMarkup || 0) / 100);
   const calculateCableTotal = (r: BidRecord) => (r.cableLinearFeet || 0) * (r.cableUnitCost || 0) * (1 + (r.cableMarkup || 0) / 100);
-  const calculateTotal = (r: BidRecord) => calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r);
+  const calculateSnowFenceTotal = (r: BidRecord) => {
+    const totalLF = (r.snowFenceRow1LF || 0) + (r.snowFenceRow2LF || 0) + (r.snowFenceRow3LF || 0);
+    return totalLF * (r.snowFenceUnitCost || 0) * (1 + (r.snowFenceMarkup || 0) / 100);
+  };
+  const calculateTotal = (r: BidRecord) => calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r) + calculateSnowFenceTotal(r);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -125,6 +129,12 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
                         <div className="flex items-center gap-1 text-[10px] font-bold text-amber-600">
                           <Zap className="w-2.5 h-2.5" />
                           Cable: {record.cableLinearFeet} LF
+                        </div>
+                      )}
+                      {((record.snowFenceRow1LF || 0) + (record.snowFenceRow2LF || 0) + (record.snowFenceRow3LF || 0)) > 0 && (
+                        <div className="flex items-center gap-1 text-[10px] font-bold text-sky-600">
+                          <Snowflake className="w-2.5 h-2.5" />
+                          Snow Fence: {(record.snowFenceRow1LF || 0) + (record.snowFenceRow2LF || 0) + (record.snowFenceRow3LF || 0)} LF
                         </div>
                       )}
                     </div>

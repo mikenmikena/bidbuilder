@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BidRecord } from '@/hooks/use-data-store';
 import { showSuccess } from '@/utils/toast';
 import { Separator } from "@/components/ui/separator";
-import { Droplets, ArrowDownCircle, ShieldCheck, Zap } from 'lucide-react';
+import { Droplets, ArrowDownCircle, ShieldCheck, Zap, Snowflake } from 'lucide-react';
 import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
@@ -54,6 +54,14 @@ const formSchema = z.object({
   level3: z.enum(['Yes', 'No']).default('No'),
   cableUnitCost: z.coerce.number().min(0).default(0),
   cableMarkup: z.coerce.number().min(0).default(20),
+  // Snow Fence fields
+  snowFenceColor: z.string().optional(),
+  snowFenceRow1LF: z.coerce.number().min(0).default(0),
+  snowFenceRow2LF: z.coerce.number().min(0).default(0),
+  snowFenceRow3LF: z.coerce.number().min(0).default(0),
+  snowFenceRoofType: z.enum(['Asphalt Shingle', 'Pro Panel', 'Corrugated', 'Raised Seam']).default('Asphalt Shingle'),
+  snowFenceUnitCost: z.coerce.number().min(0).default(0),
+  snowFenceMarkup: z.coerce.number().min(0).default(20),
 });
 
 interface EditRecordDialogProps {
@@ -117,6 +125,13 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       level3: record.level3 || 'No',
       cableUnitCost: record.cableUnitCost || 0,
       cableMarkup: record.cableMarkup || 20,
+      snowFenceColor: record.snowFenceColor || "White (30) (stock)",
+      snowFenceRow1LF: record.snowFenceRow1LF || 0,
+      snowFenceRow2LF: record.snowFenceRow2LF || 0,
+      snowFenceRow3LF: record.snowFenceRow3LF || 0,
+      snowFenceRoofType: record.snowFenceRoofType || 'Asphalt Shingle',
+      snowFenceUnitCost: record.snowFenceUnitCost || 0,
+      snowFenceMarkup: record.snowFenceMarkup || 20,
     } : undefined,
   });
 
@@ -800,6 +815,134 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                 <FormField
                   control={form.control}
                   name="cableMarkup"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Markup %</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Snow Fence Section */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-indigo-900 font-bold">
+                <Snowflake className="w-4 h-4" />
+                <span>Snow Fence Section</span>
+              </div>
+              <Separator className="bg-indigo-50" />
+              
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="snowFenceColor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Color</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select color" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {GUTTER_COLORS.map(color => (
+                            <SelectItem key={color} value={color}>{color}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="snowFenceRoofType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Roof Type</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select roof type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Asphalt Shingle">Asphalt Shingle</SelectItem>
+                          <SelectItem value="Pro Panel">Pro Panel</SelectItem>
+                          <SelectItem value="Corrugated">Corrugated</SelectItem>
+                          <SelectItem value="Raised Seam">Raised Seam</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="snowFenceRow1LF"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Row 1 LF</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="snowFenceRow2LF"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Row 2 LF</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="snowFenceRow3LF"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Row 3 LF</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="snowFenceUnitCost"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Cost ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="snowFenceMarkup"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Markup %</FormLabel>

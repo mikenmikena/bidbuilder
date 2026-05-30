@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BidRecord } from '@/hooks/use-data-store';
 import { showSuccess } from '@/utils/toast';
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   date: z.string().min(1, "Date is required"),
@@ -21,6 +22,8 @@ const formSchema = z.object({
   unitCost: z.coerce.number().min(0, "Cost cannot be negative"),
   markup: z.coerce.number().min(0, "Markup cannot be negative"),
   status: z.enum(['Draft', 'Submitted', 'Won', 'Lost']),
+  gutterColor: z.string().optional(),
+  gutterProfile: z.enum(['5K', '6B', '6K', 'None']).default('None'),
 });
 
 interface EditRecordDialogProps {
@@ -29,6 +32,10 @@ interface EditRecordDialogProps {
   onClose: () => void;
   onUpdate: (id: string, data: z.infer<typeof formSchema>) => void;
 }
+
+const GUTTER_COLORS = [
+  "White", "Royal Brown", "Musket Brown", "Black", "Wicker", "Clay", "Terratone", "Bronze", "Silver"
+];
 
 const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialogProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -42,6 +49,8 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       unitCost: record.unitCost,
       markup: record.markup,
       status: record.status,
+      gutterColor: record.gutterColor || "White",
+      gutterProfile: record.gutterProfile || 'None',
     } : undefined,
   });
 
@@ -55,7 +64,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] rounded-2xl">
+      <DialogContent className="sm:max-w-[500px] rounded-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-indigo-900">Edit Bid Item</DialogTitle>
         </DialogHeader>
@@ -102,6 +111,59 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                 </FormItem>
               )}
             />
+
+            <div className="space-y-3 pt-2">
+              <p className="text-sm font-bold text-indigo-900">Gutter Details</p>
+              <Separator className="bg-indigo-50" />
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="gutterColor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Color</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select color" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {GUTTER_COLORS.map(color => (
+                            <SelectItem key={color} value={color}>{color}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="gutterProfile"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Profile</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select profile" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="None">N/A</SelectItem>
+                          <SelectItem value="5K">5K</SelectItem>
+                          <SelectItem value="6B">6B</SelectItem>
+                          <SelectItem value="6K">6K</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
             <div className="grid grid-cols-3 gap-4">
               <FormField
                 control={form.control}

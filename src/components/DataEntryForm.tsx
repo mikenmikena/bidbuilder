@@ -9,8 +9,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Briefcase, PlusCircle } from 'lucide-react';
+import { Briefcase, Droplets, SeparatorHorizontal } from 'lucide-react';
 import { showSuccess } from '@/utils/toast';
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   date: z.string().min(1, "Date is required"),
@@ -21,11 +22,17 @@ const formSchema = z.object({
   unitCost: z.coerce.number().min(0, "Cost cannot be negative"),
   markup: z.coerce.number().min(0, "Markup cannot be negative"),
   status: z.enum(['Draft', 'Submitted', 'Won', 'Lost']),
+  gutterColor: z.string().optional(),
+  gutterProfile: z.enum(['5K', '6B', '6K', 'None']).default('None'),
 });
 
 interface DataEntryFormProps {
   onAdd: (data: z.infer<typeof formSchema>) => void;
 }
+
+const GUTTER_COLORS = [
+  "White", "Royal Brown", "Musket Brown", "Black", "Wicker", "Clay", "Terratone", "Bronze", "Silver"
+];
 
 const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -39,6 +46,8 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       unitCost: 0,
       markup: 20,
       status: 'Draft',
+      gutterColor: "White",
+      gutterProfile: 'None',
     },
   });
 
@@ -63,109 +72,169 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="projectName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Project Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. SWIS Phase 1" {...field} className="rounded-xl border-indigo-100" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="client"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Client</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Client Name" {...field} className="rounded-xl border-indigo-100" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="item"
-              render={({ field }) => (
-                <FormItem className="md:col-span-2">
-                  <FormLabel>Item / Service Description</FormLabel>
-                  <FormControl>
-                    <Input placeholder="What are you bidding for?" {...field} className="rounded-xl border-indigo-100" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quantity</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} className="rounded-xl border-indigo-100" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="unitCost"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Unit Cost ($)</FormLabel>
-                  <FormControl>
-                    <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="markup"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Markup (%)</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} className="rounded-xl border-indigo-100" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="projectName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project Name</FormLabel>
                     <FormControl>
-                      <SelectTrigger className="rounded-xl border-indigo-100">
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
+                      <Input placeholder="e.g. SWIS Phase 1" {...field} className="rounded-xl border-indigo-100" />
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Draft">Draft</SelectItem>
-                      <SelectItem value="Submitted">Submitted</SelectItem>
-                      <SelectItem value="Won">Won</SelectItem>
-                      <SelectItem value="Lost">Lost</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="md:col-span-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-6 text-lg font-semibold transition-all">
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="client"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Client Name" {...field} className="rounded-xl border-indigo-100" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="item"
+                render={({ field }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel>Item / Service Description</FormLabel>
+                    <FormControl>
+                      <Input placeholder="What are you bidding for?" {...field} className="rounded-xl border-indigo-100" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-indigo-900 font-bold">
+                <Droplets className="w-4 h-4" />
+                <span>Gutter Section</span>
+              </div>
+              <Separator className="bg-indigo-50" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="gutterColor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Gutter Color</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select color" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {GUTTER_COLORS.map(color => (
+                            <SelectItem key={color} value={color}>{color}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="gutterProfile"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Gutter Profile</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select profile" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="None">N/A</SelectItem>
+                          <SelectItem value="5K">5K</SelectItem>
+                          <SelectItem value="6B">6B</SelectItem>
+                          <SelectItem value="6K">6K</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Quantity</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="unitCost"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Unit Cost ($)</FormLabel>
+                    <FormControl>
+                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="markup"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Markup (%)</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="rounded-xl border-indigo-100">
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Draft">Draft</SelectItem>
+                        <SelectItem value="Submitted">Submitted</SelectItem>
+                        <SelectItem value="Won">Won</SelectItem>
+                        <SelectItem value="Lost">Lost</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-6 text-lg font-semibold transition-all">
               Add to Bid
             </Button>
           </form>

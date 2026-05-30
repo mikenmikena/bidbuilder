@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BidRecord } from '@/hooks/use-data-store';
-import { FileText, Printer, Download, Building2, User } from 'lucide-react';
+import { FileText, Printer, Download, Building2, User, Droplets } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -76,7 +76,18 @@ const QuoteView = ({ projectName, records }: QuoteViewProps) => {
             <TableBody>
               {projectItems.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell className="font-medium">{item.item}</TableCell>
+                  <TableCell>
+                    <div className="font-medium">{item.item}</div>
+                    {(item.gutterColor || (item.gutterProfile && item.gutterProfile !== 'None')) && (
+                      <div className="flex items-center gap-2 mt-1 text-xs text-indigo-600">
+                        <Droplets className="w-3 h-3" />
+                        <span>
+                          {item.gutterProfile !== 'None' ? `${item.gutterProfile} Profile` : ''}
+                          {item.gutterColor ? ` • ${item.gutterColor} Color` : ''}
+                        </span>
+                      </div>
+                    )}
+                  </TableCell>
                   <TableCell className="text-right">{item.quantity}</TableCell>
                   <TableCell className="text-right">${calculateSellPrice(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                   <TableCell className="text-right font-bold">${calculateTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>

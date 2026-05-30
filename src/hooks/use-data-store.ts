@@ -12,6 +12,8 @@ export interface BidRecord {
   unitCost: number;
   markup: number; // Percentage
   status: 'Draft' | 'Submitted' | 'Won' | 'Lost';
+  gutterColor?: string;
+  gutterProfile?: '5K' | '6B' | '6K' | 'None';
 }
 
 export const useDataStore = () => {

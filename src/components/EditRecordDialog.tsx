@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -13,6 +13,7 @@ import { BidRecord } from '@/hooks/use-data-store';
 import { showSuccess } from '@/utils/toast';
 import { Separator } from "@/components/ui/separator";
 import { Droplets, ArrowDownCircle } from 'lucide-react';
+import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
   date: z.string().min(1, "Date is required"),
@@ -60,6 +61,8 @@ const GUTTER_CERTS = [
 ];
 
 const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialogProps) => {
+  const [downspoutType, setDownspoutType] = useState<'linear' | 'chain' | null>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: record ? {
@@ -87,9 +90,17 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
     } : undefined,
   });
 
+  useEffect(() => {
+    if (record) {
+      if (record.downspoutLinearFeet && record.downspoutLinearFeet > 0) setDownspoutType('linear');
+      else if (record.chainLinearFeet && record.chainLinearFeet > 0) setDownspoutType('chain');
+    }
+  }, [record]);
+
   const watchedProfile = form.watch("gutterProfile");
   const watchedInclude = form.watch("includeGutterDownspout");
   const watchedDemolition = form.watch("demolition");
+  const watchedStories = form.watch("buildingStories");
 
   useEffect(() => {
     let baseCost = 0;
@@ -104,6 +115,16 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
     const finalCost = watchedDemolition === "Yes" ? baseCost + 5.28 : baseCost;
     form.setValue("unitCost", Number(finalCost.toFixed(2)));
   }, [watchedProfile, watchedInclude, watchedDemolition, form]);
+
+  useEffect(() => {
+    if (downspoutType === 'linear') {
+      form.setValue("downspoutLinearFeet", watchedStories * 12);
+      form.setValue("chainLinearFeet", 0);
+    } else if (downspoutType === 'chain') {
+      form.setValue("chainLinearFeet", watchedStories * 12);
+      form.setValue("downspoutLinearFeet", 0);
+    }
+  }, [watchedStories, downspoutType, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (record) {
@@ -391,12 +412,21 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     </FormItem>
                   )}
                 />
+                
                 <FormField
                   control={form.control}
                   name="downspoutLinearFeet"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>LF</FormLabel>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Checkbox 
+                          id="edit-linear" 
+                          checked={downspoutType === 'linear'} 
+                          onCheckedChange={(checked) => setDownspoutType(checked ? 'linear' : null)}
+                          className="rounded-md border-indigo-200 data-[state=checked]:bg-indigo-600"
+                        />
+                        <FormLabel htmlFor="edit-linear" className="mb-0 cursor-pointer">LF</FormLabel>
+                      </div>
                       <FormControl>
                         <Input type="number" {...field} className="rounded-xl border-indigo-100" />
                       </FormControl>
@@ -404,12 +434,21 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="chainLinearFeet"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Chain LF</FormLabel>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Checkbox 
+                          id="edit-chain" 
+                          checked={downspoutType === 'chain'} 
+                          onCheckedChange={(checked) => setDownspoutType(checked ? 'chain' : null)}
+                          className="rounded-md border-indigo-200 data-[state=checked]:bg-indigo-600"
+                        />
+                        <FormLabel htmlFor="edit-chain" className="mb-0 cursor-pointer">Chain LF</FormLabel>
+                      </div>
                       <FormControl>
                         <Input type="number" {...field} className="rounded-xl border-indigo-100" />
                       </FormControl>

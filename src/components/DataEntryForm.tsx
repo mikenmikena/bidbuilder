@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, Droplets, Calendar, ArrowDownCircle } from 'lucide-react';
 import { showSuccess } from '@/utils/toast';
 import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
   date: z.string().min(1, "Date is required"),
@@ -56,6 +57,8 @@ const GUTTER_CERTS = [
 ];
 
 const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
+  const [downspoutType, setDownspoutType] = useState<'linear' | 'chain' | null>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -86,7 +89,9 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
   const watchedProfile = form.watch("gutterProfile");
   const watchedInclude = form.watch("includeGutterDownspout");
   const watchedDemolition = form.watch("demolition");
+  const watchedStories = form.watch("buildingStories");
 
+  // Gutter Cost Calculation
   useEffect(() => {
     let baseCost = 0;
     if (watchedInclude === "Yes") {
@@ -101,6 +106,17 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
     form.setValue("unitCost", Number(finalCost.toFixed(2)));
   }, [watchedProfile, watchedInclude, watchedDemolition, form]);
 
+  // Downspout Auto-fill Calculation
+  useEffect(() => {
+    if (downspoutType === 'linear') {
+      form.setValue("downspoutLinearFeet", watchedStories * 12);
+      form.setValue("chainLinearFeet", 0);
+    } else if (downspoutType === 'chain') {
+      form.setValue("chainLinearFeet", watchedStories * 12);
+      form.setValue("downspoutLinearFeet", 0);
+    }
+  }, [watchedStories, downspoutType, form]);
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     onAdd(values);
     form.reset({
@@ -110,6 +126,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       downspoutLinearFeet: 0,
       chainLinearFeet: 0,
     });
+    setDownspoutType(null);
     showSuccess("Bid item added!");
   };
 
@@ -394,12 +411,21 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     </FormItem>
                   )}
                 />
+                
                 <FormField
                   control={form.control}
                   name="downspoutLinearFeet"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Linear Feet</FormLabel>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Checkbox 
+                          id="select-linear" 
+                          checked={downspoutType === 'linear'} 
+                          onCheckedChange={(checked) => setDownspoutType(checked ? 'linear' : null)}
+                          className="rounded-md border-indigo-200 data-[state=checked]:bg-indigo-600"
+                        />
+                        <FormLabel htmlFor="select-linear" className="mb-0 cursor-pointer">Linear Feet</FormLabel>
+                      </div>
                       <FormControl>
                         <Input type="number" {...field} className="rounded-xl border-indigo-100" />
                       </FormControl>
@@ -407,12 +433,21 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="chainLinearFeet"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Chain Linear Feet</FormLabel>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Checkbox 
+                          id="select-chain" 
+                          checked={downspoutType === 'chain'} 
+                          onCheckedChange={(checked) => setDownspoutType(checked ? 'chain' : null)}
+                          className="rounded-md border-indigo-200 data-[state=checked]:bg-indigo-600"
+                        />
+                        <FormLabel htmlFor="select-chain" className="mb-0 cursor-pointer">Chain Linear Feet</FormLabel>
+                      </div>
                       <FormControl>
                         <Input type="number" {...field} className="rounded-xl border-indigo-100" />
                       </FormControl>

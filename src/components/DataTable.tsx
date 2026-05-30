@@ -22,7 +22,8 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
   const [editingRecord, setEditingRecord] = useState<BidRecord | null>(null);
 
   const filteredRecords = records.filter(record => {
-    const matchesSearch = record.client.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = record.client.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         record.job.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || record.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -45,7 +46,7 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
         <div className="relative w-full sm:max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input 
-            placeholder="Search clients..." 
+            placeholder="Search clients or jobs..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10 rounded-xl border-indigo-100"
@@ -72,7 +73,8 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
         <Table>
           <TableHeader className="bg-indigo-50/50">
             <TableRow>
-              <TableHead className="font-bold text-indigo-900">Client</TableHead>
+              <TableHead className="font-bold text-indigo-900">Date</TableHead>
+              <TableHead className="font-bold text-indigo-900">Client / Job</TableHead>
               <TableHead className="font-bold text-indigo-900">Specifications</TableHead>
               <TableHead className="font-bold text-indigo-900 text-right">LF x Cost</TableHead>
               <TableHead className="font-bold text-indigo-900 text-right">Markup</TableHead>
@@ -84,20 +86,23 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
           <TableBody>
             {filteredRecords.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-12 text-gray-400">
+                <TableCell colSpan={8} className="text-center py-12 text-gray-400">
                   No bid items found.
                 </TableCell>
               </TableRow>
             ) : (
               filteredRecords.map((record) => (
                 <TableRow key={record.id} className="hover:bg-indigo-50/30 transition-colors">
-                  <TableCell className="font-bold text-indigo-900">{record.client}</TableCell>
+                  <TableCell className="text-sm text-gray-500">{record.date}</TableCell>
+                  <TableCell>
+                    <div className="font-bold text-indigo-900">{record.client}</div>
+                    <div className="text-xs text-indigo-500 font-medium">{record.job}</div>
+                  </TableCell>
                   <TableCell className="text-xs text-gray-500">
                     <div className="font-medium text-indigo-600">{record.area || 'General Area'}</div>
                     <div>
                       {record.gutterProfile !== 'None' ? `${record.gutterProfile} ` : ''}
                       {record.gutterColor}
-                      {record.gutterCert !== 'None' ? ` • ${record.gutterCert}` : ''}
                     </div>
                   </TableCell>
                   <TableCell className="text-right">

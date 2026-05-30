@@ -9,13 +9,14 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Briefcase, Droplets } from 'lucide-react';
+import { Briefcase, Droplets, Calendar } from 'lucide-react';
 import { showSuccess } from '@/utils/toast';
 import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   date: z.string().min(1, "Date is required"),
   client: z.string().min(2, "Client is required"),
+  job: z.string().min(2, "Job name is required"),
   linearFeet: z.coerce.number().min(1, "Linear Feet must be at least 1"),
   unitCost: z.coerce.number().min(0, "Cost cannot be negative"),
   markup: z.coerce.number().min(0, "Markup cannot be negative"),
@@ -46,6 +47,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
     defaultValues: {
       date: new Date().toISOString().split('T')[0],
       client: "",
+      job: "",
       linearFeet: 1,
       unitCost: 0,
       markup: 20,
@@ -63,7 +65,6 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
   const watchedInclude = form.watch("includeGutterDownspout");
   const watchedDemolition = form.watch("demolition");
 
-  // Automate Unit Cost based on rules
   useEffect(() => {
     let baseCost = 0;
     if (watchedInclude === "Yes") {
@@ -99,19 +100,47 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="client"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Client Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter client name" {...field} className="rounded-xl border-indigo-100" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormField
+                control={form.control}
+                name="client"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Client" {...field} className="rounded-xl border-indigo-100" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="job"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Job Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Job" {...field} className="rounded-xl border-indigo-100" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="date"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Date</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} className="rounded-xl border-indigo-100" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-indigo-900 font-bold">

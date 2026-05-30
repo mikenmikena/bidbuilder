@@ -6,6 +6,7 @@ export interface BidRecord {
   id: string;
   date: string;
   client: string;
+  job: string;
   linearFeet: number;
   unitCost: number;
   markup: number; // Percentage

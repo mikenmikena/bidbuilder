@@ -24,6 +24,7 @@ const formSchema = z.object({
   status: z.enum(['Draft', 'Submitted', 'Won', 'Lost']),
   gutterColor: z.string().optional(),
   gutterProfile: z.enum(['5K', '6B', '6K', 'None']).default('None'),
+  gutterCert: z.enum(['BOX L1', 'None']).default('None'),
 });
 
 interface EditRecordDialogProps {
@@ -51,6 +52,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       status: record.status,
       gutterColor: record.gutterColor || "White",
       gutterProfile: record.gutterProfile || 'None',
+      gutterCert: record.gutterCert || 'None',
     } : undefined,
   });
 
@@ -115,7 +117,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
             <div className="space-y-3 pt-2">
               <p className="text-sm font-bold text-indigo-900">Gutter Details</p>
               <Separator className="bg-indigo-50" />
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
                   name="gutterColor"
@@ -155,6 +157,27 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                           <SelectItem value="5K">5K</SelectItem>
                           <SelectItem value="6B">6B</SelectItem>
                           <SelectItem value="6K">6K</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="gutterCert"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Cert</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select cert" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="None">N/A</SelectItem>
+                          <SelectItem value="BOX L1">BOX L1</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />

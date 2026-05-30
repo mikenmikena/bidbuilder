@@ -78,12 +78,13 @@ const QuoteView = ({ projectName, records }: QuoteViewProps) => {
                 <TableRow key={item.id}>
                   <TableCell>
                     <div className="font-medium">{item.item}</div>
-                    {(item.gutterColor || (item.gutterProfile && item.gutterProfile !== 'None')) && (
+                    {(item.gutterColor || (item.gutterProfile && item.gutterProfile !== 'None') || (item.gutterCert && item.gutterCert !== 'None')) && (
                       <div className="flex items-center gap-2 mt-1 text-xs text-indigo-600">
                         <Droplets className="w-3 h-3" />
                         <span>
                           {item.gutterProfile !== 'None' ? `${item.gutterProfile} Profile` : ''}
                           {item.gutterColor ? ` • ${item.gutterColor} Color` : ''}
+                          {item.gutterCert !== 'None' ? ` • Cert: ${item.gutterCert}` : ''}
                         </span>
                       </div>
                     )}

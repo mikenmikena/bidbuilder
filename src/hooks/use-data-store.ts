@@ -14,6 +14,7 @@ export interface BidRecord {
   status: 'Draft' | 'Submitted' | 'Won' | 'Lost';
   gutterColor?: string;
   gutterProfile?: '5K' | '6B' | '6K' | 'None';
+  gutterCert?: 'BOX L1' | 'None';
 }
 
 export const useDataStore = () => {

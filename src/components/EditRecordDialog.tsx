@@ -151,7 +151,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <FormField
                 control={form.control}
                 name="client"
@@ -187,6 +187,29 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormControl>
                       <Input type="date" {...field} className="rounded-xl border-indigo-100" />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="rounded-xl border-indigo-100">
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Draft">Draft</SelectItem>
+                        <SelectItem value="Submitted">Submitted</SelectItem>
+                        <SelectItem value="Won">Won</SelectItem>
+                        <SelectItem value="Lost">Lost</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -616,31 +639,6 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="rounded-xl border-indigo-100">
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Draft">Draft</SelectItem>
-                        <SelectItem value="Submitted">Submitted</SelectItem>
-                        <SelectItem value="Won">Won</SelectItem>
-                        <SelectItem value="Lost">Lost</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
             <DialogFooter className="pt-4">
               <Button type="button" variant="outline" onClick={onClose} className="rounded-xl">Cancel</Button>
               <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl">Save Changes</Button>

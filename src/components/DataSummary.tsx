@@ -4,7 +4,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import { BidRecord } from '@/hooks/use-data-store';
-import { DollarSign, Target, CheckCircle2, Clock, MapPin } from 'lucide-react';
+import { DollarSign, Target, CheckCircle2, Clock, MapPin, Check } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface DataSummaryProps {
@@ -28,9 +28,8 @@ const DataSummary = ({ records }: DataSummaryProps) => {
   ].filter(d => d.value > 0);
 
   const projectData = records.reduce((acc: any[], record) => {
-    const existing = acc.find(item => item.name === record.projectName || item.name === record.client);
     const val = calculateTotal(record);
-    const name = record.client; // Using client as project name for now
+    const name = record.client;
     const existingItem = acc.find(item => item.name === name);
     if (existingItem) {
       existingItem.value += val;
@@ -40,14 +39,21 @@ const DataSummary = ({ records }: DataSummaryProps) => {
     return acc;
   }, []).sort((a, b) => b.value - a.value).slice(0, 5);
 
-  const areaData = records.reduce((acc: { name: string; value: number }[], record) => {
+  const areaData = records.reduce((acc: { name: string; value: number; linearFeet: number; hasDemolition: boolean }[], record) => {
     const areaName = record.area || 'General Area';
     const existing = acc.find(item => item.name === areaName);
     const val = calculateTotal(record);
     if (existing) {
       existing.value += val;
+      existing.linearFeet += record.linearFeet;
+      if (record.demolition === 'Yes') existing.hasDemolition = true;
     } else {
-      acc.push({ name: areaName, value: val });
+      acc.push({ 
+        name: areaName, 
+        value: val, 
+        linearFeet: record.linearFeet,
+        hasDemolition: record.demolition === 'Yes'
+      });
     }
     return acc;
   }, []).sort((a, b) => b.value - a.value);
@@ -160,9 +166,20 @@ const DataSummary = ({ records }: DataSummaryProps) => {
                       <p className="text-sm text-gray-400 italic">No areas defined</p>
                     ) : (
                       areaData.map((area, idx) => (
-                        <div key={idx} className="flex justify-between items-center p-2 rounded-lg bg-indigo-50/50 border border-indigo-50">
-                          <span className="text-sm font-medium text-indigo-900 truncate max-w-[120px]">{area.name}</span>
-                          <span className="text-sm font-bold text-indigo-600">${area.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                        <div key={idx} className="flex flex-col p-2 rounded-lg bg-indigo-50/50 border border-indigo-50">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium text-indigo-900 truncate max-w-[120px]">{area.name}</span>
+                            <span className="text-sm font-bold text-indigo-600">${area.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                          </div>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-[10px] text-gray-500 font-medium">{area.linearFeet} LF</span>
+                            {area.hasDemolition && (
+                              <div className="flex items-center gap-1 bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded text-[9px] font-bold">
+                                <Check className="w-2 h-2" />
+                                DEMO
+                              </div>
+                            )}
+                          </div>
                         </div>
                       ))
                     )}

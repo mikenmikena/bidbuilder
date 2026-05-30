@@ -51,12 +51,12 @@ export interface BidRecord {
   snowFenceUnitCost?: number;
   snowFenceMarkup?: number;
   // Sasquatch Fields
-  sasquatchPad?: string;
+  sasquatchPad?: number;
   sasquatchMobilizationFee?: number;
   sasquatchElectrical?: 'Good' | 'Better' | 'Best' | 'None';
   sasquatchFasciaBoard?: 'Standard' | 'Hardwood' | 'None';
-  sasquatchCustomWork?: string;
-  sasquatchArcticSteamerReserve?: string;
+  sasquatchCustomWork?: number;
+  sasquatchArcticSteamerReserve?: number;
 }
 
 export const useDataStore = () => {

@@ -63,12 +63,12 @@ const formSchema = z.object({
   snowFenceUnitCost: z.coerce.number().min(0).default(0),
   snowFenceMarkup: z.coerce.number().min(0).default(20),
   // Sasquatch fields
-  sasquatchPad: z.string().optional(),
+  sasquatchPad: z.coerce.number().min(0).default(0),
   sasquatchMobilizationFee: z.coerce.number().min(0).default(400),
   sasquatchElectrical: z.enum(['Good', 'Better', 'Best', 'None']).default('None'),
   sasquatchFasciaBoard: z.enum(['Standard', 'Hardwood', 'None']).default('None'),
-  sasquatchCustomWork: z.string().optional(),
-  sasquatchArcticSteamerReserve: z.string().optional(),
+  sasquatchCustomWork: z.coerce.number().min(0).default(0),
+  sasquatchArcticSteamerReserve: z.coerce.number().min(0).default(0),
 });
 
 interface DataEntryFormProps {
@@ -144,12 +144,12 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       snowFenceRoofType: 'Asphalt Shingle',
       snowFenceUnitCost: 0,
       snowFenceMarkup: 20,
-      sasquatchPad: "",
+      sasquatchPad: 0,
       sasquatchMobilizationFee: 400,
       sasquatchElectrical: 'None',
       sasquatchFasciaBoard: 'None',
-      sasquatchCustomWork: "",
-      sasquatchArcticSteamerReserve: "",
+      sasquatchCustomWork: 0,
+      sasquatchArcticSteamerReserve: 0,
     },
   });
 
@@ -200,6 +200,9 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
     }
     if (!showSasquatch) {
       finalValues.sasquatchMobilizationFee = 0;
+      finalValues.sasquatchPad = 0;
+      finalValues.sasquatchCustomWork = 0;
+      finalValues.sasquatchArcticSteamerReserve = 0;
     }
 
     onAdd(finalValues);
@@ -214,10 +217,10 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       snowFenceRow1LF: 0,
       snowFenceRow2LF: 0,
       snowFenceRow3LF: 0,
-      sasquatchPad: "",
+      sasquatchPad: 0,
       sasquatchMobilizationFee: 400,
-      sasquatchCustomWork: "",
-      sasquatchArcticSteamerReserve: "",
+      sasquatchCustomWork: 0,
+      sasquatchArcticSteamerReserve: 0,
     });
     setDownspoutType(null);
     showSuccess("Bid item added!");
@@ -1098,9 +1101,9 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       name="sasquatchPad"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Pad</FormLabel>
+                          <FormLabel>Pad ($)</FormLabel>
                           <FormControl>
-                            <Input placeholder="Pad details" {...field} className="rounded-xl border-slate-300" />
+                            <Input type="number" step="0.01" {...field} className="rounded-xl border-slate-300" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1175,9 +1178,9 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       name="sasquatchCustomWork"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Custom Work</FormLabel>
+                          <FormLabel>Custom Work ($)</FormLabel>
                           <FormControl>
-                            <Input placeholder="Custom work details" {...field} className="rounded-xl border-slate-300" />
+                            <Input type="number" step="0.01" {...field} className="rounded-xl border-slate-300" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1188,9 +1191,9 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       name="sasquatchArcticSteamerReserve"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Arctic Steamer Reserve</FormLabel>
+                          <FormLabel>Arctic Steamer Reserve ($)</FormLabel>
                           <FormControl>
-                            <Input placeholder="Reserve details" {...field} className="rounded-xl border-slate-300" />
+                            <Input type="number" step="0.01" {...field} className="rounded-xl border-slate-300" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

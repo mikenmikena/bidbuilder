@@ -64,12 +64,12 @@ const formSchema = z.object({
   snowFenceUnitCost: z.coerce.number().min(0).default(0),
   snowFenceMarkup: z.coerce.number().min(0).default(20),
   // Sasquatch fields
-  sasquatchPad: z.string().optional(),
+  sasquatchPad: z.coerce.number().min(0).default(0),
   sasquatchMobilizationFee: z.coerce.number().min(0).default(400),
   sasquatchElectrical: z.enum(['Good', 'Better', 'Best', 'None']).default('None'),
   sasquatchFasciaBoard: z.enum(['Standard', 'Hardwood', 'None']).default('None'),
-  sasquatchCustomWork: z.string().optional(),
-  sasquatchArcticSteamerReserve: z.string().optional(),
+  sasquatchCustomWork: z.coerce.number().min(0).default(0),
+  sasquatchArcticSteamerReserve: z.coerce.number().min(0).default(0),
 });
 
 interface EditRecordDialogProps {
@@ -148,12 +148,12 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       snowFenceRoofType: record.snowFenceRoofType || 'Asphalt Shingle',
       snowFenceUnitCost: record.snowFenceUnitCost || 0,
       snowFenceMarkup: record.snowFenceMarkup || 20,
-      sasquatchPad: record.sasquatchPad || "",
+      sasquatchPad: record.sasquatchPad || 0,
       sasquatchMobilizationFee: record.sasquatchMobilizationFee || 400,
       sasquatchElectrical: record.sasquatchElectrical || 'None',
       sasquatchFasciaBoard: record.sasquatchFasciaBoard || 'None',
-      sasquatchCustomWork: record.sasquatchCustomWork || "",
-      sasquatchArcticSteamerReserve: record.sasquatchArcticSteamerReserve || "",
+      sasquatchCustomWork: record.sasquatchCustomWork || 0,
+      sasquatchArcticSteamerReserve: record.sasquatchArcticSteamerReserve || 0,
     } : undefined,
   });
 
@@ -164,7 +164,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       setShowHelmet((record.helmetLinearFeet || 0) > 0);
       setShowCable((record.cableLinearFeet || 0) > 0);
       setShowSnowFence(((record.snowFenceRow1LF || 0) + (record.snowFenceRow2LF || 0) + (record.snowFenceRow3LF || 0)) > 0);
-      setShowSasquatch((record.sasquatchMobilizationFee || 0) > 0 || !!record.sasquatchPad);
+      setShowSasquatch((record.sasquatchMobilizationFee || 0) > 0 || (record.sasquatchPad || 0) > 0);
 
       if (record.downspoutLinearFeet && record.downspoutLinearFeet > 0) setDownspoutType('linear');
       else if (record.chainLinearFeet && record.chainLinearFeet > 0) setDownspoutType('chain');
@@ -217,6 +217,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       }
       if (!showSasquatch) {
         finalValues.sasquatchMobilizationFee = 0;
+        finalValues.sasquatchPad = 0;
+        finalValues.sasquatchCustomWork = 0;
+        finalValues.sasquatchArcticSteamerReserve = 0;
       }
 
       onUpdate(record.id, finalValues);
@@ -1097,9 +1100,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       name="sasquatchPad"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Pad</FormLabel>
+                          <FormLabel>Pad ($)</FormLabel>
                           <FormControl>
-                            <Input {...field} className="rounded-xl border-slate-300" />
+                            <Input type="number" step="0.01" {...field} className="rounded-xl border-slate-300" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1174,9 +1177,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       name="sasquatchCustomWork"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Custom Work</FormLabel>
+                          <FormLabel>Custom Work ($)</FormLabel>
                           <FormControl>
-                            <Input {...field} className="rounded-xl border-slate-300" />
+                            <Input type="number" step="0.01" {...field} className="rounded-xl border-slate-300" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1187,9 +1190,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       name="sasquatchArcticSteamerReserve"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Arctic Steamer Reserve</FormLabel>
+                          <FormLabel>Arctic Steamer Reserve ($)</FormLabel>
                           <FormControl>
-                            <Input {...field} className="rounded-xl border-slate-300" />
+                            <Input type="number" step="0.01" {...field} className="rounded-xl border-slate-300" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

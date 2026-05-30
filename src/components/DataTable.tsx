@@ -2,13 +2,13 @@
 
 import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/badge";
-import { Button } from "@/button";
-import { Input } from "@/input";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Trash2, Edit2, Search, Filter } from 'lucide-react';
 import { BidRecord } from '@/hooks/use-data-store';
 import EditRecordDialog from './EditRecordDialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface DataTableProps {
   records: BidRecord[];

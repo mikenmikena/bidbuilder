@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Briefcase, Droplets, SeparatorHorizontal } from 'lucide-react';
+import { Briefcase, Droplets } from 'lucide-react';
 import { showSuccess } from '@/utils/toast';
 import { Separator } from "@/components/ui/separator";
 
@@ -18,7 +18,7 @@ const formSchema = z.object({
   projectName: z.string().min(2, "Project Name is required"),
   client: z.string().min(2, "Client is required"),
   item: z.string().min(2, "Item/Service is required"),
-  quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
+  linearFeet: z.coerce.number().min(1, "Linear Feet must be at least 1"),
   unitCost: z.coerce.number().min(0, "Cost cannot be negative"),
   markup: z.coerce.number().min(0, "Markup cannot be negative"),
   status: z.enum(['Draft', 'Submitted', 'Won', 'Lost']),
@@ -42,7 +42,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       projectName: "",
       client: "",
       item: "",
-      quantity: 1,
+      linearFeet: 1,
       unitCost: 0,
       markup: 20,
       status: 'Draft',
@@ -56,7 +56,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
     form.reset({
       ...values,
       item: "",
-      quantity: 1,
+      linearFeet: 1,
       unitCost: 0,
     });
     showSuccess("Bid item added!");
@@ -173,10 +173,10 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="quantity"
+                name="linearFeet"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Quantity</FormLabel>
+                    <FormLabel>Linear Feet</FormLabel>
                     <FormControl>
                       <Input type="number" {...field} className="rounded-xl border-indigo-100" />
                     </FormControl>

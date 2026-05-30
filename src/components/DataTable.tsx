@@ -29,7 +29,7 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
     return matchesSearch && matchesStatus;
   });
 
-  const calculateTotal = (r: BidRecord) => r.quantity * r.unitCost * (1 + r.markup / 100);
+  const calculateTotal = (r: BidRecord) => r.linearFeet * r.unitCost * (1 + r.markup / 100);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -76,7 +76,7 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
             <TableRow>
               <TableHead className="font-bold text-indigo-900">Project / Client</TableHead>
               <TableHead className="font-bold text-indigo-900">Item</TableHead>
-              <TableHead className="font-bold text-indigo-900 text-right">Qty x Cost</TableHead>
+              <TableHead className="font-bold text-indigo-900 text-right">LF x Cost</TableHead>
               <TableHead className="font-bold text-indigo-900 text-right">Markup</TableHead>
               <TableHead className="font-bold text-indigo-900 text-right">Total Price</TableHead>
               <TableHead className="font-bold text-indigo-900">Status</TableHead>
@@ -99,7 +99,7 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
                   </TableCell>
                   <TableCell className="max-w-[150px] truncate">{record.item}</TableCell>
                   <TableCell className="text-right">
-                    <div className="text-sm">{record.quantity} x ${record.unitCost.toLocaleString()}</div>
+                    <div className="text-sm">{record.linearFeet} LF x ${record.unitCost.toLocaleString()}</div>
                   </TableCell>
                   <TableCell className="text-right text-indigo-600 font-medium">
                     {record.markup}%

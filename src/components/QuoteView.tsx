@@ -18,7 +18,7 @@ const QuoteView = ({ projectName, records }: QuoteViewProps) => {
   const date = projectItems[0]?.date || new Date().toLocaleDateString();
 
   const calculateSellPrice = (r: BidRecord) => r.unitCost * (1 + r.markup / 100);
-  const calculateTotal = (r: BidRecord) => r.quantity * calculateSellPrice(r);
+  const calculateTotal = (r: BidRecord) => r.linearFeet * calculateSellPrice(r);
   
   const subtotal = projectItems.reduce((sum, r) => sum + calculateTotal(r), 0);
   const tax = subtotal * 0.15; // Example 15% tax
@@ -68,7 +68,7 @@ const QuoteView = ({ projectName, records }: QuoteViewProps) => {
             <TableHeader className="bg-gray-50">
               <TableRow>
                 <TableHead className="text-gray-900 font-bold">Description</TableHead>
-                <TableHead className="text-right text-gray-900 font-bold">Qty</TableHead>
+                <TableHead className="text-right text-gray-900 font-bold">Linear Feet</TableHead>
                 <TableHead className="text-right text-gray-900 font-bold">Unit Price</TableHead>
                 <TableHead className="text-right text-gray-900 font-bold">Total</TableHead>
               </TableRow>
@@ -88,7 +88,7 @@ const QuoteView = ({ projectName, records }: QuoteViewProps) => {
                       </div>
                     )}
                   </TableCell>
-                  <TableCell className="text-right">{item.quantity}</TableCell>
+                  <TableCell className="text-right">{item.linearFeet}</TableCell>
                   <TableCell className="text-right">${calculateSellPrice(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                   <TableCell className="text-right font-bold">${calculateTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                 </TableRow>

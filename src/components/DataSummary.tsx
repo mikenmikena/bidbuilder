@@ -13,7 +13,7 @@ interface DataSummaryProps {
 const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444'];
 
 const DataSummary = ({ records }: DataSummaryProps) => {
-  const calculateTotal = (r: BidRecord) => r.quantity * r.unitCost * (1 + r.markup / 100);
+  const calculateTotal = (r: BidRecord) => r.linearFeet * r.unitCost * (1 + r.markup / 100);
   
   const totalBidValue = records.reduce((sum, r) => sum + calculateTotal(r), 0);
   const wonValue = records.filter(r => r.status === 'Won').reduce((sum, r) => sum + calculateTotal(r), 0);

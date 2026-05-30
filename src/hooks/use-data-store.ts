@@ -8,7 +8,7 @@ export interface BidRecord {
   projectName: string;
   client: string;
   item: string;
-  quantity: number;
+  linearFeet: number;
   unitCost: number;
   markup: number; // Percentage
   status: 'Draft' | 'Submitted' | 'Won' | 'Lost';

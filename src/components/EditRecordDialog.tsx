@@ -18,7 +18,7 @@ const formSchema = z.object({
   projectName: z.string().min(2, "Project Name is required"),
   client: z.string().min(2, "Client is required"),
   item: z.string().min(2, "Item/Service is required"),
-  quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
+  linearFeet: z.coerce.number().min(1, "Linear Feet must be at least 1"),
   unitCost: z.coerce.number().min(0, "Cost cannot be negative"),
   markup: z.coerce.number().min(0, "Markup cannot be negative"),
   status: z.enum(['Draft', 'Submitted', 'Won', 'Lost']),
@@ -45,7 +45,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       projectName: record.projectName,
       client: record.client,
       item: record.item,
-      quantity: record.quantity,
+      linearFeet: record.linearFeet,
       unitCost: record.unitCost,
       markup: record.markup,
       status: record.status,
@@ -167,10 +167,10 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
             <div className="grid grid-cols-3 gap-4">
               <FormField
                 control={form.control}
-                name="quantity"
+                name="linearFeet"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Qty</FormLabel>
+                    <FormLabel>LF</FormLabel>
                     <FormControl>
                       <Input type="number" {...field} className="rounded-xl border-indigo-100" />
                     </FormControl>

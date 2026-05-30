@@ -33,16 +33,18 @@ const ExcelImport = ({ onImport }: ExcelImportProps) => {
           projectName: row.Project || row['Project Name'] || 'Unknown Project',
           client: row.Client || 'Unknown Client',
           item: row.Item || row.Description || 'Bid Item',
-          quantity: Number(row.Quantity) || 1,
+          linearFeet: Number(row['Linear Feet']) || Number(row.Quantity) || 1,
           unitCost: Number(row.Cost) || Number(row['Unit Cost']) || 0,
           markup: Number(row.Markup) || 20,
           status: (row.Status as any) || 'Draft',
+          gutterColor: row['Gutter Color'] || 'White',
+          gutterProfile: (row['Gutter Profile'] as any) || 'None',
         }));
 
         onImport(formattedRecords);
         showSuccess(`Imported ${formattedRecords.length} bid items!`);
       } catch (err) {
-        showError("Failed to parse Excel file. Ensure columns match: Project, Client, Item, Quantity, Cost, Markup, Status.");
+        showError("Failed to parse Excel file. Ensure columns match: Project, Client, Item, Linear Feet, Cost, Markup, Status.");
       }
     };
     reader.readAsBinaryString(file);

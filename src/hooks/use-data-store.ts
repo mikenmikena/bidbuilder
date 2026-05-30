@@ -10,6 +10,7 @@ export interface BidRecord {
   unitCost: number;
   markup: number; // Percentage
   status: 'Draft' | 'Submitted' | 'Won' | 'Lost';
+  area?: string;
   gutterColor?: string;
   gutterProfile?: '5K' | '6B' | '6K' | 'None';
   gutterCert?: 'Box Level 1' | 'Box Level 2' | 'Box Level 3' | 'K Level 1' | 'K Level 2' | 'K Level 3' | 'None';

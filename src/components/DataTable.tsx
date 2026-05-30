@@ -93,9 +93,12 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
                 <TableRow key={record.id} className="hover:bg-indigo-50/30 transition-colors">
                   <TableCell className="font-bold text-indigo-900">{record.client}</TableCell>
                   <TableCell className="text-xs text-gray-500">
-                    {record.gutterProfile !== 'None' ? `${record.gutterProfile} ` : ''}
-                    {record.gutterColor}
-                    {record.gutterCert !== 'None' ? ` • ${record.gutterCert}` : ''}
+                    <div className="font-medium text-indigo-600">{record.area || 'General Area'}</div>
+                    <div>
+                      {record.gutterProfile !== 'None' ? `${record.gutterProfile} ` : ''}
+                      {record.gutterColor}
+                      {record.gutterCert !== 'None' ? ` • ${record.gutterCert}` : ''}
+                    </div>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="text-sm">{record.linearFeet} LF x ${record.unitCost.toLocaleString()}</div>

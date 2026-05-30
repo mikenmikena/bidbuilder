@@ -20,6 +20,7 @@ const formSchema = z.object({
   unitCost: z.coerce.number().min(0, "Cost cannot be negative"),
   markup: z.coerce.number().min(0, "Markup cannot be negative"),
   status: z.enum(['Draft', 'Submitted', 'Won', 'Lost']),
+  area: z.string().optional(),
   gutterColor: z.string().optional(),
   gutterProfile: z.enum(['5K', '6B', '6K', 'None']).default('None'),
   gutterCert: z.enum(['Box Level 1', 'Box Level 2', 'Box Level 3', 'K Level 1', 'K Level 2', 'K Level 3', 'None']).default('None'),
@@ -49,6 +50,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       unitCost: 0,
       markup: 20,
       status: 'Draft',
+      area: "",
       gutterColor: "White",
       gutterProfile: 'None',
       gutterCert: 'None',
@@ -100,6 +102,19 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
               <Separator className="bg-indigo-50" />
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="area"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Area</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. Front, Back, Garage" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="includeGutterDownspout"

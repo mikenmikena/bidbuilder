@@ -20,6 +20,7 @@ const formSchema = z.object({
   unitCost: z.coerce.number().min(0, "Cost cannot be negative"),
   markup: z.coerce.number().min(0, "Markup cannot be negative"),
   status: z.enum(['Draft', 'Submitted', 'Won', 'Lost']),
+  area: z.string().optional(),
   gutterColor: z.string().optional(),
   gutterProfile: z.enum(['5K', '6B', '6K', 'None']).default('None'),
   gutterCert: z.enum(['Box Level 1', 'Box Level 2', 'Box Level 3', 'K Level 1', 'K Level 2', 'K Level 3', 'None']).default('None'),
@@ -52,6 +53,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       unitCost: record.unitCost,
       markup: record.markup,
       status: record.status,
+      area: record.area || "",
       gutterColor: record.gutterColor || "White",
       gutterProfile: record.gutterProfile || 'None',
       gutterCert: record.gutterCert || 'None',
@@ -95,6 +97,19 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
               <Separator className="bg-indigo-50" />
               
               <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="area"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Area</FormLabel>
+                      <FormControl>
+                        <Input {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="includeGutterDownspout"

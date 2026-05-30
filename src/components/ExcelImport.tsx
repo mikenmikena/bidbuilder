@@ -35,6 +35,7 @@ const ExcelImport = ({ onImport }: ExcelImportProps) => {
           unitCost: Number(row.Cost) || Number(row['Unit Cost']) || 0,
           markup: Number(row.Markup) || 20,
           status: (row.Status as any) || 'Draft',
+          area: row.Area || '',
           gutterColor: row['Gutter Color'] || 'White',
           gutterProfile: (row['Gutter Profile'] as any) || 'None',
           gutterCert: (row['Gutter Cert'] as any) || 'None',

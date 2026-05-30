@@ -76,6 +76,7 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
               {clientItems.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>
+                    <div className="font-bold text-indigo-900">{item.area || 'General Area'}</div>
                     <div className="font-medium">
                       {item.gutterProfile !== 'None' ? `${item.gutterProfile} Profile ` : 'Standard '}
                       Gutter Installation

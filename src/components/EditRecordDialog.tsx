@@ -25,7 +25,7 @@ const formSchema = z.object({
   gutterColor: z.string().optional(),
   gutterProfile: z.enum(['5K', '6B', '6K', 'None']).default('None'),
   gutterCert: z.enum(['Box Level 1', 'Box Level 2', 'Box Level 3', 'K Level 1', 'K Level 2', 'K Level 3', 'None']).default('None'),
-  includeGutterDownspout: z.enum(['Yes', 'No']).default('No'),
+  includeGutterDownspout: z.enum(['Yes', 'No']).default('Yes'),
   demolition: z.enum(['Yes', 'No']).default('No'),
 });
 
@@ -64,7 +64,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       gutterColor: record.gutterColor || "White (30) (stock)",
       gutterProfile: record.gutterProfile || 'None',
       gutterCert: record.gutterCert || 'None',
-      includeGutterDownspout: record.includeGutterDownspout || 'No',
+      includeGutterDownspout: record.includeGutterDownspout || 'Yes',
       demolition: record.demolition || 'No',
     } : undefined,
   });

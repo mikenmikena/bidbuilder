@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BidRecord } from '@/hooks/use-data-store';
-import { FileText, Printer, Download, Building2, User, Droplets, Briefcase, ArrowDownCircle } from 'lucide-react';
+import { FileText, Printer, Download, Building2, User, Droplets, Briefcase, ArrowDownCircle, ShieldCheck } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -23,7 +23,10 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
   const calculateDownspoutSellPrice = (r: BidRecord) => (r.downspoutUnitCost || 0) * (1 + (r.downspoutMarkup || 0) / 100);
   const calculateDownspoutTotal = (r: BidRecord) => ((r.downspoutLinearFeet || 0) + (r.chainLinearFeet || 0)) * calculateDownspoutSellPrice(r);
 
-  const subtotal = clientItems.reduce((sum, r) => sum + calculateGutterTotal(r) + calculateDownspoutTotal(r), 0);
+  const calculateHelmetSellPrice = (r: BidRecord) => (r.helmetUnitCost || 0) * (1 + (r.helmetMarkup || 0) / 100);
+  const calculateHelmetTotal = (r: BidRecord) => (r.helmetLinearFeet || 0) * calculateHelmetSellPrice(r);
+
+  const subtotal = clientItems.reduce((sum, r) => sum + calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r), 0);
   const tax = subtotal * 0.15; // Example 15% tax
   const total = subtotal + tax;
 
@@ -96,7 +99,6 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
                           <span>
                             {item.gutterColor ? `${item.gutterColor} Color` : ''}
                             {item.gutterCert !== 'None' ? ` • Cert: ${item.gutterCert}` : ''}
-                            {item.includeGutterDownspout === 'Yes' ? ` • Incl. Gutter/Downspout` : ''}
                             {item.demolition === 'Yes' ? ` • Incl. Demolition` : ''}
                           </span>
                         </div>
@@ -110,7 +112,7 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
                   {((item.downspoutLinearFeet || 0) > 0 || (item.chainLinearFeet || 0) > 0) && (
                     <TableRow className="bg-indigo-50/20">
                       <TableCell>
-                        <div className="font-bold text-violet-900">{item.downspoutArea || item.area || 'General Area'} (Downspout)</div>
+                        <div className="font-bold text-violet-900">{item.area || 'General Area'} (Downspout)</div>
                         <div className="font-medium">
                           {item.downspoutSize !== 'None' ? `${item.downspoutSize} ` : ''}
                           Downspout Installation
@@ -120,13 +122,31 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
                           <span>
                             {item.downspoutColor ? `${item.downspoutColor} Color` : ''}
                             {item.buildingStories ? ` • ${item.buildingStories} Stories` : ''}
-                            {item.chainLinearFeet ? ` • ${item.chainLinearFeet} LF Chain` : ''}
                           </span>
                         </div>
                       </TableCell>
                       <TableCell className="text-right">{(item.downspoutLinearFeet || 0) + (item.chainLinearFeet || 0)} LF</TableCell>
                       <TableCell className="text-right">${calculateDownspoutSellPrice(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                       <TableCell className="text-right font-bold">${calculateDownspoutTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                    </TableRow>
+                  )}
+                  {/* Gutter Helmet Row */}
+                  {(item.helmetLinearFeet || 0) > 0 && (
+                    <TableRow className="bg-emerald-50/20">
+                      <TableCell>
+                        <div className="font-bold text-emerald-900">{item.area || 'General Area'} (Gutter Helmet)</div>
+                        <div className="font-medium">Gutter Helmet Protection System</div>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-xs text-emerald-600">
+                          <ShieldCheck className="w-3 h-3" />
+                          <span>
+                            {item.helmetColor ? `${item.helmetColor} Color` : ''}
+                            {item.roofType ? ` • Roof: ${item.roofType}` : ''}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">{item.helmetLinearFeet} LF</TableCell>
+                      <TableCell className="text-right">${calculateHelmetSellPrice(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                      <TableCell className="text-right font-bold">${calculateHelmetTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                     </TableRow>
                   )}
                 </React.Fragment>

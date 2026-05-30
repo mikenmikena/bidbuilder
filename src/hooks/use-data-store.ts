@@ -18,7 +18,6 @@ export interface BidRecord {
   includeGutterDownspout?: 'Yes' | 'No';
   demolition?: 'Yes' | 'No';
   // Downspout Fields
-  downspoutArea?: string;
   downspoutColor?: string;
   downspoutSize?: '2x3' | '3x4' | 'None';
   downspoutLinearFeet?: number;
@@ -26,6 +25,12 @@ export interface BidRecord {
   buildingStories?: number;
   downspoutUnitCost?: number;
   downspoutMarkup?: number;
+  // Gutter Helmet Fields
+  helmetColor?: string;
+  helmetLinearFeet?: number;
+  helmetUnitCost?: number;
+  helmetMarkup?: number;
+  roofType?: 'Asphalt Shingle' | 'Pro Panel' | 'Corrugated' | 'Raised Seam';
 }
 
 export const useDataStore = () => {

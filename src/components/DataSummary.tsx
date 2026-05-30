@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import { BidRecord } from '@/hooks/use-data-store';
-import { DollarSign, Target, CheckCircle2, Clock, MapPin, Check, Droplets, Edit2, Trash2, ArrowDownCircle } from 'lucide-react';
+import { DollarSign, Target, CheckCircle2, Clock, MapPin, Check, Droplets, Edit2, Trash2, ArrowDownCircle, ShieldCheck } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -30,7 +30,8 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
     const markup = r.downspoutMarkup || 0;
     return (lf + chainLf) * cost * (1 + markup / 100);
   };
-  const calculateTotal = (r: BidRecord) => calculateGutterTotal(r) + calculateDownspoutTotal(r);
+  const calculateHelmetTotal = (r: BidRecord) => (r.helmetLinearFeet || 0) * (r.helmetUnitCost || 0) * (1 + (r.helmetMarkup || 0) / 100);
+  const calculateTotal = (r: BidRecord) => calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r);
   
   const totalBidValue = records.reduce((sum, r) => sum + calculateTotal(r), 0);
   const wonValue = records.filter(r => r.status === 'Won').reduce((sum, r) => sum + calculateTotal(r), 0);
@@ -70,12 +71,13 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
     
     if (existing) {
       existing.value += val;
-      existing.linearFeet += record.linearFeet + (record.downspoutLinearFeet || 0) + (record.chainLinearFeet || 0);
+      existing.linearFeet += record.linearFeet + (record.downspoutLinearFeet || 0) + (record.chainLinearFeet || 0) + (record.helmetLinearFeet || 0);
       existing.recordCount += 1;
       if (record.demolition === 'Yes') existing.hasDemolition = true;
       if (record.gutterProfile && record.gutterProfile !== 'None') existing.profiles.add(record.gutterProfile);
       if (record.gutterColor) existing.colors.add(record.gutterColor);
       if (record.downspoutColor) existing.colors.add(record.downspoutColor);
+      if (record.helmetColor) existing.colors.add(record.helmetColor);
     } else {
       const profiles = new Set<string>();
       if (record.gutterProfile && record.gutterProfile !== 'None') profiles.add(record.gutterProfile);
@@ -83,11 +85,12 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
       const colors = new Set<string>();
       if (record.gutterColor) colors.add(record.gutterColor);
       if (record.downspoutColor) colors.add(record.downspoutColor);
+      if (record.helmetColor) colors.add(record.helmetColor);
 
       acc.push({ 
         name: areaName, 
         value: val, 
-        linearFeet: record.linearFeet + (record.downspoutLinearFeet || 0) + (record.chainLinearFeet || 0),
+        linearFeet: record.linearFeet + (record.downspoutLinearFeet || 0) + (record.chainLinearFeet || 0) + (record.helmetLinearFeet || 0),
         hasDemolition: record.demolition === 'Yes',
         profiles,
         colors,
@@ -262,7 +265,7 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
               <div key={record.id} className="flex items-center justify-between p-3 rounded-xl bg-indigo-50/50 border border-indigo-100">
                 <div>
                   <p className="font-bold text-indigo-900">{record.client}</p>
-                  <p className="text-xs text-indigo-500">{record.job} • {record.linearFeet + (record.downspoutLinearFeet || 0)} LF</p>
+                  <p className="text-xs text-indigo-500">{record.job} • {record.linearFeet + (record.downspoutLinearFeet || 0) + (record.helmetLinearFeet || 0)} LF</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button 

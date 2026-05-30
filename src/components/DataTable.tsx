@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2, Edit2, Search, Filter, Droplets, ArrowDownCircle } from 'lucide-react';
+import { Trash2, Edit2, Search, Filter, Droplets, ArrowDownCircle, ShieldCheck } from 'lucide-react';
 import { BidRecord } from '@/hooks/use-data-store';
 import EditRecordDialog from './EditRecordDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -36,7 +36,8 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
     const markup = r.downspoutMarkup || 0;
     return (lf + chainLf) * cost * (1 + markup / 100);
   };
-  const calculateTotal = (r: BidRecord) => calculateGutterTotal(r) + calculateDownspoutTotal(r);
+  const calculateHelmetTotal = (r: BidRecord) => (r.helmetLinearFeet || 0) * (r.helmetUnitCost || 0) * (1 + (r.helmetMarkup || 0) / 100);
+  const calculateTotal = (r: BidRecord) => calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -83,8 +84,8 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
             <TableRow>
               <TableHead className="font-bold text-indigo-900">Date</TableHead>
               <TableHead className="font-bold text-indigo-900">Client / Job</TableHead>
-              <TableHead className="font-bold text-indigo-900">Gutter Details</TableHead>
-              <TableHead className="font-bold text-indigo-900">Downspout Details</TableHead>
+              <TableHead className="font-bold text-indigo-900">Gutter/Helmet</TableHead>
+              <TableHead className="font-bold text-indigo-900">Downspout</TableHead>
               <TableHead className="font-bold text-indigo-900 text-right">Total Price</TableHead>
               <TableHead className="font-bold text-indigo-900">Status</TableHead>
               <TableHead className="font-bold text-indigo-900 text-right">Actions</TableHead>
@@ -106,27 +107,31 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
                     <div className="text-xs text-indigo-500 font-medium">{record.job}</div>
                   </TableCell>
                   <TableCell>
-                    {record.linearFeet > 0 ? (
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-1 text-xs font-bold text-indigo-600">
-                          <Droplets className="w-3 h-3" />
-                          {record.area || 'General'}
+                    <div className="space-y-2">
+                      {record.linearFeet > 0 && (
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-1 text-[10px] font-bold text-indigo-600">
+                            <Droplets className="w-2.5 h-2.5" />
+                            Gutter: {record.linearFeet} LF
+                          </div>
                         </div>
-                        <div className="text-[10px] text-gray-500">
-                          {record.linearFeet} LF @ ${record.unitCost} ({record.markup}%)
+                      )}
+                      {(record.helmetLinearFeet || 0) > 0 && (
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-600">
+                            <ShieldCheck className="w-2.5 h-2.5" />
+                            Helmet: {record.helmetLinearFeet} LF
+                          </div>
                         </div>
-                      </div>
-                    ) : <span className="text-gray-300 text-xs">N/A</span>}
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell>
                     {(record.downspoutLinearFeet || 0) > 0 || (record.chainLinearFeet || 0) > 0 ? (
                       <div className="space-y-1">
-                        <div className="flex items-center gap-1 text-xs font-bold text-violet-600">
-                          <ArrowDownCircle className="w-3 h-3" />
-                          {record.downspoutArea || 'General'}
-                        </div>
-                        <div className="text-[10px] text-gray-500">
-                          {(record.downspoutLinearFeet || 0) + (record.chainLinearFeet || 0)} LF @ ${record.downspoutUnitCost} ({record.downspoutMarkup}%)
+                        <div className="flex items-center gap-1 text-[10px] font-bold text-violet-600">
+                          <ArrowDownCircle className="w-2.5 h-2.5" />
+                          {(record.downspoutLinearFeet || 0) + (record.chainLinearFeet || 0)} LF
                         </div>
                       </div>
                     ) : <span className="text-gray-300 text-xs">N/A</span>}

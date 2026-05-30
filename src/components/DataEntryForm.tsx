@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Briefcase, Droplets, Calendar, ArrowDownCircle } from 'lucide-react';
+import { Briefcase, Droplets, Calendar, ArrowDownCircle, ShieldCheck } from 'lucide-react';
 import { showSuccess } from '@/utils/toast';
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -36,6 +36,12 @@ const formSchema = z.object({
   buildingStories: z.coerce.number().min(1).default(1),
   downspoutUnitCost: z.coerce.number().min(0).default(0),
   downspoutMarkup: z.coerce.number().min(0).default(20),
+  // Gutter Helmet fields
+  helmetColor: z.string().optional(),
+  helmetLinearFeet: z.coerce.number().min(0).default(0),
+  helmetUnitCost: z.coerce.number().min(0).default(0),
+  helmetMarkup: z.coerce.number().min(0).default(20),
+  roofType: z.enum(['Asphalt Shingle', 'Pro Panel', 'Corrugated', 'Raised Seam']).default('Asphalt Shingle'),
 });
 
 interface DataEntryFormProps {
@@ -81,6 +87,11 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       buildingStories: 1,
       downspoutUnitCost: 0,
       downspoutMarkup: 20,
+      helmetColor: "White (30) (stock)",
+      helmetLinearFeet: 0,
+      helmetUnitCost: 0,
+      helmetMarkup: 20,
+      roofType: 'Asphalt Shingle',
     },
   });
 
@@ -123,6 +134,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       unitCost: 0,
       downspoutLinearFeet: 0,
       chainLinearFeet: 0,
+      helmetLinearFeet: 0,
     });
     setDownspoutType(null);
     showSuccess("Bid item added!");
@@ -492,6 +504,105 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                 <FormField
                   control={form.control}
                   name="downspoutMarkup"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Markup (%)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Gutter Helmet Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-indigo-900 font-bold">
+                <ShieldCheck className="w-4 h-4" />
+                <span>Gutter Helmet Section</span>
+              </div>
+              <Separator className="bg-indigo-50" />
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="helmetColor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Gutter Helmet Color</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select color" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {GUTTER_COLORS.map(color => (
+                            <SelectItem key={color} value={color}>{color}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="roofType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Roof Type</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select roof type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Asphalt Shingle">Asphalt Shingle</SelectItem>
+                          <SelectItem value="Pro Panel">Pro Panel</SelectItem>
+                          <SelectItem value="Corrugated">Corrugated</SelectItem>
+                          <SelectItem value="Raised Seam">Raised Seam</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="helmetLinearFeet"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Linear Feet</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="helmetUnitCost"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Unit Cost ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="helmetMarkup"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Markup (%)</FormLabel>

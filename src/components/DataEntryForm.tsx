@@ -256,13 +256,13 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
               />
             </div>
 
-            {/* Gutter Section - Light Yellow */}
-            <div className="space-y-4 bg-amber-50/50 border border-amber-100 p-4 rounded-2xl">
+            {/* Gutter Section - Darker Yellow */}
+            <div className="space-y-4 bg-amber-100 border border-amber-200 p-4 rounded-2xl">
               <div className="flex items-center gap-2 text-amber-900 font-bold">
                 <Droplets className="w-4 h-4" />
                 <span>Gutter Section</span>
               </div>
-              <Separator className="bg-amber-100" />
+              <Separator className="bg-amber-200" />
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormField
@@ -272,7 +272,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Area</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g. Front, Back, Garage" {...field} className="rounded-xl border-amber-200" />
+                        <Input placeholder="e.g. Front, Back, Garage" {...field} className="rounded-xl border-amber-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -286,7 +286,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       <FormLabel>Include gutter and downspout</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-amber-200">
+                          <SelectTrigger className="rounded-xl border-amber-300">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                         </FormControl>
@@ -307,7 +307,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       <FormLabel>Demolition?</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-amber-200">
+                          <SelectTrigger className="rounded-xl border-amber-300">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                         </FormControl>
@@ -331,7 +331,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       <FormLabel>Gutter Color</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-amber-200">
+                          <SelectTrigger className="rounded-xl border-amber-300">
                             <SelectValue placeholder="Select color" />
                           </SelectTrigger>
                         </FormControl>
@@ -353,7 +353,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       <FormLabel>Gutter Profile</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-amber-200">
+                          <SelectTrigger className="rounded-xl border-amber-300">
                             <SelectValue placeholder="Select profile" />
                           </SelectTrigger>
                         </FormControl>
@@ -376,7 +376,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       <FormLabel>Gutter Cert</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-amber-200">
+                          <SelectTrigger className="rounded-xl border-amber-300">
                             <SelectValue placeholder="Select cert" />
                           </SelectTrigger>
                         </FormControl>
@@ -401,7 +401,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Linear Feet</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-amber-200" />
+                        <Input type="number" {...field} className="rounded-xl border-amber-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -414,7 +414,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Unit Cost ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200" />
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -427,7 +427,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Markup (%)</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-amber-200" />
+                        <Input type="number" {...field} className="rounded-xl border-amber-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -436,13 +436,13 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
               </div>
             </div>
 
-            {/* Downspout Section - Light Blue */}
-            <div className="space-y-4 bg-sky-50/50 border border-sky-100 p-4 rounded-2xl">
+            {/* Downspout Section - Darker Blue */}
+            <div className="space-y-4 bg-sky-100 border border-sky-200 p-4 rounded-2xl">
               <div className="flex items-center gap-2 text-sky-900 font-bold">
                 <ArrowDownCircle className="w-4 h-4" />
                 <span>Downspout Section</span>
               </div>
-              <Separator className="bg-sky-100" />
+              <Separator className="bg-sky-200" />
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
@@ -453,7 +453,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       <FormLabel>Downspout Color</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-sky-200">
+                          <SelectTrigger className="rounded-xl border-sky-300">
                             <SelectValue placeholder="Select color" />
                           </SelectTrigger>
                         </FormControl>
@@ -475,7 +475,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       <FormLabel>Downspout Size</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-sky-200">
+                          <SelectTrigger className="rounded-xl border-sky-300">
                             <SelectValue placeholder="Select size" />
                           </SelectTrigger>
                         </FormControl>
@@ -502,12 +502,12 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                           id="select-linear" 
                           checked={downspoutType === 'linear'} 
                           onCheckedChange={(checked) => setDownspoutType(checked ? 'linear' : null)}
-                          className="rounded-md border-sky-200 data-[state=checked]:bg-sky-600"
+                          className="rounded-md border-sky-300 data-[state=checked]:bg-sky-600"
                         />
                         <FormLabel htmlFor="select-linear" className="mb-0 cursor-pointer">Linear Feet</FormLabel>
                       </div>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-sky-200" />
+                        <Input type="number" {...field} className="rounded-xl border-sky-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -524,12 +524,12 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                           id="select-chain" 
                           checked={downspoutType === 'chain'} 
                           onCheckedChange={(checked) => setDownspoutType(checked ? 'chain' : null)}
-                          className="rounded-md border-sky-200 data-[state=checked]:bg-sky-600"
+                          className="rounded-md border-sky-300 data-[state=checked]:bg-sky-600"
                         />
                         <FormLabel htmlFor="select-chain" className="mb-0 cursor-pointer">Chain Linear Feet</FormLabel>
                       </div>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-sky-200" />
+                        <Input type="number" {...field} className="rounded-xl border-sky-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -545,7 +545,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Building Stories</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-sky-200" />
+                        <Input type="number" {...field} className="rounded-xl border-sky-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -558,7 +558,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Unit Cost ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.01" {...field} className="rounded-xl border-sky-200" />
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-sky-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -571,7 +571,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Markup (%)</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-sky-200" />
+                        <Input type="number" {...field} className="rounded-xl border-sky-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -580,13 +580,13 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
               </div>
             </div>
 
-            {/* Gutter Helmet Section - Light Green */}
-            <div className="space-y-4 bg-emerald-50/50 border border-emerald-100 p-4 rounded-2xl">
+            {/* Gutter Helmet Section - Darker Green */}
+            <div className="space-y-4 bg-emerald-100 border border-emerald-200 p-4 rounded-2xl">
               <div className="flex items-center gap-2 text-emerald-900 font-bold">
                 <ShieldCheck className="w-4 h-4" />
                 <span>Gutter Helmet Section</span>
               </div>
-              <Separator className="bg-emerald-100" />
+              <Separator className="bg-emerald-200" />
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
@@ -597,7 +597,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       <FormLabel>Gutter Helmet Color</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-emerald-200">
+                          <SelectTrigger className="rounded-xl border-emerald-300">
                             <SelectValue placeholder="Select color" />
                           </SelectTrigger>
                         </FormControl>
@@ -619,7 +619,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       <FormLabel>Roof Type</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-emerald-200">
+                          <SelectTrigger className="rounded-xl border-emerald-300">
                             <SelectValue placeholder="Select roof type" />
                           </SelectTrigger>
                         </FormControl>
@@ -644,7 +644,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Linear Feet</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-emerald-200" />
+                        <Input type="number" {...field} className="rounded-xl border-emerald-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -657,7 +657,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Unit Cost ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.01" {...field} className="rounded-xl border-emerald-200" />
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-emerald-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -670,7 +670,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Markup (%)</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-emerald-200" />
+                        <Input type="number" {...field} className="rounded-xl border-emerald-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -679,13 +679,13 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
               </div>
             </div>
 
-            {/* Heat Cable Section - Light Orange */}
-            <div className="space-y-4 bg-orange-50/50 border border-orange-100 p-4 rounded-2xl">
+            {/* Heat Cable Section - Darker Orange */}
+            <div className="space-y-4 bg-orange-100 border border-orange-200 p-4 rounded-2xl">
               <div className="flex items-center gap-2 text-orange-900 font-bold">
                 <Zap className="w-4 h-4" />
                 <span>Heat Cable Section</span>
               </div>
-              <Separator className="bg-orange-100" />
+              <Separator className="bg-orange-200" />
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormField
@@ -695,7 +695,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Valley Count</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-orange-200" />
+                        <Input type="number" {...field} className="rounded-xl border-orange-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -708,7 +708,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>LF Daylight/ Plug/ other</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-orange-200" />
+                        <Input type="number" {...field} className="rounded-xl border-orange-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -722,7 +722,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       <FormLabel>Heat Cable Layout</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-orange-200">
+                          <SelectTrigger className="rounded-xl border-orange-300">
                             <SelectValue placeholder="Select layout" />
                           </SelectTrigger>
                         </FormControl>
@@ -749,7 +749,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Linear Feet</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-orange-200" />
+                        <Input type="number" {...field} className="rounded-xl border-orange-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -762,7 +762,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Volt</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-orange-200" />
+                        <Input type="number" {...field} className="rounded-xl border-orange-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -775,7 +775,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Amperage</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.1" {...field} className="rounded-xl border-orange-200" />
+                        <Input type="number" step="0.1" {...field} className="rounded-xl border-orange-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -789,7 +789,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       <FormLabel>Retrofit</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-orange-200">
+                          <SelectTrigger className="rounded-xl border-orange-300">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                         </FormControl>
@@ -813,7 +813,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       <FormLabel>Level 3</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-orange-200">
+                          <SelectTrigger className="rounded-xl border-orange-300">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                         </FormControl>
@@ -833,7 +833,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Unit Cost ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200" />
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -846,7 +846,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Markup (%)</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-orange-200" />
+                        <Input type="number" {...field} className="rounded-xl border-orange-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -855,13 +855,13 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
               </div>
             </div>
 
-            {/* Snow Fence Section - Light Purple */}
-            <div className="space-y-4 bg-purple-50/50 border border-purple-100 p-4 rounded-2xl">
+            {/* Snow Fence Section - Darker Purple */}
+            <div className="space-y-4 bg-purple-100 border border-purple-200 p-4 rounded-2xl">
               <div className="flex items-center gap-2 text-purple-900 font-bold">
                 <Snowflake className="w-4 h-4" />
                 <span>Snow Fence Section</span>
               </div>
-              <Separator className="bg-purple-100" />
+              <Separator className="bg-purple-200" />
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
@@ -872,7 +872,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       <FormLabel>Snow Fence Color</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-purple-200">
+                          <SelectTrigger className="rounded-xl border-purple-300">
                             <SelectValue placeholder="Select color" />
                           </SelectTrigger>
                         </FormControl>
@@ -894,7 +894,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                       <FormLabel>Roof Type</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-purple-200">
+                          <SelectTrigger className="rounded-xl border-purple-300">
                             <SelectValue placeholder="Select roof type" />
                           </SelectTrigger>
                         </FormControl>
@@ -919,7 +919,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Row 1 Linear Feet</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-purple-200" />
+                        <Input type="number" {...field} className="rounded-xl border-purple-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -932,7 +932,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Row 2 Linear Feet</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-purple-200" />
+                        <Input type="number" {...field} className="rounded-xl border-purple-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -945,7 +945,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Row 3 Linear Feet</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-purple-200" />
+                        <Input type="number" {...field} className="rounded-xl border-purple-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -961,7 +961,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Unit Cost ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-200" />
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -974,7 +974,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     <FormItem>
                       <FormLabel>Markup (%)</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-purple-200" />
+                        <Input type="number" {...field} className="rounded-xl border-purple-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

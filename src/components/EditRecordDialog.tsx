@@ -252,13 +252,13 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
               />
             </div>
 
-            {/* Gutter Section - Light Yellow */}
-            <div className="space-y-3 bg-amber-50/50 border border-amber-100 p-4 rounded-2xl">
+            {/* Gutter Section - Darker Yellow */}
+            <div className="space-y-3 bg-amber-100 border border-amber-200 p-4 rounded-2xl">
               <div className="flex items-center gap-2 text-amber-900 font-bold">
                 <Droplets className="w-4 h-4" />
                 <span>Gutter Section</span>
               </div>
-              <Separator className="bg-amber-100" />
+              <Separator className="bg-amber-200" />
               
               <div className="grid grid-cols-3 gap-4">
                 <FormField
@@ -268,7 +268,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Area</FormLabel>
                       <FormControl>
-                        <Input {...field} className="rounded-xl border-amber-200" />
+                        <Input {...field} className="rounded-xl border-amber-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -282,7 +282,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       <FormLabel>Include gutter/downspout</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-amber-200">
+                          <SelectTrigger className="rounded-xl border-amber-300">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                         </FormControl>
@@ -303,7 +303,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       <FormLabel>Demolition?</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-amber-200">
+                          <SelectTrigger className="rounded-xl border-amber-300">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                         </FormControl>
@@ -327,7 +327,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       <FormLabel>Color</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-amber-200">
+                          <SelectTrigger className="rounded-xl border-amber-300">
                             <SelectValue placeholder="Select color" />
                           </SelectTrigger>
                         </FormControl>
@@ -349,7 +349,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       <FormLabel>Profile</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-amber-200">
+                          <SelectTrigger className="rounded-xl border-amber-300">
                             <SelectValue placeholder="Select profile" />
                           </SelectTrigger>
                         </FormControl>
@@ -372,7 +372,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       <FormLabel>Cert</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-amber-200">
+                          <SelectTrigger className="rounded-xl border-amber-300">
                             <SelectValue placeholder="Select cert" />
                           </SelectTrigger>
                         </FormControl>
@@ -397,7 +397,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>LF</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-amber-200" />
+                        <Input type="number" {...field} className="rounded-xl border-amber-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -410,7 +410,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Cost ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200" />
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -423,7 +423,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Markup %</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-amber-200" />
+                        <Input type="number" {...field} className="rounded-xl border-amber-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -432,13 +432,13 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
               </div>
             </div>
 
-            {/* Downspout Section - Light Blue */}
-            <div className="space-y-3 bg-sky-50/50 border border-sky-100 p-4 rounded-2xl">
+            {/* Downspout Section - Darker Blue */}
+            <div className="space-y-3 bg-sky-100 border border-sky-200 p-4 rounded-2xl">
               <div className="flex items-center gap-2 text-sky-900 font-bold">
                 <ArrowDownCircle className="w-4 h-4" />
                 <span>Downspout Section</span>
               </div>
-              <Separator className="bg-sky-100" />
+              <Separator className="bg-sky-200" />
               
               <div className="grid grid-cols-2 gap-4">
                 <FormField
@@ -449,7 +449,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       <FormLabel>Color</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-sky-200">
+                          <SelectTrigger className="rounded-xl border-sky-300">
                             <SelectValue placeholder="Select color" />
                           </SelectTrigger>
                         </FormControl>
@@ -471,7 +471,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       <FormLabel>Size</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-sky-200">
+                          <SelectTrigger className="rounded-xl border-sky-300">
                             <SelectValue placeholder="Select size" />
                           </SelectTrigger>
                         </FormControl>
@@ -498,12 +498,12 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                           id="edit-linear" 
                           checked={downspoutType === 'linear'} 
                           onCheckedChange={(checked) => setDownspoutType(checked ? 'linear' : null)}
-                          className="rounded-md border-sky-200 data-[state=checked]:bg-sky-600"
+                          className="rounded-md border-sky-300 data-[state=checked]:bg-sky-600"
                         />
                         <FormLabel htmlFor="edit-linear" className="mb-0 cursor-pointer">LF</FormLabel>
                       </div>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-sky-200" />
+                        <Input type="number" {...field} className="rounded-xl border-sky-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -520,12 +520,12 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                           id="edit-chain" 
                           checked={downspoutType === 'chain'} 
                           onCheckedChange={(checked) => setDownspoutType(checked ? 'chain' : null)}
-                          className="rounded-md border-sky-200 data-[state=checked]:bg-sky-600"
+                          className="rounded-md border-sky-300 data-[state=checked]:bg-sky-600"
                         />
                         <FormLabel htmlFor="edit-chain" className="mb-0 cursor-pointer">Chain LF</FormLabel>
                       </div>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-sky-200" />
+                        <Input type="number" {...field} className="rounded-xl border-sky-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -538,7 +538,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Stories</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-sky-200" />
+                        <Input type="number" {...field} className="rounded-xl border-sky-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -554,7 +554,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Cost ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.01" {...field} className="rounded-xl border-sky-200" />
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-sky-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -567,7 +567,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Markup %</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-sky-200" />
+                        <Input type="number" {...field} className="rounded-xl border-sky-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -576,13 +576,13 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
               </div>
             </div>
 
-            {/* Gutter Helmet Section - Light Green */}
-            <div className="space-y-3 bg-emerald-50/50 border border-emerald-100 p-4 rounded-2xl">
+            {/* Gutter Helmet Section - Darker Green */}
+            <div className="space-y-3 bg-emerald-100 border border-emerald-200 p-4 rounded-2xl">
               <div className="flex items-center gap-2 text-emerald-900 font-bold">
                 <ShieldCheck className="w-4 h-4" />
                 <span>Gutter Helmet Section</span>
               </div>
-              <Separator className="bg-emerald-100" />
+              <Separator className="bg-emerald-200" />
               
               <div className="grid grid-cols-2 gap-4">
                 <FormField
@@ -593,7 +593,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       <FormLabel>Color</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-emerald-200">
+                          <SelectTrigger className="rounded-xl border-emerald-300">
                             <SelectValue placeholder="Select color" />
                           </SelectTrigger>
                         </FormControl>
@@ -615,7 +615,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       <FormLabel>Roof Type</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-emerald-200">
+                          <SelectTrigger className="rounded-xl border-emerald-300">
                             <SelectValue placeholder="Select roof type" />
                           </SelectTrigger>
                         </FormControl>
@@ -640,7 +640,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>LF</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-emerald-200" />
+                        <Input type="number" {...field} className="rounded-xl border-emerald-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -653,7 +653,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Cost ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.01" {...field} className="rounded-xl border-emerald-200" />
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-emerald-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -666,7 +666,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Markup %</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-emerald-200" />
+                        <Input type="number" {...field} className="rounded-xl border-emerald-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -675,13 +675,13 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
               </div>
             </div>
 
-            {/* Heat Cable Section - Light Orange */}
-            <div className="space-y-3 bg-orange-50/50 border border-orange-100 p-4 rounded-2xl">
+            {/* Heat Cable Section - Darker Orange */}
+            <div className="space-y-3 bg-orange-100 border border-orange-200 p-4 rounded-2xl">
               <div className="flex items-center gap-2 text-orange-900 font-bold">
                 <Zap className="w-4 h-4" />
                 <span>Heat Cable Section</span>
               </div>
-              <Separator className="bg-orange-100" />
+              <Separator className="bg-orange-200" />
               
               <div className="grid grid-cols-3 gap-4">
                 <FormField
@@ -691,7 +691,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Valley Count</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-orange-200" />
+                        <Input type="number" {...field} className="rounded-xl border-orange-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -704,7 +704,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>LF Daylight</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-orange-200" />
+                        <Input type="number" {...field} className="rounded-xl border-orange-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -718,7 +718,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       <FormLabel>Layout</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-orange-200">
+                          <SelectTrigger className="rounded-xl border-orange-300">
                             <SelectValue placeholder="Select layout" />
                           </SelectTrigger>
                         </FormControl>
@@ -745,7 +745,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>LF</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-orange-200" />
+                        <Input type="number" {...field} className="rounded-xl border-orange-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -758,7 +758,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Volt</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-orange-200" />
+                        <Input type="number" {...field} className="rounded-xl border-orange-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -771,7 +771,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Amp</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.1" {...field} className="rounded-xl border-orange-200" />
+                        <Input type="number" step="0.1" {...field} className="rounded-xl border-orange-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -785,7 +785,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       <FormLabel>Retrofit</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-orange-200">
+                          <SelectTrigger className="rounded-xl border-orange-300">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                         </FormControl>
@@ -809,7 +809,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       <FormLabel>Level 3</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-orange-200">
+                          <SelectTrigger className="rounded-xl border-orange-300">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                         </FormControl>
@@ -829,7 +829,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Cost ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200" />
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -842,7 +842,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Markup %</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-orange-200" />
+                        <Input type="number" {...field} className="rounded-xl border-orange-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -851,13 +851,13 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
               </div>
             </div>
 
-            {/* Snow Fence Section - Light Purple */}
-            <div className="space-y-3 bg-purple-50/50 border border-purple-100 p-4 rounded-2xl">
+            {/* Snow Fence Section - Darker Purple */}
+            <div className="space-y-3 bg-purple-100 border border-purple-200 p-4 rounded-2xl">
               <div className="flex items-center gap-2 text-purple-900 font-bold">
                 <Snowflake className="w-4 h-4" />
                 <span>Snow Fence Section</span>
               </div>
-              <Separator className="bg-purple-100" />
+              <Separator className="bg-purple-200" />
               
               <div className="grid grid-cols-2 gap-4">
                 <FormField
@@ -868,7 +868,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       <FormLabel>Color</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-purple-200">
+                          <SelectTrigger className="rounded-xl border-purple-300">
                             <SelectValue placeholder="Select color" />
                           </SelectTrigger>
                         </FormControl>
@@ -890,7 +890,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       <FormLabel>Roof Type</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-purple-200">
+                          <SelectTrigger className="rounded-xl border-purple-300">
                             <SelectValue placeholder="Select roof type" />
                           </SelectTrigger>
                         </FormControl>
@@ -915,7 +915,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Row 1 LF</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-purple-200" />
+                        <Input type="number" {...field} className="rounded-xl border-purple-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -928,7 +928,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Row 2 LF</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-purple-200" />
+                        <Input type="number" {...field} className="rounded-xl border-purple-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -941,7 +941,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Row 3 LF</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-purple-200" />
+                        <Input type="number" {...field} className="rounded-xl border-purple-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -957,7 +957,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Cost ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-200" />
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -970,7 +970,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormItem>
                       <FormLabel>Markup %</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} className="rounded-xl border-purple-200" />
+                        <Input type="number" {...field} className="rounded-xl border-purple-300" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

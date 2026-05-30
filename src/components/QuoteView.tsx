@@ -78,16 +78,16 @@ const QuoteView = ({ projectName, records }: QuoteViewProps) => {
                 <TableRow key={item.id}>
                   <TableCell>
                     <div className="font-medium">{item.item}</div>
-                    {(item.gutterColor || (item.gutterProfile && item.gutterProfile !== 'None') || (item.gutterCert && item.gutterCert !== 'None')) && (
-                      <div className="flex items-center gap-2 mt-1 text-xs text-indigo-600">
-                        <Droplets className="w-3 h-3" />
-                        <span>
-                          {item.gutterProfile !== 'None' ? `${item.gutterProfile} Profile` : ''}
-                          {item.gutterColor ? ` • ${item.gutterColor} Color` : ''}
-                          {item.gutterCert !== 'None' ? ` • Cert: ${item.gutterCert}` : ''}
-                        </span>
-                      </div>
-                    )}
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-xs text-indigo-600">
+                      <Droplets className="w-3 h-3" />
+                      <span>
+                        {item.gutterProfile !== 'None' ? `${item.gutterProfile} Profile` : ''}
+                        {item.gutterColor ? ` • ${item.gutterColor} Color` : ''}
+                        {item.gutterCert !== 'None' ? ` • Cert: ${item.gutterCert}` : ''}
+                        {item.includeGutterDownspout === 'Yes' ? ` • Incl. Gutter/Downspout` : ''}
+                        {item.demolition === 'Yes' ? ` • Incl. Demolition` : ''}
+                      </span>
+                    </div>
                   </TableCell>
                   <TableCell className="text-right">{item.linearFeet}</TableCell>
                   <TableCell className="text-right">${calculateSellPrice(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>

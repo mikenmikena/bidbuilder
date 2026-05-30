@@ -25,6 +25,8 @@ const formSchema = z.object({
   gutterColor: z.string().optional(),
   gutterProfile: z.enum(['5K', '6B', '6K', 'None']).default('None'),
   gutterCert: z.enum(['Box Level 1', 'Box Level 2', 'Box Level 3', 'K Level 1', 'K Level 2', 'K Level 3', 'None']).default('None'),
+  includeGutterDownspout: z.enum(['Yes', 'No']).default('No'),
+  demolition: z.enum(['Yes', 'No']).default('No'),
 });
 
 interface EditRecordDialogProps {
@@ -57,6 +59,8 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       gutterColor: record.gutterColor || "White",
       gutterProfile: record.gutterProfile || 'None',
       gutterCert: record.gutterCert || 'None',
+      includeGutterDownspout: record.includeGutterDownspout || 'No',
+      demolition: record.demolition || 'No',
     } : undefined,
   });
 
@@ -121,6 +125,52 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
             <div className="space-y-3 pt-2">
               <p className="text-sm font-bold text-indigo-900">Gutter Details</p>
               <Separator className="bg-indigo-50" />
+              
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="includeGutterDownspout"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Include gutter and downspout</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Yes">Yes</SelectItem>
+                          <SelectItem value="No">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="demolition"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Demolition?</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Yes">Yes</SelectItem>
+                          <SelectItem value="No">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <div className="grid grid-cols-3 gap-4">
                 <FormField
                   control={form.control}

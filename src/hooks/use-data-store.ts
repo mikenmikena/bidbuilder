@@ -15,6 +15,8 @@ export interface BidRecord {
   gutterColor?: string;
   gutterProfile?: '5K' | '6B' | '6K' | 'None';
   gutterCert?: 'Box Level 1' | 'Box Level 2' | 'Box Level 3' | 'K Level 1' | 'K Level 2' | 'K Level 3' | 'None';
+  includeGutterDownspout?: 'Yes' | 'No';
+  demolition?: 'Yes' | 'No';
 }
 
 export const useDataStore = () => {

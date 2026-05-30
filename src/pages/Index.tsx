@@ -88,7 +88,7 @@ const Index = () => {
                     <DataEntryForm onAdd={addRecord} />
                   </div>
                   <div className="lg:col-span-2">
-                    <DataSummary records={records} />
+                    <DataSummary records={records} onUpdate={updateRecord} onDelete={deleteRecord} />
                   </div>
                 </div>
               </TabsContent>

@@ -1,19 +1,27 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import { BidRecord } from '@/hooks/use-data-store';
-import { DollarSign, Target, CheckCircle2, Clock, MapPin, Check, Droplets } from 'lucide-react';
+import { DollarSign, Target, CheckCircle2, Clock, MapPin, Check, Droplets, Edit2, Trash2 } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import EditRecordDialog from './EditRecordDialog';
 
 interface DataSummaryProps {
   records: BidRecord[];
+  onUpdate: (id: string, data: any) => void;
+  onDelete: (id: string) => void;
 }
 
 const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444'];
 
-const DataSummary = ({ records }: DataSummaryProps) => {
+const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
+  const [selectedArea, setSelectedArea] = useState<string | null>(null);
+  const [editingRecord, setEditingRecord] = useState<BidRecord | null>(null);
+
   const calculateTotal = (r: BidRecord) => r.linearFeet * r.unitCost * (1 + r.markup / 100);
   
   const totalBidValue = records.reduce((sum, r) => sum + calculateTotal(r), 0);
@@ -46,6 +54,7 @@ const DataSummary = ({ records }: DataSummaryProps) => {
     hasDemolition: boolean;
     profiles: Set<string>;
     colors: Set<string>;
+    recordCount: number;
   }[], record) => {
     const areaName = record.area || 'General Area';
     const existing = acc.find(item => item.name === areaName);
@@ -54,6 +63,7 @@ const DataSummary = ({ records }: DataSummaryProps) => {
     if (existing) {
       existing.value += val;
       existing.linearFeet += record.linearFeet;
+      existing.recordCount += 1;
       if (record.demolition === 'Yes') existing.hasDemolition = true;
       if (record.gutterProfile && record.gutterProfile !== 'None') existing.profiles.add(record.gutterProfile);
       if (record.gutterColor) existing.colors.add(record.gutterColor);
@@ -70,11 +80,14 @@ const DataSummary = ({ records }: DataSummaryProps) => {
         linearFeet: record.linearFeet,
         hasDemolition: record.demolition === 'Yes',
         profiles,
-        colors
+        colors,
+        recordCount: 1
       });
     }
     return acc;
   }, []).sort((a, b) => b.value - a.value);
+
+  const areaRecords = selectedArea ? records.filter(r => (r.area || 'General Area') === selectedArea) : [];
 
   return (
     <div className="space-y-6">
@@ -184,10 +197,20 @@ const DataSummary = ({ records }: DataSummaryProps) => {
                       <p className="text-sm text-gray-400 italic">No areas defined</p>
                     ) : (
                       areaData.map((area, idx) => (
-                        <div key={idx} className="flex flex-col p-2 rounded-lg bg-indigo-50/50 border border-indigo-50">
+                        <div key={idx} className="group relative flex flex-col p-2 rounded-lg bg-indigo-50/50 border border-indigo-50 hover:bg-indigo-100/50 transition-colors">
                           <div className="flex justify-between items-center">
                             <span className="text-sm font-medium text-indigo-900 truncate max-w-[120px]">{area.name}</span>
-                            <span className="text-sm font-bold text-indigo-600">${area.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-bold text-indigo-600">${area.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                onClick={() => setSelectedArea(area.name)}
+                                className="h-6 w-6 text-indigo-400 hover:text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <Edit2 className="h-3 w-3" />
+                              </Button>
+                            </div>
                           </div>
                           
                           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
@@ -223,6 +246,53 @@ const DataSummary = ({ records }: DataSummaryProps) => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Area Records Dialog */}
+      <Dialog open={!!selectedArea} onOpenChange={(open) => !open && setSelectedArea(null)}>
+        <DialogContent className="sm:max-w-[500px] rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-indigo-900">Items in {selectedArea}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 py-4">
+            {areaRecords.map((record) => (
+              <div key={record.id} className="flex items-center justify-between p-3 rounded-xl bg-indigo-50/50 border border-indigo-100">
+                <div>
+                  <p className="font-bold text-indigo-900">{record.client}</p>
+                  <p className="text-xs text-indigo-500">{record.job} • {record.linearFeet} LF</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => setEditingRecord(record)}
+                    className="text-indigo-600 hover:bg-indigo-100 rounded-full"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => {
+                      onDelete(record.id);
+                      if (areaRecords.length <= 1) setSelectedArea(null);
+                    }}
+                    className="text-rose-500 hover:bg-rose-100 rounded-full"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <EditRecordDialog 
+        record={editingRecord}
+        isOpen={!!editingRecord}
+        onClose={() => setEditingRecord(null)}
+        onUpdate={onUpdate}
+      />
     </div>
   );
 };

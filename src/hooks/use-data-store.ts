@@ -31,6 +31,17 @@ export interface BidRecord {
   helmetUnitCost?: number;
   helmetMarkup?: number;
   roofType?: 'Asphalt Shingle' | 'Pro Panel' | 'Corrugated' | 'Raised Seam';
+  // Heat Cable Fields
+  valleyCount?: number;
+  daylightLF?: number;
+  cableLayout?: 'Gutter and Downspout' | 'Serpentine' | '2 cable' | '3 cable' | 'Serpentine Metal' | 'None';
+  cableLinearFeet?: number;
+  volt?: number;
+  amperage?: number;
+  retrofit?: 'Yes' | 'No';
+  level3?: 'Yes' | 'No';
+  cableUnitCost?: number;
+  cableMarkup?: number;
 }
 
 export const useDataStore = () => {

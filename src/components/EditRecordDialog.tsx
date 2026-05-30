@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BidRecord } from '@/hooks/use-data-store';
 import { showSuccess } from '@/utils/toast';
 import { Separator } from "@/components/ui/separator";
-import { Droplets, ArrowDownCircle, ShieldCheck } from 'lucide-react';
+import { Droplets, ArrowDownCircle, ShieldCheck, Zap } from 'lucide-react';
 import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
@@ -43,6 +43,17 @@ const formSchema = z.object({
   helmetUnitCost: z.coerce.number().min(0).default(0),
   helmetMarkup: z.coerce.number().min(0).default(20),
   roofType: z.enum(['Asphalt Shingle', 'Pro Panel', 'Corrugated', 'Raised Seam']).default('Asphalt Shingle'),
+  // Heat Cable fields
+  valleyCount: z.coerce.number().min(0).default(0),
+  daylightLF: z.coerce.number().min(0).default(0),
+  cableLayout: z.enum(['Gutter and Downspout', 'Serpentine', '2 cable', '3 cable', 'Serpentine Metal', 'None']).default('None'),
+  cableLinearFeet: z.coerce.number().min(0).default(0),
+  volt: z.coerce.number().min(0).default(120),
+  amperage: z.coerce.number().min(0).default(0),
+  retrofit: z.enum(['Yes', 'No']).default('No'),
+  level3: z.enum(['Yes', 'No']).default('No'),
+  cableUnitCost: z.coerce.number().min(0).default(0),
+  cableMarkup: z.coerce.number().min(0).default(20),
 });
 
 interface EditRecordDialogProps {
@@ -96,6 +107,16 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       helmetUnitCost: record.helmetUnitCost || 0,
       helmetMarkup: record.helmetMarkup || 20,
       roofType: record.roofType || 'Asphalt Shingle',
+      valleyCount: record.valleyCount || 0,
+      daylightLF: record.daylightLF || 0,
+      cableLayout: record.cableLayout || 'None',
+      cableLinearFeet: record.cableLinearFeet || 0,
+      volt: record.volt || 120,
+      amperage: record.amperage || 0,
+      retrofit: record.retrofit || 'No',
+      level3: record.level3 || 'No',
+      cableUnitCost: record.cableUnitCost || 0,
+      cableMarkup: record.cableMarkup || 20,
     } : undefined,
   });
 
@@ -151,7 +172,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <FormField
                 control={form.control}
                 name="client"
@@ -187,29 +208,6 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     <FormControl>
                       <Input type="date" {...field} className="rounded-xl border-indigo-100" />
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="rounded-xl border-indigo-100">
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Draft">Draft</SelectItem>
-                        <SelectItem value="Submitted">Submitted</SelectItem>
-                        <SelectItem value="Won">Won</SelectItem>
-                        <SelectItem value="Lost">Lost</SelectItem>
-                      </SelectContent>
-                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -639,6 +637,207 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
               </div>
             </div>
 
+            {/* Heat Cable Section */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-indigo-900 font-bold">
+                <Zap className="w-4 h-4" />
+                <span>Heat Cable Section</span>
+              </div>
+              <Separator className="bg-indigo-50" />
+              
+              <div className="grid grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="valleyCount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Valley Count</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="daylightLF"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>LF Daylight</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cableLayout"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Layout</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select layout" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="None">None</SelectItem>
+                          <SelectItem value="Gutter and Downspout">Gutter and Downspout</SelectItem>
+                          <SelectItem value="Serpentine">Serpentine</SelectItem>
+                          <SelectItem value="2 cable">2 cable</SelectItem>
+                          <SelectItem value="3 cable">3 cable</SelectItem>
+                          <SelectItem value="Serpentine Metal">Serpentine Metal</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-4 gap-4">
+                <FormField
+                  control={form.control}
+                  name="cableLinearFeet"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>LF</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="volt"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Volt</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="amperage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Amp</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.1" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="retrofit"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Retrofit</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Yes">Yes</SelectItem>
+                          <SelectItem value="No">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="level3"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Level 3</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Yes">Yes</SelectItem>
+                          <SelectItem value="No">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cableUnitCost"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Cost ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cableMarkup"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Markup %</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="rounded-xl border-indigo-100" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="rounded-xl border-indigo-100">
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Draft">Draft</SelectItem>
+                        <SelectItem value="Submitted">Submitted</SelectItem>
+                        <SelectItem value="Won">Won</SelectItem>
+                        <SelectItem value="Lost">Lost</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <DialogFooter className="pt-4">
               <Button type="button" variant="outline" onClick={onClose} className="rounded-xl">Cancel</Button>
               <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl">Save Changes</Button>

@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2, Edit2, Search, Filter, Droplets, ArrowDownCircle, ShieldCheck } from 'lucide-react';
+import { Trash2, Edit2, Search, Filter, Droplets, ArrowDownCircle, ShieldCheck, Zap } from 'lucide-react';
 import { BidRecord } from '@/hooks/use-data-store';
 import EditRecordDialog from './EditRecordDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -37,7 +37,8 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
     return (lf + chainLf) * cost * (1 + markup / 100);
   };
   const calculateHelmetTotal = (r: BidRecord) => (r.helmetLinearFeet || 0) * (r.helmetUnitCost || 0) * (1 + (r.helmetMarkup || 0) / 100);
-  const calculateTotal = (r: BidRecord) => calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r);
+  const calculateCableTotal = (r: BidRecord) => (r.cableLinearFeet || 0) * (r.cableUnitCost || 0) * (1 + (r.cableMarkup || 0) / 100);
+  const calculateTotal = (r: BidRecord) => calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -84,7 +85,7 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
             <TableRow>
               <TableHead className="font-bold text-indigo-900">Date</TableHead>
               <TableHead className="font-bold text-indigo-900">Client / Job</TableHead>
-              <TableHead className="font-bold text-indigo-900">Gutter/Helmet</TableHead>
+              <TableHead className="font-bold text-indigo-900">Systems</TableHead>
               <TableHead className="font-bold text-indigo-900">Downspout</TableHead>
               <TableHead className="font-bold text-indigo-900 text-right">Total Price</TableHead>
               <TableHead className="font-bold text-indigo-900">Status</TableHead>
@@ -109,19 +110,21 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
                   <TableCell>
                     <div className="space-y-2">
                       {record.linearFeet > 0 && (
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-1 text-[10px] font-bold text-indigo-600">
-                            <Droplets className="w-2.5 h-2.5" />
-                            Gutter: {record.linearFeet} LF
-                          </div>
+                        <div className="flex items-center gap-1 text-[10px] font-bold text-indigo-600">
+                          <Droplets className="w-2.5 h-2.5" />
+                          Gutter: {record.linearFeet} LF
                         </div>
                       )}
                       {(record.helmetLinearFeet || 0) > 0 && (
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-600">
-                            <ShieldCheck className="w-2.5 h-2.5" />
-                            Helmet: {record.helmetLinearFeet} LF
-                          </div>
+                        <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-600">
+                          <ShieldCheck className="w-2.5 h-2.5" />
+                          Helmet: {record.helmetLinearFeet} LF
+                        </div>
+                      )}
+                      {(record.cableLinearFeet || 0) > 0 && (
+                        <div className="flex items-center gap-1 text-[10px] font-bold text-amber-600">
+                          <Zap className="w-2.5 h-2.5" />
+                          Cable: {record.cableLinearFeet} LF
                         </div>
                       )}
                     </div>

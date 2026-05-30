@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Briefcase, Droplets, Calendar, ArrowDownCircle, ShieldCheck, Zap, Snowflake, Eye, EyeOff } from 'lucide-react';
+import { Briefcase, Droplets, Calendar, ArrowDownCircle, ShieldCheck, Zap, Snowflake, Footprints } from 'lucide-react';
 import { showSuccess } from '@/utils/toast';
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -62,6 +62,13 @@ const formSchema = z.object({
   snowFenceRoofType: z.enum(['Asphalt Shingle', 'Pro Panel', 'Corrugated', 'Raised Seam']).default('Asphalt Shingle'),
   snowFenceUnitCost: z.coerce.number().min(0).default(0),
   snowFenceMarkup: z.coerce.number().min(0).default(20),
+  // Sasquatch fields
+  sasquatchPad: z.string().optional(),
+  sasquatchMobilizationFee: z.coerce.number().min(0).default(400),
+  sasquatchElectrical: z.enum(['Good', 'Better', 'Best', 'None']).default('None'),
+  sasquatchFasciaBoard: z.enum(['Standard', 'Hardwood', 'None']).default('None'),
+  sasquatchCustomWork: z.string().optional(),
+  sasquatchArcticSteamerReserve: z.string().optional(),
 });
 
 interface DataEntryFormProps {
@@ -90,6 +97,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
   const [showHelmet, setShowHelmet] = useState(false);
   const [showCable, setShowCable] = useState(false);
   const [showSnowFence, setShowSnowFence] = useState(false);
+  const [showSasquatch, setShowSasquatch] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -136,6 +144,12 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       snowFenceRoofType: 'Asphalt Shingle',
       snowFenceUnitCost: 0,
       snowFenceMarkup: 20,
+      sasquatchPad: "",
+      sasquatchMobilizationFee: 400,
+      sasquatchElectrical: 'None',
+      sasquatchFasciaBoard: 'None',
+      sasquatchCustomWork: "",
+      sasquatchArcticSteamerReserve: "",
     },
   });
 
@@ -171,7 +185,6 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
   }, [watchedStories, downspoutType, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // Reset hidden fields to 0 before adding
     const finalValues = { ...values };
     if (!showGutter) finalValues.linearFeet = 0;
     if (!showDownspout) {
@@ -184,6 +197,9 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       finalValues.snowFenceRow1LF = 0;
       finalValues.snowFenceRow2LF = 0;
       finalValues.snowFenceRow3LF = 0;
+    }
+    if (!showSasquatch) {
+      finalValues.sasquatchMobilizationFee = 0;
     }
 
     onAdd(finalValues);
@@ -198,6 +214,10 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       snowFenceRow1LF: 0,
       snowFenceRow2LF: 0,
       snowFenceRow3LF: 0,
+      sasquatchPad: "",
+      sasquatchMobilizationFee: 400,
+      sasquatchCustomWork: "",
+      sasquatchArcticSteamerReserve: "",
     });
     setDownspoutType(null);
     showSuccess("Bid item added!");
@@ -1046,6 +1066,131 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                           <FormLabel>Markup (%)</FormLabel>
                           <FormControl>
                             <Input type="number" {...field} className="rounded-xl border-purple-300" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Sasquatch Section */}
+            <div className={`space-y-4 bg-slate-100 border border-slate-200 p-4 rounded-2xl transition-all duration-300 ${!showSasquatch ? 'opacity-60' : ''}`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-slate-900 font-bold">
+                  <Footprints className="w-4 h-4" />
+                  <span>Sasquatch Section</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold uppercase text-slate-700">{showSasquatch ? 'On' : 'Off'}</span>
+                  <Switch checked={showSasquatch} onCheckedChange={setShowSasquatch} className="data-[state=checked]:bg-slate-600" />
+                </div>
+              </div>
+              
+              {showSasquatch && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <Separator className="bg-slate-200" />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="sasquatchPad"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Pad</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Pad details" {...field} className="rounded-xl border-slate-300" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="sasquatchMobilizationFee"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Mobilization Fee ($)</FormLabel>
+                          <FormControl>
+                            <Input type="number" step="100" {...field} className="rounded-xl border-slate-300" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="sasquatchElectrical"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Electrical</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="rounded-xl border-slate-300">
+                                <SelectValue placeholder="Select electrical" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="None">N/A</SelectItem>
+                              <SelectItem value="Good">Good</SelectItem>
+                              <SelectItem value="Better">Better</SelectItem>
+                              <SelectItem value="Best">Best</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="sasquatchFasciaBoard"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Fascia/Shadow Board</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="rounded-xl border-slate-300">
+                                <SelectValue placeholder="Select board" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="None">N/A</SelectItem>
+                              <SelectItem value="Standard">Standard</SelectItem>
+                              <SelectItem value="Hardwood">Hardwood</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="sasquatchCustomWork"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Custom Work</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Custom work details" {...field} className="rounded-xl border-slate-300" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="sasquatchArcticSteamerReserve"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Arctic Steamer Reserve</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Reserve details" {...field} className="rounded-xl border-slate-300" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

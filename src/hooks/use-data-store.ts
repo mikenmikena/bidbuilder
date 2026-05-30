@@ -50,6 +50,13 @@ export interface BidRecord {
   snowFenceRoofType?: 'Asphalt Shingle' | 'Pro Panel' | 'Corrugated' | 'Raised Seam';
   snowFenceUnitCost?: number;
   snowFenceMarkup?: number;
+  // Sasquatch Fields
+  sasquatchPad?: string;
+  sasquatchMobilizationFee?: number;
+  sasquatchElectrical?: 'Good' | 'Better' | 'Best' | 'None';
+  sasquatchFasciaBoard?: 'Standard' | 'Hardwood' | 'None';
+  sasquatchCustomWork?: string;
+  sasquatchArcticSteamerReserve?: string;
 }
 
 export const useDataStore = () => {

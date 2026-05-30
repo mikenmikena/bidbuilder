@@ -4,7 +4,8 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import { BidRecord } from '@/hooks/use-data-store';
-import { DollarSign, Target, CheckCircle2, Clock } from 'lucide-react';
+import { DollarSign, Target, CheckCircle2, Clock, MapPin } from 'lucide-react';
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface DataSummaryProps {
   records: BidRecord[];
@@ -24,18 +25,32 @@ const DataSummary = ({ records }: DataSummaryProps) => {
     { name: 'Won', value: records.filter(r => r.status === 'Won').length },
     { name: 'Submitted', value: records.filter(r => r.status === 'Submitted').length },
     { name: 'Lost', value: records.filter(r => r.status === 'Lost').length },
-  ];
+  ].filter(d => d.value > 0);
 
   const projectData = records.reduce((acc: any[], record) => {
-    const existing = acc.find(item => item.name === record.projectName);
+    const existing = acc.find(item => item.name === record.projectName || item.name === record.client);
+    const val = calculateTotal(record);
+    const name = record.client; // Using client as project name for now
+    const existingItem = acc.find(item => item.name === name);
+    if (existingItem) {
+      existingItem.value += val;
+    } else {
+      acc.push({ name, value: val });
+    }
+    return acc;
+  }, []).sort((a, b) => b.value - a.value).slice(0, 5);
+
+  const areaData = records.reduce((acc: { name: string; value: number }[], record) => {
+    const areaName = record.area || 'General Area';
+    const existing = acc.find(item => item.name === areaName);
     const val = calculateTotal(record);
     if (existing) {
       existing.value += val;
     } else {
-      acc.push({ name: record.projectName, value: val });
+      acc.push({ name: areaName, value: val });
     }
     return acc;
-  }, []).slice(0, 5);
+  }, []).sort((a, b) => b.value - a.value);
 
   return (
     <div className="space-y-6">
@@ -92,7 +107,7 @@ const DataSummary = ({ records }: DataSummaryProps) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="border-none shadow-lg bg-white">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold">Value by Project</CardTitle>
+            <CardTitle className="text-lg font-semibold">Value by Client</CardTitle>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -109,27 +124,52 @@ const DataSummary = ({ records }: DataSummaryProps) => {
 
         <Card className="border-none shadow-lg bg-white">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold">Bid Status Distribution</CardTitle>
+            <CardTitle className="text-lg font-semibold">Status & Area Breakdown</CardTitle>
           </CardHeader>
-          <CardContent className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={statusData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {statusData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="h-[200px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={statusData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={40}
+                      outerRadius={60}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {statusData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                  <MapPin className="w-3 h-3" />
+                  Cost per Area
+                </h4>
+                <ScrollArea className="h-[160px] pr-4">
+                  <div className="space-y-2">
+                    {areaData.length === 0 ? (
+                      <p className="text-sm text-gray-400 italic">No areas defined</p>
+                    ) : (
+                      areaData.map((area, idx) => (
+                        <div key={idx} className="flex justify-between items-center p-2 rounded-lg bg-indigo-50/50 border border-indigo-50">
+                          <span className="text-sm font-medium text-indigo-900 truncate max-w-[120px]">{area.name}</span>
+                          <span className="text-sm font-bold text-indigo-600">${area.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </ScrollArea>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>

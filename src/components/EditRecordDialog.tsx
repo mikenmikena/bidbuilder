@@ -37,7 +37,12 @@ interface EditRecordDialogProps {
 }
 
 const GUTTER_COLORS = [
-  "White", "Royal Brown", "Musket Brown", "Black", "Wicker", "Clay", "Terratone", "Bronze", "Silver"
+  "TBD", "Black (stock)", "Musket Brown (stock)", "White (30) (stock)", "Bronze (stock)", 
+  "Royal Brown (stock)", "Beaver Brown (stock)", "Charcoal Grey (stock)", "Terra Bronze (stock)",
+  "Almond", "Brookstone", "Buckskin", "Cameo", "Classic Cream", "Copper Penny", "Country Blue",
+  "Desert Sand", "Egg Shell", "Everest", "Evergreen", "Harbour Grey", "Linen", "Montana Suede",
+  "Norwegian Wood", "Pebblestone Clay", "Redwood", "Sage", "Sandtone", "Sierra Clay",
+  "Silver Grey", "Victorian Grey", "Village Green", "Wicker"
 ];
 
 const GUTTER_CERTS = [
@@ -56,7 +61,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       markup: record.markup,
       status: record.status,
       area: record.area || "",
-      gutterColor: record.gutterColor || "White",
+      gutterColor: record.gutterColor || "White (30) (stock)",
       gutterProfile: record.gutterProfile || 'None',
       gutterCert: record.gutterCert || 'None',
       includeGutterDownspout: record.includeGutterDownspout || 'No',

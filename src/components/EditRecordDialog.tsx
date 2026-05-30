@@ -15,9 +15,7 @@ import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   date: z.string().min(1, "Date is required"),
-  projectName: z.string().min(2, "Project Name is required"),
   client: z.string().min(2, "Client is required"),
-  item: z.string().min(2, "Item/Service is required"),
   linearFeet: z.coerce.number().min(1, "Linear Feet must be at least 1"),
   unitCost: z.coerce.number().min(0, "Cost cannot be negative"),
   markup: z.coerce.number().min(0, "Markup cannot be negative"),
@@ -49,9 +47,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
     resolver: zodResolver(formSchema),
     values: record ? {
       date: record.date,
-      projectName: record.projectName,
       client: record.client,
-      item: record.item,
       linearFeet: record.linearFeet,
       unitCost: record.unitCost,
       markup: record.markup,
@@ -80,40 +76,12 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="projectName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Project</FormLabel>
-                    <FormControl>
-                      <Input {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="client"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Client</FormLabel>
-                    <FormControl>
-                      <Input {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
             <FormField
               control={form.control}
-              name="item"
+              name="client"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Item Description</FormLabel>
+                  <FormLabel>Client Name</FormLabel>
                   <FormControl>
                     <Input {...field} className="rounded-xl border-indigo-100" />
                   </FormControl>

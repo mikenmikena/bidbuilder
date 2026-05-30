@@ -5,9 +5,7 @@ import { useState, useEffect } from 'react';
 export interface BidRecord {
   id: string;
   date: string;
-  projectName: string;
   client: string;
-  item: string;
   linearFeet: number;
   unitCost: number;
   markup: number; // Percentage

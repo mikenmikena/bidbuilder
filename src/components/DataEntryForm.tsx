@@ -15,9 +15,7 @@ import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   date: z.string().min(1, "Date is required"),
-  projectName: z.string().min(2, "Project Name is required"),
   client: z.string().min(2, "Client is required"),
-  item: z.string().min(2, "Item/Service is required"),
   linearFeet: z.coerce.number().min(1, "Linear Feet must be at least 1"),
   unitCost: z.coerce.number().min(0, "Cost cannot be negative"),
   markup: z.coerce.number().min(0, "Markup cannot be negative"),
@@ -46,9 +44,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       date: new Date().toISOString().split('T')[0],
-      projectName: "",
       client: "",
-      item: "",
       linearFeet: 1,
       unitCost: 0,
       markup: 20,
@@ -65,7 +61,6 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
     onAdd(values);
     form.reset({
       ...values,
-      item: "",
       linearFeet: 1,
       unitCost: 0,
     });
@@ -83,47 +78,19 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="projectName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Project Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. SWIS Phase 1" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="client"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Client</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Client Name" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="item"
-                render={({ field }) => (
-                  <FormItem className="md:col-span-2">
-                    <FormLabel>Item / Service Description</FormLabel>
-                    <FormControl>
-                      <Input placeholder="What are you bidding for?" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="client"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Client Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter client name" {...field} className="rounded-xl border-indigo-100" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-indigo-900 font-bold">

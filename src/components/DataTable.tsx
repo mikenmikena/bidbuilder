@@ -2,13 +2,13 @@
 
 import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Badge } from "@/badge";
+import { Button } from "@/button";
+import { Input } from "@/input";
 import { Trash2, Edit2, Search, Filter } from 'lucide-react';
 import { BidRecord } from '@/hooks/use-data-store';
 import EditRecordDialog from './EditRecordDialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/select";
 
 interface DataTableProps {
   records: BidRecord[];
@@ -22,9 +22,7 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
   const [editingRecord, setEditingRecord] = useState<BidRecord | null>(null);
 
   const filteredRecords = records.filter(record => {
-    const matchesSearch = record.projectName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         record.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         record.item.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = record.client.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || record.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -47,7 +45,7 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
         <div className="relative w-full sm:max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input 
-            placeholder="Search projects, clients..." 
+            placeholder="Search clients..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10 rounded-xl border-indigo-100"
@@ -74,8 +72,8 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
         <Table>
           <TableHeader className="bg-indigo-50/50">
             <TableRow>
-              <TableHead className="font-bold text-indigo-900">Project / Client</TableHead>
-              <TableHead className="font-bold text-indigo-900">Item</TableHead>
+              <TableHead className="font-bold text-indigo-900">Client</TableHead>
+              <TableHead className="font-bold text-indigo-900">Specifications</TableHead>
               <TableHead className="font-bold text-indigo-900 text-right">LF x Cost</TableHead>
               <TableHead className="font-bold text-indigo-900 text-right">Markup</TableHead>
               <TableHead className="font-bold text-indigo-900 text-right">Total Price</TableHead>
@@ -93,11 +91,12 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
             ) : (
               filteredRecords.map((record) => (
                 <TableRow key={record.id} className="hover:bg-indigo-50/30 transition-colors">
-                  <TableCell>
-                    <div className="font-bold text-indigo-900">{record.projectName}</div>
-                    <div className="text-xs text-gray-500">{record.client}</div>
+                  <TableCell className="font-bold text-indigo-900">{record.client}</TableCell>
+                  <TableCell className="text-xs text-gray-500">
+                    {record.gutterProfile !== 'None' ? `${record.gutterProfile} ` : ''}
+                    {record.gutterColor}
+                    {record.gutterCert !== 'None' ? ` • ${record.gutterCert}` : ''}
                   </TableCell>
-                  <TableCell className="max-w-[150px] truncate">{record.item}</TableCell>
                   <TableCell className="text-right">
                     <div className="text-sm">{record.linearFeet} LF x ${record.unitCost.toLocaleString()}</div>
                   </TableCell>

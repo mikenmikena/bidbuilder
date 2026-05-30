@@ -16,14 +16,14 @@ import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const { records, addRecord, updateRecord, deleteRecord, importRecords } = useDataStore();
-  const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const [selectedClient, setSelectedClient] = useState<string | null>(null);
 
-  const uniqueProjects = Array.from(new Set(records.map(r => r.projectName)));
+  const uniqueClients = Array.from(new Set(records.map(r => r.client)));
 
-  const getProjectStats = (projectName: string) => {
-    const items = records.filter(r => r.projectName === projectName);
-    const total = items.reduce((sum, r) => sum + (r.quantity * r.unitCost * (1 + r.markup / 100)), 0);
-    return { count: items.length, total, client: items[0]?.client };
+  const getClientStats = (clientName: string) => {
+    const items = records.filter(r => r.client === clientName);
+    const total = items.reduce((sum, r) => sum + (r.linearFeet * r.unitCost * (1 + r.markup / 100)), 0);
+    return { count: items.length, total };
   };
 
   return (
@@ -47,17 +47,17 @@ const Index = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {selectedProject ? (
+        {selectedClient ? (
           <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-300">
             <Button 
               variant="ghost" 
-              onClick={() => setSelectedProject(null)}
+              onClick={() => setSelectedClient(null)}
               className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-xl no-print"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Dashboard
             </Button>
-            <QuoteView projectName={selectedProject} records={records} />
+            <QuoteView clientName={selectedClient} records={records} />
           </div>
         ) : (
           <>
@@ -72,9 +72,9 @@ const Index = () => {
                   <LayoutDashboard className="w-4 h-4 mr-2" />
                   Overview
                 </TabsTrigger>
-                <TabsTrigger value="projects" className="rounded-xl px-6 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white transition-all">
+                <TabsTrigger value="clients" className="rounded-xl px-6 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white transition-all">
                   <Briefcase className="w-4 h-4 mr-2" />
-                  Projects
+                  Clients
                 </TabsTrigger>
                 <TabsTrigger value="records" className="rounded-xl px-6 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white transition-all">
                   <FileSpreadsheet className="w-4 h-4 mr-2" />
@@ -93,17 +93,16 @@ const Index = () => {
                 </div>
               </TabsContent>
 
-              <TabsContent value="projects" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <TabsContent value="clients" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {uniqueProjects.map(project => {
-                    const stats = getProjectStats(project);
+                  {uniqueClients.map(client => {
+                    const stats = getClientStats(client);
                     return (
-                      <Card key={project} className="border-none shadow-lg hover:shadow-xl transition-all group">
+                      <Card key={client} className="border-none shadow-lg hover:shadow-xl transition-all group">
                         <CardHeader className="pb-2">
                           <CardTitle className="text-lg font-bold text-indigo-900 group-hover:text-indigo-600 transition-colors">
-                            {project}
+                            {client}
                           </CardTitle>
-                          <p className="text-sm text-gray-500">{stats.client}</p>
                         </CardHeader>
                         <CardContent>
                           <div className="flex justify-between items-end mt-4">
@@ -112,7 +111,7 @@ const Index = () => {
                               <p className="text-2xl font-black text-indigo-600">${stats.total.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                             </div>
                             <Button 
-                              onClick={() => setSelectedProject(project)}
+                              onClick={() => setSelectedClient(client)}
                               className="bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-xl transition-all"
                             >
                               View Quote
@@ -125,9 +124,9 @@ const Index = () => {
                       </Card>
                     );
                   })}
-                  {uniqueProjects.length === 0 && (
+                  {uniqueClients.length === 0 && (
                     <div className="col-span-full text-center py-12 bg-white rounded-2xl border border-dashed border-indigo-200 text-gray-400">
-                      No projects found. Add items to start building a bid.
+                      No clients found. Add items to start building a bid.
                     </div>
                   )}
                 </div>

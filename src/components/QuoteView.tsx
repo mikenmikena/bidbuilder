@@ -8,19 +8,18 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface QuoteViewProps {
-  projectName: string;
+  clientName: string;
   records: BidRecord[];
 }
 
-const QuoteView = ({ projectName, records }: QuoteViewProps) => {
-  const projectItems = records.filter(r => r.projectName === projectName);
-  const client = projectItems[0]?.client || "N/A";
-  const date = projectItems[0]?.date || new Date().toLocaleDateString();
+const QuoteView = ({ clientName, records }: QuoteViewProps) => {
+  const clientItems = records.filter(r => r.client === clientName);
+  const date = clientItems[0]?.date || new Date().toLocaleDateString();
 
   const calculateSellPrice = (r: BidRecord) => r.unitCost * (1 + r.markup / 100);
   const calculateTotal = (r: BidRecord) => r.linearFeet * calculateSellPrice(r);
   
-  const subtotal = projectItems.reduce((sum, r) => sum + calculateTotal(r), 0);
+  const subtotal = clientItems.reduce((sum, r) => sum + calculateTotal(r), 0);
   const tax = subtotal * 0.15; // Example 15% tax
   const total = subtotal + tax;
 
@@ -29,7 +28,7 @@ const QuoteView = ({ projectName, records }: QuoteViewProps) => {
       <div className="bg-indigo-900 p-8 text-white flex justify-between items-start">
         <div>
           <h2 className="text-3xl font-bold mb-2">PROPOSAL</h2>
-          <p className="text-indigo-200">Ref: {projectName.toUpperCase().replace(/\s+/g, '-')}</p>
+          <p className="text-indigo-200">Ref: {clientName.toUpperCase().replace(/\s+/g, '-')}</p>
         </div>
         <div className="text-right">
           <div className="bg-white/10 p-3 rounded-xl inline-block mb-4">
@@ -46,8 +45,8 @@ const QuoteView = ({ projectName, records }: QuoteViewProps) => {
             <div className="flex items-start gap-3">
               <Building2 className="w-5 h-5 text-indigo-600 mt-1" />
               <div>
-                <p className="font-bold text-lg text-gray-900">{client}</p>
-                <p className="text-gray-500">Project: {projectName}</p>
+                <p className="font-bold text-lg text-gray-900">{clientName}</p>
+                <p className="text-gray-500">Gutter Installation Services</p>
               </div>
             </div>
           </div>
@@ -67,22 +66,24 @@ const QuoteView = ({ projectName, records }: QuoteViewProps) => {
           <Table>
             <TableHeader className="bg-gray-50">
               <TableRow>
-                <TableHead className="text-gray-900 font-bold">Description</TableHead>
+                <TableHead className="text-gray-900 font-bold">Gutter Specifications</TableHead>
                 <TableHead className="text-right text-gray-900 font-bold">Linear Feet</TableHead>
                 <TableHead className="text-right text-gray-900 font-bold">Unit Price</TableHead>
                 <TableHead className="text-right text-gray-900 font-bold">Total</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {projectItems.map((item) => (
+              {clientItems.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>
-                    <div className="font-medium">{item.item}</div>
+                    <div className="font-medium">
+                      {item.gutterProfile !== 'None' ? `${item.gutterProfile} Profile ` : 'Standard '}
+                      Gutter Installation
+                    </div>
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-xs text-indigo-600">
                       <Droplets className="w-3 h-3" />
                       <span>
-                        {item.gutterProfile !== 'None' ? `${item.gutterProfile} Profile` : ''}
-                        {item.gutterColor ? ` • ${item.gutterColor} Color` : ''}
+                        {item.gutterColor ? `${item.gutterColor} Color` : ''}
                         {item.gutterCert !== 'None' ? ` • Cert: ${item.gutterCert}` : ''}
                         {item.includeGutterDownspout === 'Yes' ? ` • Incl. Gutter/Downspout` : ''}
                         {item.demolition === 'Yes' ? ` • Incl. Demolition` : ''}

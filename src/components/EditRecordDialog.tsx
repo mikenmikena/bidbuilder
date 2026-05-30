@@ -24,7 +24,7 @@ const formSchema = z.object({
   status: z.enum(['Draft', 'Submitted', 'Won', 'Lost']),
   gutterColor: z.string().optional(),
   gutterProfile: z.enum(['5K', '6B', '6K', 'None']).default('None'),
-  gutterCert: z.enum(['BOX L1', 'None']).default('None'),
+  gutterCert: z.enum(['Box Level 1', 'Box Level 2', 'Box Level 3', 'K Level 1', 'K Level 2', 'K Level 3', 'None']).default('None'),
 });
 
 interface EditRecordDialogProps {
@@ -36,6 +36,10 @@ interface EditRecordDialogProps {
 
 const GUTTER_COLORS = [
   "White", "Royal Brown", "Musket Brown", "Black", "Wicker", "Clay", "Terratone", "Bronze", "Silver"
+];
+
+const GUTTER_CERTS = [
+  "Box Level 1", "Box Level 2", "Box Level 3", "K Level 1", "K Level 2", "K Level 3"
 ];
 
 const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialogProps) => {
@@ -177,7 +181,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="None">N/A</SelectItem>
-                          <SelectItem value="BOX L1">BOX L1</SelectItem>
+                          {GUTTER_CERTS.map(cert => (
+                            <SelectItem key={cert} value={cert}>{cert}</SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />

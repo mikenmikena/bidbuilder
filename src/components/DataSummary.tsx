@@ -4,7 +4,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import { BidRecord } from '@/hooks/use-data-store';
-import { DollarSign, Target, CheckCircle2, Clock, MapPin, Check } from 'lucide-react';
+import { DollarSign, Target, CheckCircle2, Clock, MapPin, Check, Droplets } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface DataSummaryProps {
@@ -39,20 +39,38 @@ const DataSummary = ({ records }: DataSummaryProps) => {
     return acc;
   }, []).sort((a, b) => b.value - a.value).slice(0, 5);
 
-  const areaData = records.reduce((acc: { name: string; value: number; linearFeet: number; hasDemolition: boolean }[], record) => {
+  const areaData = records.reduce((acc: { 
+    name: string; 
+    value: number; 
+    linearFeet: number; 
+    hasDemolition: boolean;
+    profiles: Set<string>;
+    colors: Set<string>;
+  }[], record) => {
     const areaName = record.area || 'General Area';
     const existing = acc.find(item => item.name === areaName);
     const val = calculateTotal(record);
+    
     if (existing) {
       existing.value += val;
       existing.linearFeet += record.linearFeet;
       if (record.demolition === 'Yes') existing.hasDemolition = true;
+      if (record.gutterProfile && record.gutterProfile !== 'None') existing.profiles.add(record.gutterProfile);
+      if (record.gutterColor) existing.colors.add(record.gutterColor);
     } else {
+      const profiles = new Set<string>();
+      if (record.gutterProfile && record.gutterProfile !== 'None') profiles.add(record.gutterProfile);
+      
+      const colors = new Set<string>();
+      if (record.gutterColor) colors.add(record.gutterColor);
+
       acc.push({ 
         name: areaName, 
         value: val, 
         linearFeet: record.linearFeet,
-        hasDemolition: record.demolition === 'Yes'
+        hasDemolition: record.demolition === 'Yes',
+        profiles,
+        colors
       });
     }
     return acc;
@@ -171,8 +189,23 @@ const DataSummary = ({ records }: DataSummaryProps) => {
                             <span className="text-sm font-medium text-indigo-900 truncate max-w-[120px]">{area.name}</span>
                             <span className="text-sm font-bold text-indigo-600">${area.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                           </div>
-                          <div className="flex items-center gap-2 mt-1">
+                          
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
                             <span className="text-[10px] text-gray-500 font-medium">{area.linearFeet} LF</span>
+                            
+                            {area.profiles.size > 0 && (
+                              <div className="flex items-center gap-1 text-[10px] text-indigo-500 font-bold">
+                                <Droplets className="w-2.5 h-2.5" />
+                                {Array.from(area.profiles).join(', ')}
+                              </div>
+                            )}
+
+                            {area.colors.size > 0 && (
+                              <span className="text-[10px] text-gray-400 italic">
+                                {Array.from(area.colors).join(', ')}
+                              </span>
+                            )}
+
                             {area.hasDemolition && (
                               <div className="flex items-center gap-1 bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded text-[9px] font-bold">
                                 <Check className="w-2 h-2" />

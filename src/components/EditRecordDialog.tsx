@@ -30,7 +30,6 @@ const formSchema = z.object({
   includeGutterDownspout: z.enum(['Yes', 'No']).default('Yes'),
   demolition: z.enum(['Yes', 'No']).default('No'),
   // Downspout fields
-  downspoutArea: z.string().optional(),
   downspoutColor: z.string().optional(),
   downspoutSize: z.enum(['2x3', '3x4', 'None']).default('None'),
   downspoutLinearFeet: z.coerce.number().min(0).default(0),
@@ -79,7 +78,6 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       gutterCert: record.gutterCert || 'None',
       includeGutterDownspout: record.includeGutterDownspout || 'Yes',
       demolition: record.demolition || 'No',
-      downspoutArea: record.downspoutArea || "",
       downspoutColor: record.downspoutColor || "White (30) (stock)",
       downspoutSize: record.downspoutSize || 'None',
       downspoutLinearFeet: record.downspoutLinearFeet || 0,
@@ -192,7 +190,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
               </div>
               <Separator className="bg-indigo-50" />
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
                   name="area"
@@ -212,6 +210,27 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Include gutter/downspout</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Yes">Yes</SelectItem>
+                          <SelectItem value="No">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="demolition"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Demolition?</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="rounded-xl border-indigo-100">
@@ -354,19 +373,6 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
-                  name="downspoutArea"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Area</FormLabel>
-                      <FormControl>
-                        <Input {...field} className="rounded-xl border-indigo-100" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
                   name="downspoutColor"
                   render={({ field }) => (
                     <FormItem>
@@ -387,9 +393,6 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     </FormItem>
                   )}
                 />
-              </div>
-
-              <div className="grid grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
                   name="downspoutSize"
@@ -412,7 +415,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     </FormItem>
                   )}
                 />
-                
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
                   name="downspoutLinearFeet"
@@ -456,9 +461,6 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     </FormItem>
                   )}
                 />
-              </div>
-
-              <div className="grid grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
                   name="buildingStories"
@@ -472,6 +474,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     </FormItem>
                   )}
                 />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="downspoutUnitCost"
@@ -502,27 +507,6 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="demolition"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Demolition?</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="rounded-xl border-indigo-100">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Yes">Yes</SelectItem>
-                        <SelectItem value="No">No</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="status"

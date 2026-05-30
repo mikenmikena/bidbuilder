@@ -29,7 +29,6 @@ const formSchema = z.object({
   includeGutterDownspout: z.enum(['Yes', 'No']).default('Yes'),
   demolition: z.enum(['Yes', 'No']).default('No'),
   // Downspout fields
-  downspoutArea: z.string().optional(),
   downspoutColor: z.string().optional(),
   downspoutSize: z.enum(['2x3', '3x4', 'None']).default('None'),
   downspoutLinearFeet: z.coerce.number().min(0).default(0),
@@ -75,7 +74,6 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       gutterCert: 'None',
       includeGutterDownspout: 'Yes',
       demolition: 'No',
-      downspoutArea: "",
       downspoutColor: "White (30) (stock)",
       downspoutSize: 'None',
       downspoutLinearFeet: 0,
@@ -191,7 +189,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
               </div>
               <Separator className="bg-indigo-50" />
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
                   name="area"
@@ -211,6 +209,27 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Include gutter and downspout</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-indigo-100">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Yes">Yes</SelectItem>
+                          <SelectItem value="No">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="demolition"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Demolition?</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="rounded-xl border-indigo-100">
@@ -353,19 +372,6 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
-                  name="downspoutArea"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Area</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. Front, Back, Garage" {...field} className="rounded-xl border-indigo-100" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
                   name="downspoutColor"
                   render={({ field }) => (
                     <FormItem>
@@ -386,9 +392,6 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     </FormItem>
                   )}
                 />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
                   name="downspoutSize"
@@ -411,7 +414,9 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
                     </FormItem>
                   )}
                 />
-                
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="downspoutLinearFeet"
@@ -501,27 +506,6 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="demolition"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Demolition?</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="rounded-xl border-indigo-100">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Yes">Yes</SelectItem>
-                        <SelectItem value="No">No</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="status"

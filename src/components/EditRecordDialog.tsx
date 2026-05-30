@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -61,6 +61,24 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       demolition: record.demolition || 'No',
     } : undefined,
   });
+
+  const watchedProfile = form.watch("gutterProfile");
+  const watchedInclude = form.watch("includeGutterDownspout");
+
+  // Automate Unit Cost based on rules
+  useEffect(() => {
+    if (watchedInclude === "No") {
+      form.setValue("unitCost", 0);
+    } else if (watchedInclude === "Yes") {
+      if (watchedProfile === "5K") {
+        form.setValue("unitCost", 23.83);
+      } else if (watchedProfile === "6B" || watchedProfile === "6K") {
+        form.setValue("unitCost", 34.44);
+      } else {
+        form.setValue("unitCost", 0);
+      }
+    }
+  }, [watchedProfile, watchedInclude, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (record) {

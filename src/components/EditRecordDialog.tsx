@@ -64,21 +64,22 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
 
   const watchedProfile = form.watch("gutterProfile");
   const watchedInclude = form.watch("includeGutterDownspout");
+  const watchedDemolition = form.watch("demolition");
 
   // Automate Unit Cost based on rules
   useEffect(() => {
-    if (watchedInclude === "No") {
-      form.setValue("unitCost", 0);
-    } else if (watchedInclude === "Yes") {
+    let baseCost = 0;
+    if (watchedInclude === "Yes") {
       if (watchedProfile === "5K") {
-        form.setValue("unitCost", 23.83);
+        baseCost = 23.83;
       } else if (watchedProfile === "6B" || watchedProfile === "6K") {
-        form.setValue("unitCost", 34.44);
-      } else {
-        form.setValue("unitCost", 0);
+        baseCost = 34.44;
       }
     }
-  }, [watchedProfile, watchedInclude, form]);
+    
+    const finalCost = watchedDemolition === "Yes" ? baseCost + 5.28 : baseCost;
+    form.setValue("unitCost", Number(finalCost.toFixed(2)));
+  }, [watchedProfile, watchedInclude, watchedDemolition, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (record) {

@@ -22,7 +22,6 @@ const formSchema = z.object({
   job: z.string().min(2, "Job name is required"),
   linearFeet: z.coerce.number().min(0),
   unitCost: z.coerce.number().min(0),
-  markup: z.coerce.number().min(0),
   status: z.enum(['Draft', 'Submitted', 'Won', 'Lost']),
   area: z.string().optional(),
   gutterColor: z.string().optional(),
@@ -37,12 +36,10 @@ const formSchema = z.object({
   chainLinearFeet: z.coerce.number().min(0).default(0),
   buildingStories: z.coerce.number().min(1).default(1),
   downspoutUnitCost: z.coerce.number().min(0).default(0),
-  downspoutMarkup: z.coerce.number().min(0).default(20),
   // Gutter Helmet fields
   helmetColor: z.string().optional(),
   helmetLinearFeet: z.coerce.number().min(0).default(0),
   helmetUnitCost: z.coerce.number().min(0).default(0),
-  helmetMarkup: z.coerce.number().min(0).default(20),
   roofType: z.enum(['Asphalt Shingle', 'Pro Panel', 'Corrugated', 'Raised Seam']).default('Asphalt Shingle'),
   // Heat Cable fields
   valleyCount: z.coerce.number().min(0).default(0),
@@ -54,7 +51,6 @@ const formSchema = z.object({
   retrofit: z.enum(['Yes', 'No']).default('No'),
   level3: z.enum(['Yes', 'No']).default('No'),
   cableUnitCost: z.coerce.number().min(0).default(0),
-  cableMarkup: z.coerce.number().min(0).default(20),
   // Snow Fence fields
   snowFenceColor: z.string().optional(),
   snowFenceRow1LF: z.coerce.number().min(0).default(0),
@@ -62,7 +58,6 @@ const formSchema = z.object({
   snowFenceRow3LF: z.coerce.number().min(0).default(0),
   snowFenceRoofType: z.enum(['Asphalt Shingle', 'Pro Panel', 'Corrugated', 'Raised Seam']).default('Asphalt Shingle'),
   snowFenceUnitCost: z.coerce.number().min(0).default(0),
-  snowFenceMarkup: z.coerce.number().min(0).default(20),
   // Sasquatch fields
   sasquatchPad: z.coerce.number().min(0).default(0),
   sasquatchMobilizationFee: z.coerce.number().min(0).default(400),
@@ -76,7 +71,7 @@ interface EditRecordDialogProps {
   record: BidRecord | null;
   isOpen: boolean;
   onClose: () => void;
-  onUpdate: (id: string, data: z.infer<typeof formSchema>) => void;
+  onUpdate: (id: string, data: any) => void;
 }
 
 const GUTTER_COLORS = [
@@ -111,7 +106,6 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       job: record.job || "",
       linearFeet: record.linearFeet,
       unitCost: record.unitCost,
-      markup: record.markup,
       status: record.status,
       area: record.area || "",
       gutterColor: record.gutterColor || "White (30) (stock)",
@@ -125,11 +119,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       chainLinearFeet: record.chainLinearFeet || 0,
       buildingStories: record.buildingStories || 1,
       downspoutUnitCost: record.downspoutUnitCost || 0,
-      downspoutMarkup: record.downspoutMarkup || 20,
       helmetColor: record.helmetColor || "White (30) (stock)",
       helmetLinearFeet: record.helmetLinearFeet || 0,
       helmetUnitCost: record.helmetUnitCost || 0,
-      helmetMarkup: record.helmetMarkup || 20,
       roofType: record.roofType || 'Asphalt Shingle',
       valleyCount: record.valleyCount || 0,
       daylightLF: record.daylightLF || 0,
@@ -140,14 +132,12 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       retrofit: record.retrofit || 'No',
       level3: record.level3 || 'No',
       cableUnitCost: record.cableUnitCost || 0,
-      cableMarkup: record.cableMarkup || 20,
       snowFenceColor: record.snowFenceColor || "White (30) (stock)",
       snowFenceRow1LF: record.snowFenceRow1LF || 0,
       snowFenceRow2LF: record.snowFenceRow2LF || 0,
       snowFenceRow3LF: record.snowFenceRow3LF || 0,
       snowFenceRoofType: record.snowFenceRoofType || 'Asphalt Shingle',
       snowFenceUnitCost: record.snowFenceUnitCost || 0,
-      snowFenceMarkup: record.snowFenceMarkup || 20,
       sasquatchPad: record.sasquatchPad || 0,
       sasquatchMobilizationFee: record.sasquatchMobilizationFee || 400,
       sasquatchElectrical: record.sasquatchElectrical || 'None',
@@ -202,7 +192,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (record) {
-      const finalValues = { ...values };
+      const finalValues = { ...values, markup: 0, downspoutMarkup: 0, helmetMarkup: 0, cableMarkup: 0, snowFenceMarkup: 0 };
       if (!showGutter) finalValues.linearFeet = 0;
       if (!showDownspout) {
         finalValues.downspoutLinearFeet = 0;
@@ -446,7 +436,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     />
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="linearFeet"
@@ -468,19 +458,6 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                           <FormLabel>Cost ($)</FormLabel>
                           <FormControl>
                             <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-300" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="markup"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Markup %</FormLabel>
-                          <FormControl>
-                            <Input type="number" {...field} className="rounded-xl border-amber-300" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -613,7 +590,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <FormField
                       control={form.control}
                       name="downspoutUnitCost"
@@ -622,19 +599,6 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                           <FormLabel>Cost ($)</FormLabel>
                           <FormControl>
                             <Input type="number" step="0.01" {...field} className="rounded-xl border-sky-300" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="downspoutMarkup"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Markup %</FormLabel>
-                          <FormControl>
-                            <Input type="number" {...field} className="rounded-xl border-sky-300" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -709,7 +673,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     />
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="helmetLinearFeet"
@@ -731,19 +695,6 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                           <FormLabel>Cost ($)</FormLabel>
                           <FormControl>
                             <Input type="number" step="0.01" {...field} className="rounded-xl border-emerald-300" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="helmetMarkup"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Markup %</FormLabel>
-                          <FormControl>
-                            <Input type="number" {...field} className="rounded-xl border-emerald-300" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -824,7 +775,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     />
                   </div>
 
-                  <div className="grid grid-cols-4 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
                     <FormField
                       control={form.control}
                       name="cableLinearFeet"
@@ -864,6 +815,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                         </FormItem>
                       )}
                     />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="retrofit"
@@ -885,9 +839,6 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                         </FormItem>
                       )}
                     />
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-4">
                     <FormField
                       control={form.control}
                       name="level3"
@@ -909,6 +860,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                         </FormItem>
                       )}
                     />
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4">
                     <FormField
                       control={form.control}
                       name="cableUnitCost"
@@ -917,19 +871,6 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                           <FormLabel>Cost ($)</FormLabel>
                           <FormControl>
                             <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-300" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="cableMarkup"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Markup %</FormLabel>
-                          <FormControl>
-                            <Input type="number" {...field} className="rounded-xl border-orange-300" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1046,7 +987,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <FormField
                       control={form.control}
                       name="snowFenceUnitCost"
@@ -1055,19 +996,6 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                           <FormLabel>Cost ($)</FormLabel>
                           <FormControl>
                             <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-300" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="snowFenceMarkup"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Markup %</FormLabel>
-                          <FormControl>
-                            <Input type="number" {...field} className="rounded-xl border-purple-300" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

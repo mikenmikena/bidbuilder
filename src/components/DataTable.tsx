@@ -28,23 +28,21 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
     return matchesSearch && matchesStatus;
   });
 
-  const calculateGutterTotal = (r: BidRecord) => r.linearFeet * r.unitCost;
+  const calculateGutterTotal = (r: BidRecord) => r.linearFeet * r.unitCost * (1 + r.markup / 100);
   const calculateDownspoutTotal = (r: BidRecord) => {
     const lf = r.downspoutLinearFeet || 0;
     const chainLf = r.chainLinearFeet || 0;
     const cost = r.downspoutUnitCost || 0;
-    return (lf + chainLf) * cost;
+    const markup = r.downspoutMarkup || 0;
+    return (lf + chainLf) * cost * (1 + markup / 100);
   };
-  const calculateHelmetTotal = (r: BidRecord) => (r.helmetLinearFeet || 0) * (r.helmetUnitCost || 0);
-  const calculateCableTotal = (r: BidRecord) => (r.cableLinearFeet || 0) * (r.cableUnitCost || 0);
+  const calculateHelmetTotal = (r: BidRecord) => (r.helmetLinearFeet || 0) * (r.helmetUnitCost || 0) * (1 + (r.helmetMarkup || 0) / 100);
+  const calculateCableTotal = (r: BidRecord) => (r.cableLinearFeet || 0) * (r.cableUnitCost || 0) * (1 + (r.cableMarkup || 0) / 100);
   const calculateSnowFenceTotal = (r: BidRecord) => {
     const totalLF = (r.snowFenceRow1LF || 0) + (r.snowFenceRow2LF || 0) + (r.snowFenceRow3LF || 0);
-    return totalLF * (r.snowFenceUnitCost || 0);
+    return totalLF * (r.snowFenceUnitCost || 0) * (1 + (r.snowFenceMarkup || 0) / 100);
   };
-  const calculateSasquatchTotal = (r: BidRecord) => {
-    return (r.sasquatchPad || 0) + (r.sasquatchMobilizationFee || 0) + (r.sasquatchCustomWork || 0) + (r.sasquatchArcticSteamerReserve || 0);
-  };
-  const calculateTotal = (r: BidRecord) => calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r) + calculateSnowFenceTotal(r) + calculateSasquatchTotal(r);
+  const calculateTotal = (r: BidRecord) => calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r) + calculateSnowFenceTotal(r);
 
   const getStatusColor = (status: string) => {
     switch (status) {

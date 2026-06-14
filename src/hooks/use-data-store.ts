@@ -9,7 +9,6 @@ export interface BidRecord {
   job: string;
   linearFeet: number;
   unitCost: number;
-  markup: number; // Percentage
   status: 'Draft' | 'Submitted' | 'Won' | 'Lost';
   area?: string;
   gutterColor?: string;
@@ -24,12 +23,10 @@ export interface BidRecord {
   chainLinearFeet?: number;
   buildingStories?: number;
   downspoutUnitCost?: number;
-  downspoutMarkup?: number;
   // Gutter Helmet Fields
   helmetColor?: string;
   helmetLinearFeet?: number;
   helmetUnitCost?: number;
-  helmetMarkup?: number;
   roofType?: 'Asphalt Shingle' | 'Pro Panel' | 'Corrugated' | 'Raised Seam';
   // Heat Cable Fields
   valleyCount?: number;
@@ -41,7 +38,6 @@ export interface BidRecord {
   retrofit?: 'Yes' | 'No';
   level3?: 'Yes' | 'No';
   cableUnitCost?: number;
-  cableMarkup?: number;
   // Snow Fence Fields
   snowFenceColor?: string;
   snowFenceRow1LF?: number;
@@ -49,7 +45,6 @@ export interface BidRecord {
   snowFenceRow3LF?: number;
   snowFenceRoofType?: 'Asphalt Shingle' | 'Pro Panel' | 'Corrugated' | 'Raised Seam';
   snowFenceUnitCost?: number;
-  snowFenceMarkup?: number;
   // Sasquatch Fields
   sasquatchPad?: number;
   sasquatchMobilizationFee?: number;

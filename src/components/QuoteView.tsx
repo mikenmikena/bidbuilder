@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BidRecord } from '@/hooks/use-data-store';
-import { FileText, Printer, Download, Building2, User, Droplets, Briefcase, ArrowDownCircle, ShieldCheck, Zap, Snowflake } from 'lucide-react';
+import { FileText, Printer, Download, Building2, User, Droplets, Briefcase, ArrowDownCircle, ShieldCheck, Zap, Snowflake, Footprints } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -17,23 +17,41 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
   const date = clientItems[0]?.date || new Date().toLocaleDateString();
   const jobName = clientItems[0]?.job || "Standard Project";
 
-  const calculateGutterSellPrice = (r: BidRecord) => r.unitCost * (1 + r.markup / 100);
-  const calculateGutterTotal = (r: BidRecord) => r.linearFeet * calculateGutterSellPrice(r);
+  const calculateGutterTotal = (r: BidRecord) => r.linearFeet * r.unitCost;
+  const calculateDownspoutTotal = (r: BidRecord) => ((r.downspoutLinearFeet || 0) + (r.chainLinearFeet || 0)) * (r.downspoutUnitCost || 0);
+  const calculateHelmetTotal = (r: BidRecord) => (r.helmetLinearFeet || 0) * (r.helmetUnitCost || 0);
+  const calculateCableTotal = (r: BidRecord) => (r.cableLinearFeet || 0) * (r.cableUnitCost || 0);
+  const calculateSnowFenceTotal = (r: BidRecord) => ((r.snowFenceRow1<dyad-write path="src/components/QuoteView.tsx" description="Completing QuoteView with markup removal and Sasquatch support">
+"use client";
+
+import React from 'react';
+import { Card, CardContent } from "@/components/ui/card";
+import { BidRecord } from '@/hooks/use-data-store';
+import { FileText, Printer, Download, Building2, User, Droplets, Briefcase, ArrowDownCircle, ShieldCheck, Zap, Snowflake, Footprints } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
+interface QuoteViewProps {
+  clientName: string;
+  records: BidRecord[];
+}
+
+const QuoteView = ({ clientName, records }: QuoteViewProps) => {
+  const clientItems = records.filter(r => r.client === clientName);
+  const date = clientItems[0]?.date || new Date().toLocaleDateString();
+  const jobName = clientItems[0]?.job || "Standard Project";
+
+  const calculateGutterTotal = (r: BidRecord) => r.linearFeet * r.unitCost;
+  const calculateDownspoutTotal = (r: BidRecord) => ((r.downspoutLinearFeet || 0) + (r.chainLinearFeet || 0)) * (r.downspoutUnitCost || 0);
+  const calculateHelmetTotal = (r: BidRecord) => (r.helmetLinearFeet || 0) * (r.helmetUnitCost || 0);
+  const calculateCableTotal = (r: BidRecord) => (r.cableLinearFeet || 0) * (r.cableUnitCost || 0);
+  const calculateSnowFenceTotal = (r: BidRecord) => ((r.snowFenceRow1LF || 0) + (r.snowFenceRow2LF || 0) + (r.snowFenceRow3LF || 0)) * (r.snowFenceUnitCost || 0);
+  const calculateSasquatchTotal = (r: BidRecord) => (r.sasquatchPad || 0) + (r.sasquatchMobilizationFee || 0) + (r.sasquatchCustomWork || 0) + (r.sasquatchArcticSteamerReserve || 0);
+
+  const subtotal = clientItems.reduce((sum, r) => 
+    sum + calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r) + calculateSnowFenceTotal(r) + calculateSasquatchTotal(r), 0);
   
-  const calculateDownspoutSellPrice = (r: BidRecord) => (r.downspoutUnitCost || 0) * (1 + (r.downspoutMarkup || 0) / 100);
-  const calculateDownspoutTotal = (r: BidRecord) => ((r.downspoutLinearFeet || 0) + (r.chainLinearFeet || 0)) * calculateDownspoutSellPrice(r);
-
-  const calculateHelmetSellPrice = (r: BidRecord) => (r.helmetUnitCost || 0) * (1 + (r.helmetMarkup || 0) / 100);
-  const calculateHelmetTotal = (r: BidRecord) => (r.helmetLinearFeet || 0) * calculateHelmetSellPrice(r);
-
-  const calculateCableSellPrice = (r: BidRecord) => (r.cableUnitCost || 0) * (1 + (r.cableMarkup || 0) / 100);
-  const calculateCableTotal = (r: BidRecord) => (r.cableLinearFeet || 0) * calculateCableSellPrice(r);
-
-  const calculateSnowFenceSellPrice = (r: BidRecord) => (r.snowFenceUnitCost || 0) * (1 + (r.snowFenceMarkup || 0) / 100);
-  const calculateSnowFenceTotal = (r: BidRecord) => ((r.snowFenceRow1LF || 0) + (r.snowFenceRow2LF || 0) + (r.snowFenceRow3LF || 0)) * calculateSnowFenceSellPrice(r);
-
-  const subtotal = clientItems.reduce((sum, r) => sum + calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r) + calculateSnowFenceTotal(r), 0);
-  const tax = subtotal * 0.15; // Example 15% tax
+  const tax = subtotal * 0.0; // Tax logic can be adjusted here if needed
   const total = subtotal + tax;
 
   return (
@@ -107,7 +125,7 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
                         </div>
                       </TableCell>
                       <TableCell className="text-right">{item.linearFeet} LF</TableCell>
-                      <TableCell className="text-right">${calculateGutterSellPrice(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                      <TableCell className="text-right">${item.unitCost.toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                       <TableCell className="text-right font-bold">${calculateGutterTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                     </TableRow>
                   )}
@@ -126,7 +144,7 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
                         </div>
                       </TableCell>
                       <TableCell className="text-right">{(item.downspoutLinearFeet || 0) + (item.chainLinearFeet || 0)} LF</TableCell>
-                      <TableCell className="text-right">${calculateDownspoutSellPrice(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                      <TableCell className="text-right">${(item.downspoutUnitCost || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                       <TableCell className="text-right font-bold">${calculateDownspoutTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                     </TableRow>
                   )}
@@ -145,7 +163,7 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
                         </div>
                       </TableCell>
                       <TableCell className="text-right">{item.helmetLinearFeet} LF</TableCell>
-                      <TableCell className="text-right">${calculateHelmetSellPrice(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                      <TableCell className="text-right">${(item.helmetUnitCost || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                       <TableCell className="text-right font-bold">${calculateHelmetTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                     </TableRow>
                   )}
@@ -166,7 +184,7 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
                         </div>
                       </TableCell>
                       <TableCell className="text-right">{item.cableLinearFeet} LF</TableCell>
-                      <TableCell className="text-right">${calculateCableSellPrice(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                      <TableCell className="text-right">${(item.cableUnitCost || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                       <TableCell className="text-right font-bold">${calculateCableTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                     </TableRow>
                   )}
@@ -185,8 +203,28 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
                         </div>
                       </TableCell>
                       <TableCell className="text-right">{(item.snowFenceRow1LF || 0) + (item.snowFenceRow2LF || 0) + (item.snowFenceRow3LF || 0)} LF</TableCell>
-                      <TableCell className="text-right">${calculateSnowFenceSellPrice(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                      <TableCell className="text-right">${(item.snowFenceUnitCost || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                       <TableCell className="text-right font-bold">${calculateSnowFenceTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                    </TableRow>
+                  )}
+                  {/* Sasquatch Row */}
+                  {calculateSasquatchTotal(item) > 0 && (
+                    <TableRow className="bg-slate-50/20">
+                      <TableCell>
+                        <div className="font-bold text-slate-900">{item.area || 'General Area'} (Sasquatch)</div>
+                        <div className="font-medium">Sasquatch System Components</div>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-xs text-slate-600">
+                          <Footprints className="w-3 h-3" />
+                          <span>
+                            {item.sasquatchElectrical !== 'None' ? `Electrical: ${item.sasquatchElectrical}` : ''}
+                            {item.sasquatchFasciaBoard !== 'None' ? ` • Board: ${item.sasquatchFasciaBoard}` : ''}
+                            {item.sasquatchMobilizationFee ? ` • Mobilization: $${item.sasquatchMobilizationFee}` : ''}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">1 Unit</TableCell>
+                      <TableCell className="text-right">${calculateSasquatchTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                      <TableCell className="text-right font-bold">${calculateSasquatchTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                     </TableRow>
                   )}
                 </React.Fragment>
@@ -200,10 +238,6 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
             <div className="flex justify-between text-gray-600">
               <span>Subtotal</span>
               <span>${subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-            </div>
-            <div className="flex justify-between text-gray-600">
-              <span>Tax (15%)</span>
-              <span>${tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
             </div>
             <div className="pt-3 border-t border-gray-200 flex justify-between text-xl font-bold text-indigo-900">
               <span>Total Amount</span>

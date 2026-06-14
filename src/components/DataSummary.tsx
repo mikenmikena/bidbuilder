@@ -22,21 +22,22 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
   const [editingRecord, setEditingRecord] = useState<BidRecord | null>(null);
 
-  const calculateGutterTotal = (r: BidRecord) => r.linearFeet * r.unitCost * (1 + r.markup / 100);
+  const calculateGutterTotal = (r: BidRecord) => r.linearFeet * r.unitCost;
   const calculateDownspoutTotal = (r: BidRecord) => {
     const lf = r.downspoutLinearFeet || 0;
     const chainLf = r.chainLinearFeet || 0;
     const cost = r.downspoutUnitCost || 0;
-    const markup = r.downspoutMarkup || 0;
-    return (lf + chainLf) * cost * (1 + markup / 100);
+    return (lf + chainLf) * cost;
   };
-  const calculateHelmetTotal = (r: BidRecord) => (r.helmetLinearFeet || 0) * (r.helmetUnitCost || 0) * (1 + (r.helmetMarkup || 0) / 100);
-  const calculateCableTotal = (r: BidRecord) => (r.cableLinearFeet || 0) * (r.cableUnitCost || 0) * (1 + (r.cableMarkup || 0) / 100);
+  const calculateHelmetTotal = (r: BidRecord) => (r.helmetLinearFeet || 0) * (r.helmetUnitCost || 0);
+  const calculateCableTotal = (r: BidRecord) => (r.cableLinearFeet || 0) * (r.cableUnitCost || 0);
   const calculateSnowFenceTotal = (r: BidRecord) => {
     const totalLF = (r.snowFenceRow1LF || 0) + (r.snowFenceRow2LF || 0) + (r.snowFenceRow3LF || 0);
-    return totalLF * (r.snowFenceUnitCost || 0) * (1 + (r.snowFenceMarkup || 0) / 100);
+    return totalLF * (r.snowFenceUnitCost || 0);
   };
-  const calculateTotal = (r: BidRecord) => calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r) + calculateSnowFenceTotal(r);
+  const calculateSasquatchTotal = (r: BidRecord) => (r.sasquatchPad || 0) + (r.sasquatchMobilizationFee || 0) + (r.sasquatchCustomWork || 0) + (r.sasquatchArcticSteamerReserve || 0);
+  
+  const calculateTotal = (r: BidRecord) => calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r) + calculateSnowFenceTotal(r) + calculateSasquatchTotal(r);
   
   const totalBidValue = records.reduce((sum, r) => sum + calculateTotal(r), 0);
   const wonValue = records.filter(r => r.status === 'Won').reduce((sum, r) => sum + calculateTotal(r), 0);
@@ -83,18 +84,12 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
       if (record.demolition === 'Yes') existing.hasDemolition = true;
       if (record.gutterProfile && record.gutterProfile !== 'None') existing.profiles.add(record.gutterProfile);
       if (record.gutterColor) existing.colors.add(record.gutterColor);
-      if (record.downspoutColor) existing.colors.add(record.downspoutColor);
-      if (record.helmetColor) existing.colors.add(record.helmetColor);
-      if (record.snowFenceColor) existing.colors.add(record.snowFenceColor);
     } else {
       const profiles = new Set<string>();
       if (record.gutterProfile && record.gutterProfile !== 'None') profiles.add(record.gutterProfile);
       
       const colors = new Set<string>();
       if (record.gutterColor) colors.add(record.gutterColor);
-      if (record.downspoutColor) colors.add(record.downspoutColor);
-      if (record.helmetColor) colors.add(record.helmetColor);
-      if (record.snowFenceColor) colors.add(record.snowFenceColor);
 
       acc.push({ 
         name: areaName, 

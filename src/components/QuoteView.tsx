@@ -1,30 +1,6 @@
 "use client";
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BidRecord } from '@/hooks/use-data-store';
-import { FileText, Printer, Download, Building2, User, Droplets, Briefcase, ArrowDownCircle, ShieldCheck, Zap, Snowflake, Footprints } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-
-interface QuoteViewProps {
-  clientName: string;
-  records: BidRecord[];
-}
-
-const QuoteView = ({ clientName, records }: QuoteViewProps) => {
-  const clientItems = records.filter(r => r.client === clientName);
-  const date = clientItems[0]?.date || new Date().toLocaleDateString();
-  const jobName = clientItems[0]?.job || "Standard Project";
-
-  const calculateGutterTotal = (r: BidRecord) => r.linearFeet * r.unitCost;
-  const calculateDownspoutTotal = (r: BidRecord) => ((r.downspoutLinearFeet || 0) + (r.chainLinearFeet || 0)) * (r.downspoutUnitCost || 0);
-  const calculateHelmetTotal = (r: BidRecord) => (r.helmetLinearFeet || 0) * (r.helmetUnitCost || 0);
-  const calculateCableTotal = (r: BidRecord) => (r.cableLinearFeet || 0) * (r.cableUnitCost || 0);
-  const calculateSnowFenceTotal = (r: BidRecord) => ((r.snowFenceRow1<dyad-write path="src/components/QuoteView.tsx" description="Completing QuoteView with markup removal and Sasquatch support">
-"use client";
-
-import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { BidRecord } from '@/hooks/use-data-store';
 import { FileText, Printer, Download, Building2, User, Droplets, Briefcase, ArrowDownCircle, ShieldCheck, Zap, Snowflake, Footprints } from 'lucide-react';
@@ -51,7 +27,7 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
   const subtotal = clientItems.reduce((sum, r) => 
     sum + calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r) + calculateSnowFenceTotal(r) + calculateSasquatchTotal(r), 0);
   
-  const tax = subtotal * 0.0; // Tax logic can be adjusted here if needed
+  const tax = subtotal * 0.0; 
   const total = subtotal + tax;
 
   return (

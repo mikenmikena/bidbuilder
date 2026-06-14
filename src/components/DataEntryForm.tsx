@@ -14,6 +14,7 @@ import { showSuccess } from '@/utils/toast';
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
+import { PricingSettings } from '@/hooks/use-data-store';
 
 const formSchema = z.object({
   date: z.string().min(1, "Date is required"),
@@ -28,19 +29,16 @@ const formSchema = z.object({
   gutterCert: z.enum(['Box Level 1', 'Box Level 2', 'Box Level 3', 'K Level 1', 'K Level 2', 'K Level 3', 'None']).default('None'),
   includeGutterDownspout: z.enum(['Yes', 'No']).default('Yes'),
   demolition: z.enum(['Yes', 'No']).default('No'),
-  // Downspout fields
   downspoutColor: z.string().optional(),
   downspoutSize: z.enum(['2x3', '3x4', 'None']).default('None'),
   downspoutLinearFeet: z.coerce.number().min(0).default(0),
   chainLinearFeet: z.coerce.number().min(0).default(0),
   buildingStories: z.coerce.number().min(1).default(1),
   downspoutUnitCost: z.coerce.number().min(0).default(0),
-  // Gutter Helmet fields
   helmetColor: z.string().optional(),
   helmetLinearFeet: z.coerce.number().min(0).default(0),
   helmetUnitCost: z.coerce.number().min(0).default(0),
   roofType: z.enum(['Asphalt Shingle', 'Pro Panel', 'Corrugated', 'Raised Seam']).default('Asphalt Shingle'),
-  // Heat Cable fields
   valleyCount: z.coerce.number().min(0).default(0),
   daylightLF: z.coerce.number().min(0).default(0),
   cableLayout: z.enum(['Gutter and Downspout', 'Serpentine', '2 cable', '3 cable', 'Serpentine Metal', 'None']).default('None'),
@@ -50,14 +48,12 @@ const formSchema = z.object({
   retrofit: z.enum(['Yes', 'No']).default('No'),
   level3: z.enum(['Yes', 'No']).default('No'),
   cableUnitCost: z.coerce.number().min(0).default(0),
-  // Snow Fence fields
   snowFenceColor: z.string().optional(),
   snowFenceRow1LF: z.coerce.number().min(0).default(0),
   snowFenceRow2LF: z.coerce.number().min(0).default(0),
   snowFenceRow3LF: z.coerce.number().min(0).default(0),
   snowFenceRoofType: z.enum(['Asphalt Shingle', 'Pro Panel', 'Corrugated', 'Raised Seam']).default('Asphalt Shingle'),
   snowFenceUnitCost: z.coerce.number().min(0).default(0),
-  // Sasquatch fields
   sasquatchPad: z.coerce.number().min(0).default(0),
   sasquatchMobilizationFee: z.coerce.number().min(0).default(400),
   sasquatchElectrical: z.enum(['Good', 'Better', 'Best', 'None']).default('None'),
@@ -68,6 +64,7 @@ const formSchema = z.object({
 
 interface DataEntryFormProps {
   onAdd: (data: z.infer<typeof formSchema>) => void;
+  pricing: PricingSettings;
 }
 
 const GUTTER_COLORS = [
@@ -83,10 +80,8 @@ const GUTTER_CERTS = [
   "Box Level 1", "Box Level 2", "Box Level 3", "K Level 1", "K Level 2", "K Level 3"
 ];
 
-const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
+const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
   const [downspoutType, setDownspoutType] = useState<'linear' | 'chain' | null>(null);
-  
-  // Section visibility states
   const [showGutter, setShowGutter] = useState(true);
   const [showDownspout, setShowDownspout] = useState(false);
   const [showHelmet, setShowHelmet] = useState(false);
@@ -114,10 +109,10 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       downspoutLinearFeet: 0,
       chainLinearFeet: 0,
       buildingStories: 1,
-      downspoutUnitCost: 0,
+      downspoutUnitCost: pricing.downspout,
       helmetColor: "White (30) (stock)",
       helmetLinearFeet: 0,
-      helmetUnitCost: 0,
+      helmetUnitCost: pricing.helmet,
       roofType: 'Asphalt Shingle',
       valleyCount: 0,
       daylightLF: 0,
@@ -127,15 +122,15 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       amperage: 0,
       retrofit: 'No',
       level3: 'No',
-      cableUnitCost: 0,
+      cableUnitCost: pricing.cable,
       snowFenceColor: "White (30) (stock)",
       snowFenceRow1LF: 0,
       snowFenceRow2LF: 0,
       snowFenceRow3LF: 0,
       snowFenceRoofType: 'Asphalt Shingle',
-      snowFenceUnitCost: 0,
+      snowFenceUnitCost: pricing.snowFence,
       sasquatchPad: 0,
-      sasquatchMobilizationFee: 400,
+      sasquatchMobilizationFee: pricing.sasquatchMobilization,
       sasquatchElectrical: 'None',
       sasquatchFasciaBoard: 'None',
       sasquatchCustomWork: 0,
@@ -148,22 +143,30 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
   const watchedDemolition = form.watch("demolition");
   const watchedStories = form.watch("buildingStories");
 
-  // Gutter Cost Calculation
+  // Gutter Cost Calculation using global pricing
   useEffect(() => {
     let baseCost = 0;
     if (watchedInclude === "Yes") {
       if (watchedProfile === "5K") {
-        baseCost = 23.83;
+        baseCost = pricing.gutter5K;
       } else if (watchedProfile === "6B" || watchedProfile === "6K") {
-        baseCost = 34.44;
+        baseCost = pricing.gutter6B6K;
       }
     }
     
-    const finalCost = watchedDemolition === "Yes" ? baseCost + 5.28 : baseCost;
+    const finalCost = watchedDemolition === "Yes" ? baseCost + pricing.demolition : baseCost;
     form.setValue("unitCost", Number(finalCost.toFixed(2)));
-  }, [watchedProfile, watchedInclude, watchedDemolition, form]);
+  }, [watchedProfile, watchedInclude, watchedDemolition, pricing, form]);
 
-  // Downspout Auto-fill Calculation
+  // Update other unit costs when pricing settings change
+  useEffect(() => {
+    form.setValue("downspoutUnitCost", pricing.downspout);
+    form.setValue("helmetUnitCost", pricing.helmet);
+    form.setValue("cableUnitCost", pricing.cable);
+    form.setValue("snowFenceUnitCost", pricing.snowFence);
+    form.setValue("sasquatchMobilizationFee", pricing.sasquatchMobilization);
+  }, [pricing, form]);
+
   useEffect(() => {
     if (downspoutType === 'linear') {
       form.setValue("downspoutLinearFeet", watchedStories * 12);
@@ -208,7 +211,7 @@ const DataEntryForm = ({ onAdd }: DataEntryFormProps) => {
       snowFenceRow2LF: 0,
       snowFenceRow3LF: 0,
       sasquatchPad: 0,
-      sasquatchMobilizationFee: 400,
+      sasquatchMobilizationFee: pricing.sasquatchMobilization,
       sasquatchCustomWork: 0,
       sasquatchArcticSteamerReserve: 0,
     });

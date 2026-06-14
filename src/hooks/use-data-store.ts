@@ -2,6 +2,28 @@
 
 import { useState, useEffect } from 'react';
 
+export interface PricingSettings {
+  gutter5K: number;
+  gutter6B6K: number;
+  demolition: number;
+  downspout: number;
+  helmet: number;
+  cable: number;
+  snowFence: number;
+  sasquatchMobilization: number;
+}
+
+const DEFAULT_PRICING: PricingSettings = {
+  gutter5K: 23.83,
+  gutter6B6K: 34.44,
+  demolition: 5.28,
+  downspout: 12.00,
+  helmet: 15.00,
+  cable: 18.00,
+  snowFence: 25.00,
+  sasquatchMobilization: 400.00,
+};
+
 export interface BidRecord {
   id: string;
   date: string;
@@ -16,19 +38,16 @@ export interface BidRecord {
   gutterCert?: 'Box Level 1' | 'Box Level 2' | 'Box Level 3' | 'K Level 1' | 'K Level 2' | 'K Level 3' | 'None';
   includeGutterDownspout?: 'Yes' | 'No';
   demolition?: 'Yes' | 'No';
-  // Downspout Fields
   downspoutColor?: string;
   downspoutSize?: '2x3' | '3x4' | 'None';
   downspoutLinearFeet?: number;
   chainLinearFeet?: number;
   buildingStories?: number;
   downspoutUnitCost?: number;
-  // Gutter Helmet Fields
   helmetColor?: string;
   helmetLinearFeet?: number;
   helmetUnitCost?: number;
   roofType?: 'Asphalt Shingle' | 'Pro Panel' | 'Corrugated' | 'Raised Seam';
-  // Heat Cable Fields
   valleyCount?: number;
   daylightLF?: number;
   cableLayout?: 'Gutter and Downspout' | 'Serpentine' | '2 cable' | '3 cable' | 'Serpentine Metal' | 'None';
@@ -38,14 +57,12 @@ export interface BidRecord {
   retrofit?: 'Yes' | 'No';
   level3?: 'Yes' | 'No';
   cableUnitCost?: number;
-  // Snow Fence Fields
   snowFenceColor?: string;
   snowFenceRow1LF?: number;
   snowFenceRow2LF?: number;
   snowFenceRow3LF?: number;
   snowFenceRoofType?: 'Asphalt Shingle' | 'Pro Panel' | 'Corrugated' | 'Raised Seam';
   snowFenceUnitCost?: number;
-  // Sasquatch Fields
   sasquatchPad?: number;
   sasquatchMobilizationFee?: number;
   sasquatchElectrical?: 'Good' | 'Better' | 'Best' | 'None';
@@ -60,9 +77,18 @@ export const useDataStore = () => {
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [pricing, setPricing] = useState<PricingSettings>(() => {
+    const saved = localStorage.getItem('bid_pricing');
+    return saved ? JSON.parse(saved) : DEFAULT_PRICING;
+  });
+
   useEffect(() => {
     localStorage.setItem('bid_records', JSON.stringify(records));
   }, [records]);
+
+  useEffect(() => {
+    localStorage.setItem('bid_pricing', JSON.stringify(pricing));
+  }, [pricing]);
 
   const addRecord = (record: Omit<BidRecord, 'id'>) => {
     const newRecord = { ...record, id: crypto.randomUUID() };
@@ -81,5 +107,17 @@ export const useDataStore = () => {
     setRecords(prev => [...newRecords, ...prev]);
   };
 
-  return { records, addRecord, updateRecord, deleteRecord, importRecords };
+  const updatePricing = (newPricing: PricingSettings) => {
+    setPricing(newPricing);
+  };
+
+  return { 
+    records, 
+    pricing,
+    addRecord, 
+    updateRecord, 
+    deleteRecord, 
+    importRecords,
+    updatePricing 
+  };
 };

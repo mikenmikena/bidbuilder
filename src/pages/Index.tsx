@@ -8,21 +8,32 @@ import DataTable from '@/components/DataTable';
 import ExcelImport from '@/components/ExcelImport';
 import ExcelExport from '@/components/ExcelExport';
 import QuoteView from '@/components/QuoteView';
+import PricingSettings from '@/components/PricingSettings';
 import { MadeWithDyad } from "@/components/made-with-dyad";
-import { LayoutDashboard, Database, FileSpreadsheet, Briefcase, ArrowLeft } from 'lucide-react';
+import { LayoutDashboard, Database, FileSpreadsheet, Briefcase, ArrowLeft, Settings2 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
-  const { records, addRecord, updateRecord, deleteRecord, importRecords } = useDataStore();
+  const { records, pricing, addRecord, updateRecord, deleteRecord, importRecords, updatePricing } = useDataStore();
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
 
   const uniqueClients = Array.from(new Set(records.map(r => r.client)));
 
+  const calculateTotal = (r: any) => {
+    const gutter = r.linearFeet * r.unitCost;
+    const downspout = ((r.downspoutLinearFeet || 0) + (r.chainLinearFeet || 0)) * (r.downspoutUnitCost || 0);
+    const helmet = (r.helmetLinearFeet || 0) * (r.helmetUnitCost || 0);
+    const cable = (r.cableLinearFeet || 0) * (r.cableUnitCost || 0);
+    const snowFence = ((r.snowFenceRow1LF || 0) + (r.snowFenceRow2LF || 0) + (r.snowFenceRow3LF || 0)) * (r.snowFenceUnitCost || 0);
+    const sasquatch = (r.sasquatchPad || 0) + (r.sasquatchMobilizationFee || 0) + (r.sasquatchCustomWork || 0) + (r.sasquatchArcticSteamerReserve || 0);
+    return gutter + downspout + helmet + cable + snowFence + sasquatch;
+  };
+
   const getClientStats = (clientName: string) => {
     const items = records.filter(r => r.client === clientName);
-    const total = items.reduce((sum, r) => sum + (r.linearFeet * r.unitCost * (1 + r.markup / 100)), 0);
+    const total = items.reduce((sum, r) => sum + calculateTotal(r), 0);
     return { count: items.length, total };
   };
 
@@ -80,12 +91,16 @@ const Index = () => {
                   <FileSpreadsheet className="w-4 h-4 mr-2" />
                   All Items
                 </TabsTrigger>
+                <TabsTrigger value="pricing" className="rounded-xl px-6 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white transition-all">
+                  <Settings2 className="w-4 h-4 mr-2" />
+                  Pricing
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="overview" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   <div className="lg:col-span-1">
-                    <DataEntryForm onAdd={addRecord} />
+                    <DataEntryForm onAdd={addRecord} pricing={pricing} />
                   </div>
                   <div className="lg:col-span-2">
                     <DataSummary records={records} onUpdate={updateRecord} onDelete={deleteRecord} />
@@ -134,6 +149,10 @@ const Index = () => {
 
               <TabsContent value="records" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <DataTable records={records} onDelete={deleteRecord} onUpdate={updateRecord} />
+              </TabsContent>
+
+              <TabsContent value="pricing" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <PricingSettings pricing={pricing} onUpdate={updatePricing} />
               </TabsContent>
             </Tabs>
           </>

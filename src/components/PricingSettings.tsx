@@ -14,9 +14,11 @@ import { showSuccess } from '@/utils/toast';
 
 const pricingSchema = z.object({
   gutter5K: z.coerce.number().min(0),
-  gutter6B6K: z.coerce.number().min(0),
+  gutter6B: z.coerce.number().min(0),
+  gutter6K: z.coerce.number().min(0),
   demolition: z.coerce.number().min(0),
-  downspout: z.coerce.number().min(0),
+  downspout2x3: z.coerce.number().min(0),
+  downspout3x4: z.coerce.number().min(0),
   helmet: z.coerce.number().min(0),
   cable: z.coerce.number().min(0),
   snowFence: z.coerce.number().min(0),
@@ -42,9 +44,11 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
   const resetToDefaults = () => {
     const defaults = {
       gutter5K: 23.83,
-      gutter6B6K: 34.44,
+      gutter6B: 34.44,
+      gutter6K: 34.44,
       demolition: 5.28,
-      downspout: 12.00,
+      downspout2x3: 12.00,
+      downspout3x4: 15.00,
       helmet: 15.00,
       cable: 18.00,
       snowFence: 25.00,
@@ -75,7 +79,7 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <FormField
                 control={form.control}
                 name="gutter5K"
@@ -91,10 +95,23 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
               />
               <FormField
                 control={form.control}
-                name="gutter6B6K"
+                name="gutter6B"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Gutter 6B/6K Base ($)</FormLabel>
+                    <FormLabel>Gutter 6B Base ($)</FormLabel>
+                    <FormControl>
+                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="gutter6K"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Gutter 6K Base ($)</FormLabel>
                     <FormControl>
                       <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
                     </FormControl>
@@ -117,10 +134,23 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
               />
               <FormField
                 control={form.control}
-                name="downspout"
+                name="downspout2x3"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Downspout Unit Cost ($)</FormLabel>
+                    <FormLabel>Downspout 2x3 Unit Cost ($)</FormLabel>
+                    <FormControl>
+                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="downspout3x4"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Downspout 3x4 Unit Cost ($)</FormLabel>
                     <FormControl>
                       <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
                     </FormControl>

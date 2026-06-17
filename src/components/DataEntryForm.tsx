@@ -109,7 +109,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
       downspoutLinearFeet: 0,
       chainLinearFeet: 0,
       buildingStories: 1,
-      downspoutUnitCost: pricing.downspout,
+      downspoutUnitCost: pricing.downspout2x3,
       helmetColor: "White (30) (stock)",
       helmetLinearFeet: 0,
       helmetUnitCost: pricing.helmet,
@@ -142,6 +142,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
   const watchedInclude = form.watch("includeGutterDownspout");
   const watchedDemolition = form.watch("demolition");
   const watchedStories = form.watch("buildingStories");
+  const watchedDownspoutSize = form.watch("downspoutSize");
 
   // Gutter Cost Calculation using global pricing
   useEffect(() => {
@@ -149,8 +150,10 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
     if (watchedInclude === "Yes") {
       if (watchedProfile === "5K") {
         baseCost = pricing.gutter5K;
-      } else if (watchedProfile === "6B" || watchedProfile === "6K") {
-        baseCost = pricing.gutter6B6K;
+      } else if (watchedProfile === "6B") {
+        baseCost = pricing.gutter6B;
+      } else if (watchedProfile === "6K") {
+        baseCost = pricing.gutter6K;
       }
     }
     
@@ -158,9 +161,19 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
     form.setValue("unitCost", Number(finalCost.toFixed(2)));
   }, [watchedProfile, watchedInclude, watchedDemolition, pricing, form]);
 
+  // Downspout Cost Calculation using global pricing
+  useEffect(() => {
+    let cost = pricing.downspout2x3;
+    if (watchedDownspoutSize === "3x4") {
+      cost = pricing.downspout3x4;
+    } else if (watchedDownspoutSize === "2x3") {
+      cost = pricing.downspout2x3;
+    }
+    form.setValue("downspoutUnitCost", cost);
+  }, [watchedDownspoutSize, pricing, form]);
+
   // Update other unit costs when pricing settings change
   useEffect(() => {
-    form.setValue("downspoutUnitCost", pricing.downspout);
     form.setValue("helmetUnitCost", pricing.helmet);
     form.setValue("cableUnitCost", pricing.cable);
     form.setValue("snowFenceUnitCost", pricing.snowFence);

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BidRecord } from '@/hooks/use-data-store';
+import { BidRecord, useDataStore } from '@/hooks/use-data-store';
 import { showSuccess } from '@/utils/toast';
 import { Separator } from "@/components/ui/separator";
 import { Droplets, ArrowDownCircle, ShieldCheck, Zap, Snowflake, Footprints } from 'lucide-react';
@@ -88,6 +88,7 @@ const GUTTER_CERTS = [
 ];
 
 const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialogProps) => {
+  const { pricing } = useDataStore();
   const [downspoutType, setDownspoutType] = useState<'linear' | 'chain' | null>(null);
   
   // Section visibility states
@@ -165,20 +166,35 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
   const watchedInclude = form.watch("includeGutterDownspout");
   const watchedDemolition = form.watch("demolition");
   const watchedStories = form.watch("buildingStories");
+  const watchedDownspoutSize = form.watch("downspoutSize");
 
+  // Gutter Cost Calculation
   useEffect(() => {
     let baseCost = 0;
     if (watchedInclude === "Yes") {
       if (watchedProfile === "5K") {
-        baseCost = 23.83;
-      } else if (watchedProfile === "6B" || watchedProfile === "6K") {
-        baseCost = 34.44;
+        baseCost = pricing.gutter5K;
+      } else if (watchedProfile === "6B") {
+        baseCost = pricing.gutter6B;
+      } else if (watchedProfile === "6K") {
+        baseCost = pricing.gutter6K;
       }
     }
     
-    const finalCost = watchedDemolition === "Yes" ? baseCost + 5.28 : baseCost;
+    const finalCost = watchedDemolition === "Yes" ? baseCost + pricing.demolition : baseCost;
     form.setValue("unitCost", Number(finalCost.toFixed(2)));
-  }, [watchedProfile, watchedInclude, watchedDemolition, form]);
+  }, [watchedProfile, watchedInclude, watchedDemolition, pricing, form]);
+
+  // Downspout Cost Calculation
+  useEffect(() => {
+    let cost = pricing.downspout2x3;
+    if (watchedDownspoutSize === "3x4") {
+      cost = pricing.downspout3x4;
+    } else if (watchedDownspoutSize === "2x3") {
+      cost = pricing.downspout2x3;
+    }
+    form.setValue("downspoutUnitCost", cost);
+  }, [watchedDownspoutSize, pricing, form]);
 
   useEffect(() => {
     if (downspoutType === 'linear') {

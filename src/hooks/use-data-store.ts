@@ -4,9 +4,11 @@ import { useState, useEffect } from 'react';
 
 export interface PricingSettings {
   gutter5K: number;
-  gutter6B6K: number;
+  gutter6B: number;
+  gutter6K: number;
   demolition: number;
-  downspout: number;
+  downspout2x3: number;
+  downspout3x4: number;
   helmet: number;
   cable: number;
   snowFence: number;
@@ -15,9 +17,11 @@ export interface PricingSettings {
 
 const DEFAULT_PRICING: PricingSettings = {
   gutter5K: 23.83,
-  gutter6B6K: 34.44,
+  gutter6B: 34.44,
+  gutter6K: 34.44,
   demolition: 5.28,
-  downspout: 12.00,
+  downspout2x3: 12.00,
+  downspout3x4: 15.00,
   helmet: 15.00,
   cable: 18.00,
   snowFence: 25.00,
@@ -79,7 +83,23 @@ export const useDataStore = () => {
 
   const [pricing, setPricing] = useState<PricingSettings>(() => {
     const saved = localStorage.getItem('bid_pricing');
-    return saved ? JSON.parse(saved) : DEFAULT_PRICING;
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Handle migration from old pricing structure if needed
+      return {
+        gutter5K: parsed.gutter5K ?? DEFAULT_PRICING.gutter5K,
+        gutter6B: parsed.gutter6B ?? parsed.gutter6B6K ?? DEFAULT_PRICING.gutter6B,
+        gutter6K: parsed.gutter6K ?? parsed.gutter6B6K ?? DEFAULT_PRICING.gutter6K,
+        demolition: parsed.demolition ?? DEFAULT_PRICING.demolition,
+        downspout2x3: parsed.downspout2x3 ?? parsed.downspout ?? DEFAULT_PRICING.downspout2x3,
+        downspout3x4: parsed.downspout3x4 ?? parsed.downspout ?? DEFAULT_PRICING.downspout3x4,
+        helmet: parsed.helmet ?? DEFAULT_PRICING.helmet,
+        cable: parsed.cable ?? DEFAULT_PRICING.cable,
+        snowFence: parsed.snowFence ?? DEFAULT_PRICING.snowFence,
+        sasquatchMobilization: parsed.sasquatchMobilization ?? DEFAULT_PRICING.sasquatchMobilization,
+      };
+    }
+    return DEFAULT_PRICING;
   });
 
   useEffect(() => {

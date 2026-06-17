@@ -57,6 +57,7 @@ const formSchema = z.object({
   snowFenceRow2LF: z.coerce.number().min(0).default(0),
   snowFenceRow3LF: z.coerce.number().min(0).default(0),
   snowFenceRoofType: z.enum(['Asphalt Shingle', 'Pro Panel', 'Corrugated', 'Raised Seam']).default('Asphalt Shingle'),
+  snowFenceLevel: z.enum(['Level 1', 'Level 2', 'Level 3']).default('Level 1'),
   snowFenceUnitCost: z.coerce.number().min(0).default(0),
   sasquatchPad: z.coerce.number().min(0).default(0),
   sasquatchMobilizationFee: z.coerce.number().min(0).default(400),
@@ -136,6 +137,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
       snowFenceRow2LF: 0,
       snowFenceRow3LF: 0,
       snowFenceRoofType: 'Asphalt Shingle',
+      snowFenceLevel: 'Level 1',
       snowFenceUnitCost: pricing.snowFence,
       sasquatchPad: 0,
       sasquatchMobilizationFee: pricing.sasquatchMobilization,
@@ -166,6 +168,10 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
   const watchedCableSwitch = form.watch("cableSwitch");
   const watchedCableBreaker = form.watch("cableBreaker");
   const watchedCableElectrician = form.watch("cableElectrician");
+
+  // Snow Fence watched fields
+  const watchedSnowFenceRoofType = form.watch("snowFenceRoofType");
+  const watchedSnowFenceLevel = form.watch("snowFenceLevel");
 
   // Gutter Cost Calculation using global pricing
   useEffect(() => {
@@ -260,10 +266,30 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
     form
   ]);
 
+  // Snow Fence Cost Calculation based on Roof Type and Level
+  useEffect(() => {
+    let cost = pricing.snowFence; // Default Asphalt Shingle / Base
+
+    if (watchedSnowFenceRoofType === 'Corrugated') {
+      if (watchedSnowFenceLevel === 'Level 1') cost = pricing.snowFenceCorrugatedL1;
+      else if (watchedSnowFenceLevel === 'Level 2') cost = pricing.snowFenceCorrugatedL2;
+      else if (watchedSnowFenceLevel === 'Level 3') cost = pricing.snowFenceCorrugatedL3;
+    } else if (watchedSnowFenceRoofType === 'Raised Seam') {
+      if (watchedSnowFenceLevel === 'Level 1') cost = pricing.snowFenceRaisedSeamL1;
+      else if (watchedSnowFenceLevel === 'Level 2') cost = pricing.snowFenceRaisedSeamL2;
+      else if (watchedSnowFenceLevel === 'Level 3') cost = pricing.snowFenceRaisedSeamL3;
+    } else if (watchedSnowFenceRoofType === 'Pro Panel') {
+      if (watchedSnowFenceLevel === 'Level 1') cost = pricing.snowFenceProPanelL1;
+      else if (watchedSnowFenceLevel === 'Level 2') cost = pricing.snowFenceProPanelL2;
+      else if (watchedSnowFenceLevel === 'Level 3') cost = pricing.snowFenceProPanelL3;
+    }
+
+    form.setValue("snowFenceUnitCost", cost);
+  }, [watchedSnowFenceRoofType, watchedSnowFenceLevel, pricing, form]);
+
   // Update other unit costs when pricing settings change
   useEffect(() => {
     form.setValue("helmetUnitCost", pricing.helmet);
-    form.setValue("snowFenceUnitCost", pricing.snowFence);
     form.setValue("sasquatchMobilizationFee", pricing.sasquatchMobilization);
   }, [pricing, form]);
 
@@ -1093,7 +1119,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
               {showSnowFence && (
                 <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
                   <Separator className="bg-purple-200" />
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <FormField
                       control={form.control}
                       name="snowFenceColor"
@@ -1133,6 +1159,28 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                               <SelectItem value="Pro Panel">Pro Panel</SelectItem>
                               <SelectItem value="Corrugated">Corrugated</SelectItem>
                               <SelectItem value="Raised Seam">Raised Seam</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="snowFenceLevel"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Snow Fence Level</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="rounded-xl border-purple-300">
+                                <SelectValue placeholder="Select level" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Level 1">Level 1</SelectItem>
+                              <SelectItem value="Level 2">Level 2</SelectItem>
+                              <SelectItem value="Level 3">Level 3</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />

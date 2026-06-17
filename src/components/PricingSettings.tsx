@@ -37,6 +37,15 @@ const pricingSchema = z.object({
   cableBreaker: z.coerce.number().min(0),
   cableElectrician: z.coerce.number().min(0),
   snowFence: z.coerce.number().min(0),
+  snowFenceCorrugatedL1: z.coerce.number().min(0),
+  snowFenceCorrugatedL2: z.coerce.number().min(0),
+  snowFenceCorrugatedL3: z.coerce.number().min(0),
+  snowFenceRaisedSeamL1: z.coerce.number().min(0),
+  snowFenceRaisedSeamL2: z.coerce.number().min(0),
+  snowFenceRaisedSeamL3: z.coerce.number().min(0),
+  snowFenceProPanelL1: z.coerce.number().min(0),
+  snowFenceProPanelL2: z.coerce.number().min(0),
+  snowFenceProPanelL3: z.coerce.number().min(0),
   sasquatchMobilization: z.coerce.number().min(0),
 });
 
@@ -81,6 +90,15 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
       cableBreaker: 95.00,
       cableElectrician: 150.00,
       snowFence: 25.00,
+      snowFenceCorrugatedL1: 30.00,
+      snowFenceCorrugatedL2: 40.00,
+      snowFenceCorrugatedL3: 50.00,
+      snowFenceRaisedSeamL1: 35.00,
+      snowFenceRaisedSeamL2: 45.00,
+      snowFenceRaisedSeamL3: 55.00,
+      snowFenceProPanelL1: 32.00,
+      snowFenceProPanelL2: 42.00,
+      snowFenceProPanelL3: 52.00,
       sasquatchMobilization: 400.00,
     };
     form.reset(defaults);
@@ -446,13 +464,146 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                 <span>Snow Fence Pricing</span>
               </div>
               <Separator className="bg-purple-200" />
+              
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <FormField
                   control={form.control}
                   name="snowFence"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-purple-900">Snow Fence Unit Cost ($/LF)</FormLabel>
+                      <FormLabel className="text-purple-900">Asphalt Shingle / Base Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-200 bg-white focus-visible:ring-purple-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <Separator className="bg-purple-200/50 my-4" />
+              <h4 className="text-sm font-bold text-purple-900">Corrugated Roof Pricing</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <FormField
+                  control={form.control}
+                  name="snowFenceCorrugatedL1"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-purple-900">Corrugated Level 1 ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-200 bg-white focus-visible:ring-purple-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="snowFenceCorrugatedL2"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-purple-900">Corrugated Level 2 ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-200 bg-white focus-visible:ring-purple-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="snowFenceCorrugatedL3"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-purple-900">Corrugated Level 3 ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-200 bg-white focus-visible:ring-purple-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <Separator className="bg-purple-200/50 my-4" />
+              <h4 className="text-sm font-bold text-purple-900">Raised Seam Roof Pricing</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <FormField
+                  control={form.control}
+                  name="snowFenceRaisedSeamL1"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-purple-900">Raised Seam Level 1 ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-200 bg-white focus-visible:ring-purple-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="snowFenceRaisedSeamL2"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-purple-900">Raised Seam Level 2 ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-200 bg-white focus-visible:ring-purple-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="snowFenceRaisedSeamL3"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-purple-900">Raised Seam Level 3 ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-200 bg-white focus-visible:ring-purple-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <Separator className="bg-purple-200/50 my-4" />
+              <h4 className="text-sm font-bold text-purple-900">Pro Panel Roof Pricing</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <FormField
+                  control={form.control}
+                  name="snowFenceProPanelL1"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-purple-900">Pro Panel Level 1 ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-200 bg-white focus-visible:ring-purple-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="snowFenceProPanelL2"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-purple-900">Pro Panel Level 2 ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-200 bg-white focus-visible:ring-purple-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="snowFenceProPanelL3"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-purple-900">Pro Panel Level 3 ($/LF)</FormLabel>
                       <FormControl>
                         <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-200 bg-white focus-visible:ring-purple-500" />
                       </FormControl>

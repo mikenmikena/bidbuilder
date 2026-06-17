@@ -25,7 +25,16 @@ export interface PricingSettings {
   cableSwitch: number;
   cableBreaker: number;
   cableElectrician: number;
-  snowFence: number;
+  snowFence: number; // Asphalt Shingle / Base
+  snowFenceCorrugatedL1: number;
+  snowFenceCorrugatedL2: number;
+  snowFenceCorrugatedL3: number;
+  snowFenceRaisedSeamL1: number;
+  snowFenceRaisedSeamL2: number;
+  snowFenceRaisedSeamL3: number;
+  snowFenceProPanelL1: number;
+  snowFenceProPanelL2: number;
+  snowFenceProPanelL3: number;
   sasquatchMobilization: number;
 }
 
@@ -53,6 +62,15 @@ const DEFAULT_PRICING: PricingSettings = {
   cableBreaker: 95.00,
   cableElectrician: 150.00,
   snowFence: 25.00,
+  snowFenceCorrugatedL1: 30.00,
+  snowFenceCorrugatedL2: 40.00,
+  snowFenceCorrugatedL3: 50.00,
+  snowFenceRaisedSeamL1: 35.00,
+  snowFenceRaisedSeamL2: 45.00,
+  snowFenceRaisedSeamL3: 55.00,
+  snowFenceProPanelL1: 32.00,
+  snowFenceProPanelL2: 42.00,
+  snowFenceProPanelL3: 52.00,
   sasquatchMobilization: 400.00,
 };
 
@@ -98,6 +116,7 @@ export interface BidRecord {
   snowFenceRow2LF?: number;
   snowFenceRow3LF?: number;
   snowFenceRoofType?: 'Asphalt Shingle' | 'Pro Panel' | 'Corrugated' | 'Raised Seam';
+  snowFenceLevel?: 'Level 1' | 'Level 2' | 'Level 3';
   snowFenceUnitCost?: number;
   sasquatchPad?: number;
   sasquatchMobilizationFee?: number;
@@ -141,6 +160,15 @@ export const useDataStore = () => {
         cableBreaker: parsed.cableBreaker ?? DEFAULT_PRICING.cableBreaker,
         cableElectrician: parsed.cableElectrician ?? DEFAULT_PRICING.cableElectrician,
         snowFence: parsed.snowFence ?? DEFAULT_PRICING.snowFence,
+        snowFenceCorrugatedL1: parsed.snowFenceCorrugatedL1 ?? DEFAULT_PRICING.snowFenceCorrugatedL1,
+        snowFenceCorrugatedL2: parsed.snowFenceCorrugatedL2 ?? DEFAULT_PRICING.snowFenceCorrugatedL2,
+        snowFenceCorrugatedL3: parsed.snowFenceCorrugatedL3 ?? DEFAULT_PRICING.snowFenceCorrugatedL3,
+        snowFenceRaisedSeamL1: parsed.snowFenceRaisedSeamL1 ?? DEFAULT_PRICING.snowFenceRaisedSeamL1,
+        snowFenceRaisedSeamL2: parsed.snowFenceRaisedSeamL2 ?? DEFAULT_PRICING.snowFenceRaisedSeamL2,
+        snowFenceRaisedSeamL3: parsed.snowFenceRaisedSeamL3 ?? DEFAULT_PRICING.snowFenceRaisedSeamL3,
+        snowFenceProPanelL1: parsed.snowFenceProPanelL1 ?? DEFAULT_PRICING.snowFenceProPanelL1,
+        snowFenceProPanelL2: parsed.snowFenceProPanelL2 ?? DEFAULT_PRICING.snowFenceProPanelL2,
+        snowFenceProPanelL3: parsed.snowFenceProPanelL3 ?? DEFAULT_PRICING.snowFenceProPanelL3,
         sasquatchMobilization: parsed.sasquatchMobilization ?? DEFAULT_PRICING.sasquatchMobilization,
       };
     }

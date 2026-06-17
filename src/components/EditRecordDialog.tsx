@@ -51,16 +51,13 @@ const formSchema = z.object({
   retrofit: z.enum(['Yes', 'No']).default('No'),
   level3: z.enum(['Yes', 'No']).default('No'),
   cableUnitCost: z.coerce.number().min(0).default(0),
-  cableWifi: z.enum(['Yes', 'No']).default('No'),
-  cableSwitch: z.enum(['Yes', 'No']).default('No'),
-  cableBreaker: z.enum(['Yes', 'No']).default('No'),
-  cableElectrician: z.enum(['Yes', 'No']).default('No'),
   // Snow Fence fields
   snowFenceColor: z.string().optional(),
   snowFenceRow1LF: z.coerce.number().min(0).default(0),
   snowFenceRow2LF: z.coerce.number().min(0).default(0),
   snowFenceRow3LF: z.coerce.number().min(0).default(0),
   snowFenceRoofType: z.enum(['Asphalt Shingle', 'Pro Panel', 'Corrugated', 'Raised Seam']).default('Asphalt Shingle'),
+  snowFenceLevel: z.enum(['Level 1', 'Level 2', 'Level 3']).default('Level 1'),
   snowFenceUnitCost: z.coerce.number().min(0).default(0),
   // Sasquatch fields
   sasquatchPad: z.coerce.number().min(0).default(0),
@@ -137,15 +134,12 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       retrofit: record.retrofit || 'No',
       level3: record.level3 || 'No',
       cableUnitCost: record.cableUnitCost || 0,
-      cableWifi: record.cableWifi || 'No',
-      cableSwitch: record.cableSwitch || 'No',
-      cableBreaker: record.cableBreaker || 'No',
-      cableElectrician: record.cableElectrician || 'No',
       snowFenceColor: record.snowFenceColor || "White (30) (stock)",
       snowFenceRow1LF: record.snowFenceRow1LF || 0,
       snowFenceRow2LF: record.snowFenceRow2LF || 0,
       snowFenceRow3LF: record.snowFenceRow3LF || 0,
       snowFenceRoofType: record.snowFenceRoofType || 'Asphalt Shingle',
+      snowFenceLevel: record.snowFenceLevel || 'Level 1',
       snowFenceUnitCost: record.snowFenceUnitCost || 0,
       sasquatchPad: record.sasquatchPad || 0,
       sasquatchMobilizationFee: record.sasquatchMobilizationFee || 400,
@@ -181,15 +175,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
   const watchedDownspoutLF = form.watch("downspoutLinearFeet") || 0;
   const watchedChainLF = form.watch("chainLinearFeet") || 0;
 
-  // Heat Cable watched fields
-  const watchedCableLayout = form.watch("cableLayout");
-  const watchedCableLF = form.watch("cableLinearFeet") || 0;
-  const watchedVolt = form.watch("volt");
-  const watchedRetrofit = form.watch("retrofit");
-  const watchedCableWifi = form.watch("cableWifi");
-  const watchedCableSwitch = form.watch("cableSwitch");
-  const watchedCableBreaker = form.watch("cableBreaker");
-  const watchedCableElectrician = form.watch("cableElectrician");
+  // Snow Fence watched fields
+  const watchedSnowFenceRoofType = form.watch("snowFenceRoofType");
+  const watchedSnowFenceLevel = form.watch("snowFenceLevel");
 
   // Gutter Cost Calculation
   useEffect(() => {
@@ -238,51 +226,26 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
     form.setValue("downspoutUnitCost", Number(finalCost.toFixed(2)));
   }, [watchedDownspoutSize, downspoutType, watchedDownspoutColor, watchedDownspoutLF, watchedChainLF, pricing, form]);
 
-  // Heat Cable Cost Calculation
+  // Snow Fence Cost Calculation based on Roof Type and Level
   useEffect(() => {
-    let baseCost = pricing.cable; // Default base cost
+    let cost = pricing.snowFence; // Default Asphalt Shingle / Base
 
-    // Layout pricing
-    if (watchedCableLayout === 'Serpentine' || watchedCableLayout === 'Serpentine Metal') {
-      baseCost = pricing.cableSerpentine;
-    } else if (watchedCableLayout === '2 cable') {
-      baseCost = pricing.cable2Cable;
-    } else if (watchedCableLayout === '3 cable') {
-      baseCost = pricing.cable3Cable;
-    } else if (watchedCableLayout === 'Gutter and Downspout') {
-      baseCost = pricing.cable1Cable;
+    if (watchedSnowFenceRoofType === 'Corrugated') {
+      if (watchedSnowFenceLevel === 'Level 1') cost = pricing.snowFenceCorrugatedL1;
+      else if (watchedSnowFenceLevel === 'Level 2') cost = pricing.snowFenceCorrugatedL2;
+      else if (watchedSnowFenceLevel === 'Level 3') cost = pricing.snowFenceCorrugatedL3;
+    } else if (watchedSnowFenceRoofType === 'Raised Seam') {
+      if (watchedSnowFenceLevel === 'Level 1') cost = pricing.snowFenceRaisedSeamL1;
+      else if (watchedSnowFenceLevel === 'Level 2') cost = pricing.snowFenceRaisedSeamL2;
+      else if (watchedSnowFenceLevel === 'Level 3') cost = pricing.snowFenceRaisedSeamL3;
+    } else if (watchedSnowFenceRoofType === 'Pro Panel') {
+      if (watchedSnowFenceLevel === 'Level 1') cost = pricing.snowFenceProPanelL1;
+      else if (watchedSnowFenceLevel === 'Level 2') cost = pricing.snowFenceProPanelL2;
+      else if (watchedSnowFenceLevel === 'Level 3') cost = pricing.snowFenceProPanelL3;
     }
 
-    // Retrofit add-on
-    if (watchedRetrofit === 'Yes') {
-      baseCost += pricing.cableRetrofit;
-    }
-
-    // Flat surcharges distributed over linear feet
-    let flatSurcharges = 0;
-    if (watchedVolt === 120) flatSurcharges += pricing.cable120V;
-    if (watchedVolt === 240) flatSurcharges += pricing.cable240V;
-    if (watchedCableWifi === 'Yes') flatSurcharges += pricing.cableWifi;
-    if (watchedCableSwitch === 'Yes') flatSurcharges += pricing.cableSwitch;
-    if (watchedCableBreaker === 'Yes') flatSurcharges += pricing.cableBreaker;
-    if (watchedCableElectrician === 'Yes') flatSurcharges += pricing.cableElectrician;
-
-    const distributedSurcharge = watchedCableLF > 0 ? (flatSurcharges / watchedCableLF) : 0;
-    const finalCost = baseCost + distributedSurcharge;
-
-    form.setValue("cableUnitCost", Number(finalCost.toFixed(2)));
-  }, [
-    watchedCableLayout,
-    watchedCableLF,
-    watchedVolt,
-    watchedRetrofit,
-    watchedCableWifi,
-    watchedCableSwitch,
-    watchedCableBreaker,
-    watchedCableElectrician,
-    pricing,
-    form
-  ]);
+    form.setValue("snowFenceUnitCost", cost);
+  }, [watchedSnowFenceRoofType, watchedSnowFenceLevel, pricing, form]);
 
   useEffect(() => {
     if (downspoutType === 'linear') {
@@ -899,17 +862,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Volt</FormLabel>
-                          <Select onValueChange={(val) => field.onChange(Number(val))} defaultValue={String(field.value)}>
-                            <FormControl>
-                              <SelectTrigger className="rounded-xl border-orange-300">
-                                <SelectValue placeholder="Select Volt" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="120">120V</SelectItem>
-                              <SelectItem value="240">240V</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <FormControl>
+                            <Input type="number" {...field} className="rounded-xl border-orange-300" />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -933,93 +888,6 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Retrofit</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger className="rounded-xl border-orange-300">
-                                <SelectValue placeholder="Select" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="Yes">Yes</SelectItem>
-                              <SelectItem value="No">No</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-4 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="cableWifi"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>WiFi Controller</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger className="rounded-xl border-orange-300">
-                                <SelectValue placeholder="Select" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="Yes">Yes</SelectItem>
-                              <SelectItem value="No">No</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="cableSwitch"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Switch</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger className="rounded-xl border-orange-300">
-                                <SelectValue placeholder="Select" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="Yes">Yes</SelectItem>
-                              <SelectItem value="No">No</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="cableBreaker"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Breaker</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger className="rounded-xl border-orange-300">
-                                <SelectValue placeholder="Select" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="Yes">Yes</SelectItem>
-                              <SelectItem value="No">No</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="cableElectrician"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Electrician</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger className="rounded-xl border-orange-300">
@@ -1093,7 +961,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
               {showSnowFence && (
                 <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
                   <Separator className="bg-purple-200" />
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
                     <FormField
                       control={form.control}
                       name="snowFenceColor"
@@ -1133,6 +1001,28 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                               <SelectItem value="Pro Panel">Pro Panel</SelectItem>
                               <SelectItem value="Corrugated">Corrugated</SelectItem>
                               <SelectItem value="Raised Seam">Raised Seam</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="snowFenceLevel"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Level</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="rounded-xl border-purple-300">
+                                <SelectValue placeholder="Select level" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Level 1">Level 1</SelectItem>
+                              <SelectItem value="Level 2">Level 2</SelectItem>
+                              <SelectItem value="Level 3">Level 3</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />

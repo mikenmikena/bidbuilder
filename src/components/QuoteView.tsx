@@ -175,6 +175,7 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
                           <span>
                             {item.snowFenceColor ? `${item.snowFenceColor} Color` : ''}
                             {item.snowFenceRoofType ? ` • Roof: ${item.snowFenceRoofType}` : ''}
+                            {item.snowFenceLevel ? ` • ${item.snowFenceLevel}` : ''}
                           </span>
                         </div>
                       </TableCell>

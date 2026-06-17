@@ -10,9 +10,7 @@ export interface PricingSettings {
   downspout2x3: number;
   downspout3x4: number;
   downspoutChain: number;
-  gutterStockColor: number;
   gutterNonStockColor: number;
-  downspoutStockColor: number;
   downspoutNonStockColor: number;
   helmet: number;
   cable: number;
@@ -28,10 +26,8 @@ const DEFAULT_PRICING: PricingSettings = {
   downspout2x3: 12.00,
   downspout3x4: 15.00,
   downspoutChain: 25.00,
-  gutterStockColor: 0.00,
-  gutterNonStockColor: 5.00,
-  downspoutStockColor: 0.00,
-  downspoutNonStockColor: 3.00,
+  gutterNonStockColor: 150.00, // Flat surcharge default
+  downspoutNonStockColor: 75.00, // Flat surcharge default
   helmet: 15.00,
   cable: 18.00,
   snowFence: 25.00,
@@ -103,9 +99,7 @@ export const useDataStore = () => {
         downspout2x3: parsed.downspout2x3 ?? DEFAULT_PRICING.downspout2x3,
         downspout3x4: parsed.downspout3x4 ?? DEFAULT_PRICING.downspout3x4,
         downspoutChain: parsed.downspoutChain ?? DEFAULT_PRICING.downspoutChain,
-        gutterStockColor: parsed.gutterStockColor ?? DEFAULT_PRICING.gutterStockColor,
         gutterNonStockColor: parsed.gutterNonStockColor ?? DEFAULT_PRICING.gutterNonStockColor,
-        downspoutStockColor: parsed.downspoutStockColor ?? DEFAULT_PRICING.downspoutStockColor,
         downspoutNonStockColor: parsed.downspoutNonStockColor ?? DEFAULT_PRICING.downspoutNonStockColor,
         helmet: parsed.helmet ?? DEFAULT_PRICING.helmet,
         cable: parsed.cable ?? DEFAULT_PRICING.cable,

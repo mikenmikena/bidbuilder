@@ -169,6 +169,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
   const watchedDownspoutSize = form.watch("downspoutSize");
   const watchedGutterColor = form.watch("gutterColor");
   const watchedDownspoutColor = form.watch("downspoutColor");
+  const watchedLinearFeet = form.watch("linearFeet") || 0;
+  const watchedDownspoutLF = form.watch("downspoutLinearFeet") || 0;
+  const watchedChainLF = form.watch("chainLinearFeet") || 0;
 
   // Gutter Cost Calculation
   useEffect(() => {
@@ -183,16 +186,16 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       }
     }
     
-    // Add color surcharge
+    // Add flat color surcharge distributed over linear feet
     const isStockColor = watchedGutterColor?.toLowerCase().includes("stock");
-    const colorCost = isStockColor ? (pricing.gutterStockColor || 0) : (pricing.gutterNonStockColor || 0);
+    const colorCost = isStockColor ? 0 : (watchedLinearFeet > 0 ? (pricing.gutterNonStockColor / watchedLinearFeet) : 0);
     
     const finalCost = watchedDemolition === "Yes" 
       ? baseCost + pricing.demolition + colorCost 
       : baseCost + colorCost;
       
     form.setValue("unitCost", Number(finalCost.toFixed(2)));
-  }, [watchedProfile, watchedInclude, watchedDemolition, watchedGutterColor, pricing, form]);
+  }, [watchedProfile, watchedInclude, watchedDemolition, watchedGutterColor, watchedLinearFeet, pricing, form]);
 
   // Downspout Cost Calculation
   useEffect(() => {
@@ -208,13 +211,14 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       }
     }
     
-    // Add color surcharge
+    // Add flat color surcharge distributed over total downspout linear feet
+    const totalDownspoutLF = watchedDownspoutLF + watchedChainLF;
     const isStockColor = watchedDownspoutColor?.toLowerCase().includes("stock");
-    const colorCost = isStockColor ? (pricing.downspoutStockColor || 0) : (pricing.downspoutNonStockColor || 0);
+    const colorCost = isStockColor ? 0 : (totalDownspoutLF > 0 ? (pricing.downspoutNonStockColor / totalDownspoutLF) : 0);
     
     const finalCost = baseCost + colorCost;
     form.setValue("downspoutUnitCost", Number(finalCost.toFixed(2)));
-  }, [watchedDownspoutSize, downspoutType, watchedDownspoutColor, pricing, form]);
+  }, [watchedDownspoutSize, downspoutType, watchedDownspoutColor, watchedDownspoutLF, watchedChainLF, pricing, form]);
 
   useEffect(() => {
     if (downspoutType === 'linear') {

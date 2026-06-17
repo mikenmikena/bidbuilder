@@ -21,9 +21,7 @@ const pricingSchema = z.object({
   downspout2x3: z.coerce.number().min(0),
   downspout3x4: z.coerce.number().min(0),
   downspoutChain: z.coerce.number().min(0),
-  gutterStockColor: z.coerce.number().min(0),
   gutterNonStockColor: z.coerce.number().min(0),
-  downspoutStockColor: z.coerce.number().min(0),
   downspoutNonStockColor: z.coerce.number().min(0),
   helmet: z.coerce.number().min(0),
   cable: z.coerce.number().min(0),
@@ -56,10 +54,8 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
       downspout2x3: 12.00,
       downspout3x4: 15.00,
       downspoutChain: 25.00,
-      gutterStockColor: 0.00,
-      gutterNonStockColor: 5.00,
-      downspoutStockColor: 0.00,
-      downspoutNonStockColor: 3.00,
+      gutterNonStockColor: 150.00,
+      downspoutNonStockColor: 75.00,
       helmet: 15.00,
       cable: 18.00,
       snowFence: 25.00,
@@ -153,23 +149,10 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                 />
                 <FormField
                   control={form.control}
-                  name="gutterStockColor"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-amber-900">Stock Gutter Color Cost ($/LF)</FormLabel>
-                      <FormControl>
-                        <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
                   name="gutterNonStockColor"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-amber-900">Non-Stock Gutter Color Cost ($/LF)</FormLabel>
+                      <FormLabel className="text-amber-900">Non-Stock Gutter Color Surcharge ($)</FormLabel>
                       <FormControl>
                         <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
                       </FormControl>
@@ -229,23 +212,10 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                 />
                 <FormField
                   control={form.control}
-                  name="downspoutStockColor"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sky-900">Stock Downspout Color Cost ($/LF)</FormLabel>
-                      <FormControl>
-                        <Input type="number" step="0.01" {...field} className="rounded-xl border-sky-200 bg-white focus-visible:ring-sky-500" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
                   name="downspoutNonStockColor"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-sky-900">Non-Stock Downspout Color Cost ($/LF)</FormLabel>
+                      <FormLabel className="text-sky-900">Non-Stock Downspout Color Surcharge ($)</FormLabel>
                       <FormControl>
                         <Input type="number" step="0.01" {...field} className="rounded-xl border-sky-200 bg-white focus-visible:ring-sky-500" />
                       </FormControl>

@@ -9,6 +9,7 @@ import ExcelImport from '@/components/ExcelImport';
 import ExcelExport from '@/components/ExcelExport';
 import QuoteView from '@/components/QuoteView';
 import PricingSettings from '@/components/PricingSettings';
+import PricingLock from '@/components/PricingLock';
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import { LayoutDashboard, Database, FileSpreadsheet, Briefcase, ArrowLeft, Settings2 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -152,7 +153,9 @@ const Index = () => {
               </TabsContent>
 
               <TabsContent value="pricing" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <PricingSettings pricing={pricing} onUpdate={updatePricing} />
+                <PricingLock>
+                  <PricingSettings pricing={pricing} onUpdate={updatePricing} />
+                </PricingLock>
               </TabsContent>
             </Tabs>
           </>

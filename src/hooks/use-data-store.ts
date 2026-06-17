@@ -14,6 +14,17 @@ export interface PricingSettings {
   downspoutNonStockColor: number;
   helmet: number;
   cable: number;
+  cableSerpentine: number;
+  cable1Cable: number;
+  cable2Cable: number;
+  cable3Cable: number;
+  cable120V: number;
+  cable240V: number;
+  cableRetrofit: number;
+  cableWifi: number;
+  cableSwitch: number;
+  cableBreaker: number;
+  cableElectrician: number;
   snowFence: number;
   sasquatchMobilization: number;
 }
@@ -26,10 +37,21 @@ const DEFAULT_PRICING: PricingSettings = {
   downspout2x3: 12.00,
   downspout3x4: 15.00,
   downspoutChain: 25.00,
-  gutterNonStockColor: 150.00, // Flat surcharge default
-  downspoutNonStockColor: 75.00, // Flat surcharge default
+  gutterNonStockColor: 150.00,
+  downspoutNonStockColor: 75.00,
   helmet: 15.00,
   cable: 18.00,
+  cableSerpentine: 22.00,
+  cable1Cable: 18.00,
+  cable2Cable: 28.00,
+  cable3Cable: 38.00,
+  cable120V: 150.00,
+  cable240V: 250.00,
+  cableRetrofit: 5.00,
+  cableWifi: 120.00,
+  cableSwitch: 80.00,
+  cableBreaker: 95.00,
+  cableElectrician: 150.00,
   snowFence: 25.00,
   sasquatchMobilization: 400.00,
 };
@@ -67,6 +89,10 @@ export interface BidRecord {
   retrofit?: 'Yes' | 'No';
   level3?: 'Yes' | 'No';
   cableUnitCost?: number;
+  cableWifi?: 'Yes' | 'No';
+  cableSwitch?: 'Yes' | 'No';
+  cableBreaker?: 'Yes' | 'No';
+  cableElectrician?: 'Yes' | 'No';
   snowFenceColor?: string;
   snowFenceRow1LF?: number;
   snowFenceRow2LF?: number;
@@ -103,6 +129,17 @@ export const useDataStore = () => {
         downspoutNonStockColor: parsed.downspoutNonStockColor ?? DEFAULT_PRICING.downspoutNonStockColor,
         helmet: parsed.helmet ?? DEFAULT_PRICING.helmet,
         cable: parsed.cable ?? DEFAULT_PRICING.cable,
+        cableSerpentine: parsed.cableSerpentine ?? DEFAULT_PRICING.cableSerpentine,
+        cable1Cable: parsed.cable1Cable ?? DEFAULT_PRICING.cable1Cable,
+        cable2Cable: parsed.cable2Cable ?? DEFAULT_PRICING.cable2Cable,
+        cable3Cable: parsed.cable3Cable ?? DEFAULT_PRICING.cable3Cable,
+        cable120V: parsed.cable120V ?? DEFAULT_PRICING.cable120V,
+        cable240V: parsed.cable240V ?? DEFAULT_PRICING.cable240V,
+        cableRetrofit: parsed.cableRetrofit ?? DEFAULT_PRICING.cableRetrofit,
+        cableWifi: parsed.cableWifi ?? DEFAULT_PRICING.cableWifi,
+        cableSwitch: parsed.cableSwitch ?? DEFAULT_PRICING.cableSwitch,
+        cableBreaker: parsed.cableBreaker ?? DEFAULT_PRICING.cableBreaker,
+        cableElectrician: parsed.cableElectrician ?? DEFAULT_PRICING.cableElectrician,
         snowFence: parsed.snowFence ?? DEFAULT_PRICING.snowFence,
         sasquatchMobilization: parsed.sasquatchMobilization ?? DEFAULT_PRICING.sasquatchMobilization,
       };

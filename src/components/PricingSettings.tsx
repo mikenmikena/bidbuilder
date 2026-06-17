@@ -25,6 +25,17 @@ const pricingSchema = z.object({
   downspoutNonStockColor: z.coerce.number().min(0),
   helmet: z.coerce.number().min(0),
   cable: z.coerce.number().min(0),
+  cableSerpentine: z.coerce.number().min(0),
+  cable1Cable: z.coerce.number().min(0),
+  cable2Cable: z.coerce.number().min(0),
+  cable3Cable: z.coerce.number().min(0),
+  cable120V: z.coerce.number().min(0),
+  cable240V: z.coerce.number().min(0),
+  cableRetrofit: z.coerce.number().min(0),
+  cableWifi: z.coerce.number().min(0),
+  cableSwitch: z.coerce.number().min(0),
+  cableBreaker: z.coerce.number().min(0),
+  cableElectrician: z.coerce.number().min(0),
   snowFence: z.coerce.number().min(0),
   sasquatchMobilization: z.coerce.number().min(0),
 });
@@ -58,6 +69,17 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
       downspoutNonStockColor: 75.00,
       helmet: 15.00,
       cable: 18.00,
+      cableSerpentine: 22.00,
+      cable1Cable: 18.00,
+      cable2Cable: 28.00,
+      cable3Cable: 38.00,
+      cable120V: 150.00,
+      cable240V: 250.00,
+      cableRetrofit: 5.00,
+      cableWifi: 120.00,
+      cableSwitch: 80.00,
+      cableBreaker: 95.00,
+      cableElectrician: 150.00,
       snowFence: 25.00,
       sasquatchMobilization: 400.00,
     };
@@ -263,7 +285,150 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   name="cable"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-orange-900">Heat Cable Unit Cost ($/LF)</FormLabel>
+                      <FormLabel className="text-orange-900">Base Heat Cable Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cableSerpentine"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-orange-900">Serpentine Layout Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cable1Cable"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-orange-900">1 Cable Layout Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cable2Cable"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-orange-900">2 Cable Layout Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cable3Cable"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-orange-900">3 Cable Layout Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cable120V"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-orange-900">120V Circuit Cost ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cable240V"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-orange-900">240V Circuit Cost ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cableRetrofit"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-orange-900">Retrofit Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cableWifi"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-orange-900">WiFi Controller Cost ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cableSwitch"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-orange-900">Switch Cost ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cableBreaker"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-orange-900">Breaker Cost ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cableElectrician"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-orange-900">Electrician Cost ($)</FormLabel>
                       <FormControl>
                         <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
                       </FormControl>

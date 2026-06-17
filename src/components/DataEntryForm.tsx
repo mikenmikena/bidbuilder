@@ -48,6 +48,10 @@ const formSchema = z.object({
   retrofit: z.enum(['Yes', 'No']).default('No'),
   level3: z.enum(['Yes', 'No']).default('No'),
   cableUnitCost: z.coerce.number().min(0).default(0),
+  cableWifi: z.enum(['Yes', 'No']).default('No'),
+  cableSwitch: z.enum(['Yes', 'No']).default('No'),
+  cableBreaker: z.enum(['Yes', 'No']).default('No'),
+  cableElectrician: z.enum(['Yes', 'No']).default('No'),
   snowFenceColor: z.string().optional(),
   snowFenceRow1LF: z.coerce.number().min(0).default(0),
   snowFenceRow2LF: z.coerce.number().min(0).default(0),
@@ -123,6 +127,10 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
       retrofit: 'No',
       level3: 'No',
       cableUnitCost: pricing.cable,
+      cableWifi: 'No',
+      cableSwitch: 'No',
+      cableBreaker: 'No',
+      cableElectrician: 'No',
       snowFenceColor: "White (30) (stock)",
       snowFenceRow1LF: 0,
       snowFenceRow2LF: 0,
@@ -148,6 +156,16 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
   const watchedLinearFeet = form.watch("linearFeet") || 0;
   const watchedDownspoutLF = form.watch("downspoutLinearFeet") || 0;
   const watchedChainLF = form.watch("chainLinearFeet") || 0;
+
+  // Heat Cable watched fields
+  const watchedCableLayout = form.watch("cableLayout");
+  const watchedCableLF = form.watch("cableLinearFeet") || 0;
+  const watchedVolt = form.watch("volt");
+  const watchedRetrofit = form.watch("retrofit");
+  const watchedCableWifi = form.watch("cableWifi");
+  const watchedCableSwitch = form.watch("cableSwitch");
+  const watchedCableBreaker = form.watch("cableBreaker");
+  const watchedCableElectrician = form.watch("cableElectrician");
 
   // Gutter Cost Calculation using global pricing
   useEffect(() => {
@@ -196,10 +214,55 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
     form.setValue("downspoutUnitCost", Number(finalCost.toFixed(2)));
   }, [watchedDownspoutSize, downspoutType, watchedDownspoutColor, watchedDownspoutLF, watchedChainLF, pricing, form]);
 
+  // Heat Cable Cost Calculation
+  useEffect(() => {
+    let baseCost = pricing.cable; // Default base cost
+
+    // Layout pricing
+    if (watchedCableLayout === 'Serpentine' || watchedCableLayout === 'Serpentine Metal') {
+      baseCost = pricing.cableSerpentine;
+    } else if (watchedCableLayout === '2 cable') {
+      baseCost = pricing.cable2Cable;
+    } else if (watchedCableLayout === '3 cable') {
+      baseCost = pricing.cable3Cable;
+    } else if (watchedCableLayout === 'Gutter and Downspout') {
+      baseCost = pricing.cable1Cable;
+    }
+
+    // Retrofit add-on
+    if (watchedRetrofit === 'Yes') {
+      baseCost += pricing.cableRetrofit;
+    }
+
+    // Flat surcharges distributed over linear feet
+    let flatSurcharges = 0;
+    if (watchedVolt === 120) flatSurcharges += pricing.cable120V;
+    if (watchedVolt === 240) flatSurcharges += pricing.cable240V;
+    if (watchedCableWifi === 'Yes') flatSurcharges += pricing.cableWifi;
+    if (watchedCableSwitch === 'Yes') flatSurcharges += pricing.cableSwitch;
+    if (watchedCableBreaker === 'Yes') flatSurcharges += pricing.cableBreaker;
+    if (watchedCableElectrician === 'Yes') flatSurcharges += pricing.cableElectrician;
+
+    const distributedSurcharge = watchedCableLF > 0 ? (flatSurcharges / watchedCableLF) : 0;
+    const finalCost = baseCost + distributedSurcharge;
+
+    form.setValue("cableUnitCost", Number(finalCost.toFixed(2)));
+  }, [
+    watchedCableLayout,
+    watchedCableLF,
+    watchedVolt,
+    watchedRetrofit,
+    watchedCableWifi,
+    watchedCableSwitch,
+    watchedCableBreaker,
+    watchedCableElectrician,
+    pricing,
+    form
+  ]);
+
   // Update other unit costs when pricing settings change
   useEffect(() => {
     form.setValue("helmetUnitCost", pricing.helmet);
-    form.setValue("cableUnitCost", pricing.cable);
     form.setValue("snowFenceUnitCost", pricing.snowFence);
     form.setValue("sasquatchMobilizationFee", pricing.sasquatchMobilization);
   }, [pricing, form]);
@@ -836,9 +899,17 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Volt</FormLabel>
-                          <FormControl>
-                            <Input type="number" {...field} className="rounded-xl border-orange-300" />
-                          </FormControl>
+                          <Select onValueChange={(val) => field.onChange(Number(val))} defaultValue={String(field.value)}>
+                            <FormControl>
+                              <SelectTrigger className="rounded-xl border-orange-300">
+                                <SelectValue placeholder="Select Volt" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="120">120V</SelectItem>
+                              <SelectItem value="240">240V</SelectItem>
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -862,6 +933,93 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Retrofit</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="rounded-xl border-orange-300">
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Yes">Yes</SelectItem>
+                              <SelectItem value="No">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="cableWifi"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>WiFi Controller</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="rounded-xl border-orange-300">
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Yes">Yes</SelectItem>
+                              <SelectItem value="No">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="cableSwitch"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Switch</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="rounded-xl border-orange-300">
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Yes">Yes</SelectItem>
+                              <SelectItem value="No">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="cableBreaker"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Breaker</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="rounded-xl border-orange-300">
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Yes">Yes</SelectItem>
+                              <SelectItem value="No">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="cableElectrician"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Electrician</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger className="rounded-xl border-orange-300">

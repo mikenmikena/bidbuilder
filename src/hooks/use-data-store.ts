@@ -9,6 +9,11 @@ export interface PricingSettings {
   demolition: number;
   downspout2x3: number;
   downspout3x4: number;
+  downspoutChain: number;
+  gutterStockColor: number;
+  gutterNonStockColor: number;
+  downspoutStockColor: number;
+  downspoutNonStockColor: number;
   helmet: number;
   cable: number;
   snowFence: number;
@@ -22,6 +27,11 @@ const DEFAULT_PRICING: PricingSettings = {
   demolition: 5.28,
   downspout2x3: 12.00,
   downspout3x4: 15.00,
+  downspoutChain: 25.00,
+  gutterStockColor: 0.00,
+  gutterNonStockColor: 5.00,
+  downspoutStockColor: 0.00,
+  downspoutNonStockColor: 3.00,
   helmet: 15.00,
   cable: 18.00,
   snowFence: 25.00,
@@ -85,14 +95,18 @@ export const useDataStore = () => {
     const saved = localStorage.getItem('bid_pricing');
     if (saved) {
       const parsed = JSON.parse(saved);
-      // Handle migration from old pricing structure if needed
       return {
         gutter5K: parsed.gutter5K ?? DEFAULT_PRICING.gutter5K,
-        gutter6B: parsed.gutter6B ?? parsed.gutter6B6K ?? DEFAULT_PRICING.gutter6B,
-        gutter6K: parsed.gutter6K ?? parsed.gutter6B6K ?? DEFAULT_PRICING.gutter6K,
+        gutter6B: parsed.gutter6B ?? DEFAULT_PRICING.gutter6B,
+        gutter6K: parsed.gutter6K ?? DEFAULT_PRICING.gutter6K,
         demolition: parsed.demolition ?? DEFAULT_PRICING.demolition,
-        downspout2x3: parsed.downspout2x3 ?? parsed.downspout ?? DEFAULT_PRICING.downspout2x3,
-        downspout3x4: parsed.downspout3x4 ?? parsed.downspout ?? DEFAULT_PRICING.downspout3x4,
+        downspout2x3: parsed.downspout2x3 ?? DEFAULT_PRICING.downspout2x3,
+        downspout3x4: parsed.downspout3x4 ?? DEFAULT_PRICING.downspout3x4,
+        downspoutChain: parsed.downspoutChain ?? DEFAULT_PRICING.downspoutChain,
+        gutterStockColor: parsed.gutterStockColor ?? DEFAULT_PRICING.gutterStockColor,
+        gutterNonStockColor: parsed.gutterNonStockColor ?? DEFAULT_PRICING.gutterNonStockColor,
+        downspoutStockColor: parsed.downspoutStockColor ?? DEFAULT_PRICING.downspoutStockColor,
+        downspoutNonStockColor: parsed.downspoutNonStockColor ?? DEFAULT_PRICING.downspoutNonStockColor,
         helmet: parsed.helmet ?? DEFAULT_PRICING.helmet,
         cable: parsed.cable ?? DEFAULT_PRICING.cable,
         snowFence: parsed.snowFence ?? DEFAULT_PRICING.snowFence,

@@ -9,8 +9,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PricingSettings as PricingType } from '@/hooks/use-data-store';
-import { Settings2, Save, RefreshCcw } from 'lucide-react';
+import { Settings2, Save, RefreshCcw, Droplets, ArrowDownCircle, ShieldCheck, Zap, Snowflake, Footprints } from 'lucide-react';
 import { showSuccess } from '@/utils/toast';
+import { Separator } from "@/components/ui/separator";
 
 const pricingSchema = z.object({
   gutter5K: z.coerce.number().min(0),
@@ -71,8 +72,8 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
 
   return (
     <Card className="border-none shadow-lg bg-white">
-      <CardHeader>
-        <div className="flex items-center justify-between">
+      <CardHeader className="pb-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <CardTitle className="text-xl font-bold text-indigo-900 flex items-center gap-2">
               <Settings2 className="w-5 h-5" />
@@ -88,206 +89,271 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <FormField
-                control={form.control}
-                name="gutter5K"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gutter 5K Base ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="gutter6B"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gutter 6B Base ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="gutter6K"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gutter 6K Base ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="demolition"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Demolition Add-on ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="downspout2x3"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Downspout 2x3 Unit Cost ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="downspout3x4"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Downspout 3x4 Unit Cost ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="downspoutChain"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Downspout Chain Cost ($/LF)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="gutterStockColor"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Stock Gutter Color Cost ($/LF)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="gutterNonStockColor"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Non-Stock Gutter Color Cost ($/LF)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="downspoutStockColor"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Stock Downspout Color Cost ($/LF)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="downspoutNonStockColor"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Non-Stock Downspout Color Cost ($/LF)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="helmet"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gutter Helmet Unit Cost ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="cable"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Heat Cable Unit Cost ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="snowFence"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Snow Fence Unit Cost ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="sasquatchMobilization"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Sasquatch Mobilization ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="1" {...field} className="rounded-xl border-indigo-100" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            
+            {/* Gutter Section (Amber) */}
+            <div className="space-y-4 bg-amber-50/50 border border-amber-200 p-6 rounded-2xl">
+              <div className="flex items-center gap-2 text-amber-900 font-bold">
+                <Droplets className="w-5 h-5 text-amber-600" />
+                <span>Gutter Pricing</span>
+              </div>
+              <Separator className="bg-amber-200" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <FormField
+                  control={form.control}
+                  name="gutter5K"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-amber-900">Gutter 5K Base ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="gutter6B"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-amber-900">Gutter 6B Base ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="gutter6K"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-amber-900">Gutter 6K Base ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="demolition"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-amber-900">Demolition Add-on ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="gutterStockColor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-amber-900">Stock Gutter Color Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="gutterNonStockColor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-amber-900">Non-Stock Gutter Color Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
+
+            {/* Downspout Section (Sky) */}
+            <div className="space-y-4 bg-sky-50/50 border border-sky-200 p-6 rounded-2xl">
+              <div className="flex items-center gap-2 text-sky-900 font-bold">
+                <ArrowDownCircle className="w-5 h-5 text-sky-600" />
+                <span>Downspout Pricing</span>
+              </div>
+              <Separator className="bg-sky-200" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <FormField
+                  control={form.control}
+                  name="downspout2x3"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sky-900">Downspout 2x3 Unit Cost ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-sky-200 bg-white focus-visible:ring-sky-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="downspout3x4"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sky-900">Downspout 3x4 Unit Cost ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-sky-200 bg-white focus-visible:ring-sky-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="downspoutChain"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sky-900">Downspout Chain Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-sky-200 bg-white focus-visible:ring-sky-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="downspoutStockColor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sky-900">Stock Downspout Color Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-sky-200 bg-white focus-visible:ring-sky-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="downspoutNonStockColor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sky-900">Non-Stock Downspout Color Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-sky-200 bg-white focus-visible:ring-sky-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Gutter Helmet Section (Emerald) */}
+            <div className="space-y-4 bg-emerald-50/50 border border-emerald-200 p-6 rounded-2xl">
+              <div className="flex items-center gap-2 text-emerald-900 font-bold">
+                <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                <span>Gutter Helmet Pricing</span>
+              </div>
+              <Separator className="bg-emerald-200" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <FormField
+                  control={form.control}
+                  name="helmet"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-emerald-900">Gutter Helmet Unit Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-emerald-200 bg-white focus-visible:ring-emerald-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Heat Cable Section (Orange) */}
+            <div className="space-y-4 bg-orange-50/50 border border-orange-200 p-6 rounded-2xl">
+              <div className="flex items-center gap-2 text-orange-900 font-bold">
+                <Zap className="w-5 h-5 text-orange-600" />
+                <span>Heat Cable Pricing</span>
+              </div>
+              <Separator className="bg-orange-200" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <FormField
+                  control={form.control}
+                  name="cable"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-orange-900">Heat Cable Unit Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Snow Fence Section (Purple) */}
+            <div className="space-y-4 bg-purple-50/50 border border-purple-200 p-6 rounded-2xl">
+              <div className="flex items-center gap-2 text-purple-900 font-bold">
+                <Snowflake className="w-5 h-5 text-purple-600" />
+                <span>Snow Fence Pricing</span>
+              </div>
+              <Separator className="bg-purple-200" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <FormField
+                  control={form.control}
+                  name="snowFence"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-purple-900">Snow Fence Unit Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-200 bg-white focus-visible:ring-purple-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Sasquatch Section (Slate) */}
+            <div className="space-y-4 bg-slate-50/50 border border-slate-200 p-6 rounded-2xl">
+              <div className="flex items-center gap-2 text-slate-900 font-bold">
+                <Footprints className="w-5 h-5 text-slate-600" />
+                <span>Sasquatch Pricing</span>
+              </div>
+              <Separator className="bg-slate-200" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <FormField
+                  control={form.control}
+                  name="sasquatchMobilization"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-900">Sasquatch Mobilization ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="1" {...field} className="rounded-xl border-slate-200 bg-white focus-visible:ring-slate-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
             <div className="flex justify-end">
-              <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-8">
+              <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-8 py-6 font-semibold">
                 <Save className="w-4 h-4 mr-2" />
                 Save Pricing Settings
               </Button>

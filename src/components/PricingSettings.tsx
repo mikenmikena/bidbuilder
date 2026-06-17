@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PricingSettings as PricingType } from '@/hooks/use-data-store';
-import { Settings2, Save, RefreshCcw } from 'lucide-react';
+import { Settings2, Save, RefreshCcw, Droplets, ArrowDownCircle, ShieldCheck, Zap, Snowflake, Footprints } from 'lucide-react';
 import { showSuccess } from '@/utils/toast';
 
 const pricingSchema = z.object({
@@ -86,7 +86,75 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
           </Button>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-8">
+        {/* Color-Coded Current Rates Reference Grid */}
+        <div className="space-y-3">
+          <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Active Rates Reference</h4>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {/* Gutter */}
+            <div className="border border-amber-200 bg-amber-50/50 p-4 rounded-2xl flex flex-col justify-between h-28 shadow-sm">
+              <div className="flex items-center justify-between text-amber-800">
+                <span className="text-xs font-bold">Gutter Base</span>
+                <Droplets className="w-4 h-4" />
+              </div>
+              <div className="space-y-0.5">
+                <div className="text-[10px] text-amber-700 font-medium">5K: ${pricing.gutter5K}/LF</div>
+                <div className="text-[10px] text-amber-700 font-medium">6B: ${pricing.gutter6B}/LF</div>
+                <div className="text-[10px] text-amber-700 font-medium">6K: ${pricing.gutter6K}/LF</div>
+              </div>
+            </div>
+
+            {/* Downspout */}
+            <div className="border border-sky-200 bg-sky-50/50 p-4 rounded-2xl flex flex-col justify-between h-28 shadow-sm">
+              <div className="flex items-center justify-between text-sky-800">
+                <span className="text-xs font-bold">Downspout</span>
+                <ArrowDownCircle className="w-4 h-4" />
+              </div>
+              <div className="space-y-0.5">
+                <div className="text-[10px] text-sky-700 font-medium">2x3: ${pricing.downspout2x3}/LF</div>
+                <div className="text-[10px] text-sky-700 font-medium">3x4: ${pricing.downspout3x4}/LF</div>
+                <div className="text-[10px] text-sky-700 font-medium">Chain: ${pricing.downspoutChain}/LF</div>
+              </div>
+            </div>
+
+            {/* Gutter Helmet */}
+            <div className="border border-emerald-200 bg-emerald-50/50 p-4 rounded-2xl flex flex-col justify-between h-28 shadow-sm">
+              <div className="flex items-center justify-between text-emerald-800">
+                <span className="text-xs font-bold">Helmet</span>
+                <ShieldCheck className="w-4 h-4" />
+              </div>
+              <h4 className="text-lg font-black text-emerald-900">${pricing.helmet}/LF</h4>
+            </div>
+
+            {/* Heat Cable */}
+            <div className="border border-orange-200 bg-orange-50/50 p-4 rounded-2xl flex flex-col justify-between h-28 shadow-sm">
+              <div className="flex items-center justify-between text-orange-800">
+                <span className="text-xs font-bold">Heat Cable</span>
+                <Zap className="w-4 h-4" />
+              </div>
+              <h4 className="text-lg font-black text-orange-900">${pricing.cable}/LF</h4>
+            </div>
+
+            {/* Snow Fence */}
+            <div className="border border-purple-200 bg-purple-50/50 p-4 rounded-2xl flex flex-col justify-between h-28 shadow-sm">
+              <div className="flex items-center justify-between text-purple-800">
+                <span className="text-xs font-bold">Snow Fence</span>
+                <Snowflake className="w-4 h-4" />
+              </div>
+              <h4 className="text-lg font-black text-purple-900">${pricing.snowFence}/LF</h4>
+            </div>
+
+            {/* Sasquatch */}
+            <div className="border border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col justify-between h-28 shadow-sm">
+              <div className="flex items-center justify-between text-slate-800">
+                <span className="text-xs font-bold">Sasquatch</span>
+                <Footprints className="w-4 h-4" />
+              </div>
+              <h4 className="text-lg font-black text-slate-900">${pricing.sasquatchMobilization}</h4>
+            </div>
+          </div>
+        </div>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

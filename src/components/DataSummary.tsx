@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import { BidRecord } from '@/hooks/use-data-store';
-import { DollarSign, Target, CheckCircle2, Clock, MapPin, Check, Droplets, Edit2, Trash2, ArrowDownCircle, ShieldCheck, Zap, Snowflake } from 'lucide-react';
+import { DollarSign, Target, CheckCircle2, Clock, MapPin, Check, Droplets, Edit2, Trash2, ArrowDownCircle, ShieldCheck, Zap, Snowflake, Footprints } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -22,6 +22,7 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
   const [editingRecord, setEditingRecord] = useState<BidRecord | null>(null);
 
+  // Individual System Calculations
   const calculateGutterTotal = (r: BidRecord) => r.linearFeet * r.unitCost;
   const calculateDownspoutTotal = (r: BidRecord) => {
     const lf = r.downspoutLinearFeet || 0;
@@ -35,13 +36,26 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
     const totalLF = (r.snowFenceRow1LF || 0) + (r.snowFenceRow2LF || 0) + (r.snowFenceRow3LF || 0);
     return totalLF * (r.snowFenceUnitCost || 0);
   };
-  const calculateSasquatchTotal = (r: BidRecord) => (r.sasquatchPad || 0) + (r.sasquatchMobilizationFee || 0) + (r.sasquatchCustomWork || 0) + (r.sasquatchArcticSteamerReserve || 0);
-  
-  const calculateTotal = (r: BidRecord) => calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r) + calculateSnowFenceTotal(r) + calculateSasquatchTotal(r);
-  
+  const calculateSasquatchTotal = (r: BidRecord) => {
+    return (r.sasquatchPad || 0) + (r.sasquatchMobilizationFee || 0) + (r.sasquatchCustomWork || 0) + (r.sasquatchArcticSteamerReserve || 0);
+  };
+
+  const calculateTotal = (r: BidRecord) => {
+    return calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r) + calculateSnowFenceTotal(r) + calculateSasquatchTotal(r);
+  };
+
+  // Global Totals
   const totalBidValue = records.reduce((sum, r) => sum + calculateTotal(r), 0);
   const wonValue = records.filter(r => r.status === 'Won').reduce((sum, r) => sum + calculateTotal(r), 0);
   const winRate = records.length > 0 ? (records.filter(r => r.status === 'Won').length / records.length) * 100 : 0;
+
+  // System Breakdown Totals
+  const gutterPipeline = records.reduce((sum, r) => sum + calculateGutterTotal(r), 0);
+  const downspoutPipeline = records.reduce((sum, r) => sum + calculateDownspoutTotal(r), 0);
+  const helmetPipeline = records.reduce((sum, r) => sum + calculateHelmetTotal(r), 0);
+  const cablePipeline = records.reduce((sum, r) => sum + calculateCableTotal(r), 0);
+  const snowFencePipeline = records.reduce((sum, r) => sum + calculateSnowFenceTotal(r), 0);
+  const sasquatchPipeline = records.reduce((sum, r) => sum + calculateSasquatchTotal(r), 0);
 
   const statusData = [
     { name: 'Draft', value: records.filter(r => r.status === 'Draft').length },
@@ -108,6 +122,7 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
 
   return (
     <div className="space-y-6">
+      {/* Main KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="border-none shadow-md bg-indigo-600 text-white">
           <CardContent className="pt-6">
@@ -156,6 +171,78 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Color-Coded Section Pricing Breakdown */}
+      <div className="space-y-3">
+        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Section Pricing Breakdown</h4>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          {/* Gutter */}
+          <Card className="border border-amber-200 bg-amber-50/50 shadow-sm">
+            <CardContent className="p-4 flex flex-col justify-between h-24">
+              <div className="flex items-center justify-between text-amber-800">
+                <span className="text-xs font-bold">Gutter</span>
+                <Droplets className="w-4 h-4" />
+              </div>
+              <h4 className="text-lg font-black text-amber-900">${gutterPipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
+            </CardContent>
+          </Card>
+
+          {/* Downspout */}
+          <Card className="border border-sky-200 bg-sky-50/50 shadow-sm">
+            <CardContent className="p-4 flex flex-col justify-between h-24">
+              <div className="flex items-center justify-between text-sky-800">
+                <span className="text-xs font-bold">Downspout</span>
+                <ArrowDownCircle className="w-4 h-4" />
+              </div>
+              <h4 className="text-lg font-black text-sky-900">${downspoutPipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
+            </CardContent>
+          </Card>
+
+          {/* Gutter Helmet */}
+          <Card className="border border-emerald-200 bg-emerald-50/50 shadow-sm">
+            <CardContent className="p-4 flex flex-col justify-between h-24">
+              <div className="flex items-center justify-between text-emerald-800">
+                <span className="text-xs font-bold">Helmet</span>
+                <ShieldCheck className="w-4 h-4" />
+              </div>
+              <h4 className="text-lg font-black text-emerald-900">${helmetPipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
+            </CardContent>
+          </Card>
+
+          {/* Heat Cable */}
+          <Card className="border border-orange-200 bg-orange-50/50 shadow-sm">
+            <CardContent className="p-4 flex flex-col justify-between h-24">
+              <div className="flex items-center justify-between text-orange-800">
+                <span className="text-xs font-bold">Heat Cable</span>
+                <Zap className="w-4 h-4" />
+              </div>
+              <h4 className="text-lg font-black text-orange-900">${cablePipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
+            </CardContent>
+          </Card>
+
+          {/* Snow Fence */}
+          <Card className="border border-purple-200 bg-purple-50/50 shadow-sm">
+            <CardContent className="p-4 flex flex-col justify-between h-24">
+              <div className="flex items-center justify-between text-purple-800">
+                <span className="text-xs font-bold">Snow Fence</span>
+                <Snowflake className="w-4 h-4" />
+              </div>
+              <h4 className="text-lg font-black text-purple-900">${snowFencePipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
+            </CardContent>
+          </Card>
+
+          {/* Sasquatch */}
+          <Card className="border border-slate-200 bg-slate-50/50 shadow-sm">
+            <CardContent className="p-4 flex flex-col justify-between h-24">
+              <div className="flex items-center justify-between text-slate-800">
+                <span className="text-xs font-bold">Sasquatch</span>
+                <Footprints className="w-4 h-4" />
+              </div>
+              <h4 className="text-lg font-black text-slate-900">${sasquatchPipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

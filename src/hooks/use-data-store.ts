@@ -27,6 +27,8 @@ export interface PricingSettings {
   cable3Cable: number;
   cable120V: number;
   cable240V: number;
+  cableFirstCircuit: number;
+  cableAdditionalCircuit: number;
   cableRetrofit: number;
   cableWifi: number;
   cableSwitch: number;
@@ -72,6 +74,8 @@ const DEFAULT_PRICING: PricingSettings = {
   cable3Cable: 38.00,
   cable120V: 150.00,
   cable240V: 250.00,
+  cableFirstCircuit: 500.00,
+  cableAdditionalCircuit: 300.00,
   cableRetrofit: 5.00,
   cableWifi: 120.00,
   cableSwitch: 80.00,
@@ -180,6 +184,8 @@ export const useDataStore = () => {
         cable3Cable: parsed.cable3Cable ?? DEFAULT_PRICING.cable3Cable,
         cable120V: parsed.cable120V ?? DEFAULT_PRICING.cable120V,
         cable240V: parsed.cable240V ?? DEFAULT_PRICING.cable240V,
+        cableFirstCircuit: parsed.cableFirstCircuit ?? DEFAULT_PRICING.cableFirstCircuit,
+        cableAdditionalCircuit: parsed.cableAdditionalCircuit ?? DEFAULT_PRICING.cableAdditionalCircuit,
         cableRetrofit: parsed.cableRetrofit ?? DEFAULT_PRICING.cableRetrofit,
         cableWifi: parsed.cableWifi ?? DEFAULT_PRICING.cableWifi,
         cableSwitch: parsed.cableSwitch ?? DEFAULT_PRICING.cableSwitch,

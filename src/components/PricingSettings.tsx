@@ -38,6 +38,8 @@ const pricingSchema = z.object({
   cable3Cable: z.coerce.number().min(0),
   cable120V: z.coerce.number().min(0),
   cable240V: z.coerce.number().min(0),
+  cableFirstCircuit: z.coerce.number().min(0),
+  cableAdditionalCircuit: z.coerce.number().min(0),
   cableRetrofit: z.coerce.number().min(0),
   cableWifi: z.coerce.number().min(0),
   cableSwitch: z.coerce.number().min(0),
@@ -100,6 +102,8 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
       cable3Cable: 38.00,
       cable120V: 150.00,
       cable240V: 250.00,
+      cableFirstCircuit: 500.00,
+      cableAdditionalCircuit: 300.00,
       cableRetrofit: 5.00,
       cableWifi: 120.00,
       cableSwitch: 80.00,
@@ -507,6 +511,32 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-orange-900">240V Circuit Cost ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cableFirstCircuit"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-orange-900">1st Circuit Cost ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cableAdditionalCircuit"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-orange-900">Additional Circuits Cost ($)</FormLabel>
                       <FormControl>
                         <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
                       </FormControl>

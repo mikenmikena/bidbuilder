@@ -195,7 +195,7 @@ const SupplyOrderView = ({ records }: SupplyOrderViewProps) => {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="text-gray-900 font-bold">Size / Type</TableHead>
-                      <TableHead className="text-gray-900 font-bold">Color</FormLabel></TableHead>
+                      <TableHead className="text-gray-900 font-bold">Color</TableHead>
                       <TableHead className="text-gray-900 font-bold text-right">Quantity Needed</TableHead>
                     </TableRow>
                   </TableHeader>

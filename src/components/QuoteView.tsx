@@ -98,6 +98,7 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
                             {item.gutterProfile !== 'None' ? ` • ${item.gutterProfile} Profile` : ''}
                             {item.gutterBaseType ? ` • ${item.gutterBaseType} Base` : ''}
                             {item.demolition === 'Yes' ? ` • Incl. Demolition` : ''}
+                            {item.fascia && item.fascia !== 'None' ? ` • ${item.fascia} Fascia` : ''}
                           </span>
                         </div>
                       </TableCell>

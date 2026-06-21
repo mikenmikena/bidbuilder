@@ -25,6 +25,7 @@ const SupplyOrderView = ({ records }: SupplyOrderViewProps) => {
   const helmetMaterials: { [key: string]: { lf: number; color: string; roof: string } } = {};
   const cableMaterials: { [key: string]: { lf: number; layout: string; volt: string; wifi: boolean; switch: boolean; breaker: boolean; electrician: boolean } } = {};
   const snowFenceMaterials: { [key: string]: { lf: number; color: string; roof: string; level: string } } = {};
+  const fasciaMaterials: { [key: string]: { lf: number; type: string } } = {};
   const sasquatchMaterials: { pad: number; mobilization: number; electrical: string; fascia: string; custom: number } = {
     pad: 0,
     mobilization: 0,
@@ -46,6 +47,15 @@ const SupplyOrderView = ({ records }: SupplyOrderViewProps) => {
         };
       }
       gutterMaterials[key].lf += item.linearFeet;
+    }
+
+    // Fascia Board
+    if (item.linearFeet > 0 && item.fascia && item.fascia !== 'None') {
+      const key = item.fascia;
+      if (!fasciaMaterials[key]) {
+        fasciaMaterials[key] = { lf: 0, type: item.fascia };
+      }
+      fasciaMaterials[key].lf += item.linearFeet;
     }
 
     // Downspouts
@@ -181,6 +191,32 @@ const SupplyOrderView = ({ records }: SupplyOrderViewProps) => {
                         <TableCell className="font-semibold text-slate-900">{key.split('-')[0]} Seamless Gutter ({data.baseType} Base)</TableCell>
                         <TableCell>{data.color}</TableCell>
                         <TableCell>{data.cert}</TableCell>
+                        <TableCell className="text-right font-bold text-indigo-900">{data.lf} LF</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+
+            {/* Fascia Board Supplies */}
+            {Object.keys(fasciaMaterials).length > 0 && (
+              <div className="space-y-3">
+                <h4 className="text-sm font-bold text-amber-900 flex items-center gap-2 bg-amber-50 px-3 py-2 rounded-lg">
+                  <Droplets className="w-4 h-4" />
+                  Fascia Board Materials
+                </h4>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="font-bold text-slate-700">Fascia Type</TableHead>
+                      <TableHead className="font-bold text-slate-700 text-right">Quantity Needed</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {Object.entries(fasciaMaterials).map(([key, data]) => (
+                      <TableRow key={key}>
+                        <TableCell className="font-semibold text-slate-900">{data.type} Fascia Board</TableCell>
                         <TableCell className="text-right font-bold text-indigo-900">{data.lf} LF</TableCell>
                       </TableRow>
                     ))}

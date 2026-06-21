@@ -115,6 +115,7 @@ export interface BidRecord {
   gutterCert?: 'Box Level 1' | 'Box Level 2' | 'Box Level 3' | 'K Level 1' | 'K Level 2' | 'K Level 3' | 'None';
   includeGutterDownspout?: 'Yes' | 'No';
   demolition?: 'Yes' | 'No';
+  fascia?: 'None' | 'Hardwood' | 'Standard';
   downspoutColor?: string;
   downspoutSize?: '2x3' | '3x4' | 'None';
   downspoutLinearFeet?: number;

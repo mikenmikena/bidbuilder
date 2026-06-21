@@ -30,6 +30,7 @@ const formSchema = z.object({
   gutterCert: z.enum(['Box Level 1', 'Box Level 2', 'Box Level 3', 'K Level 1', 'K Level 2', 'K Level 3', 'None']).default('None'),
   includeGutterDownspout: z.enum(['Yes', 'No']).default('Yes'),
   demolition: z.enum(['Yes', 'No']).default('No'),
+  fascia: z.enum(['None', 'Hardwood', 'Standard']).default('None'),
   downspoutColor: z.string().optional(),
   downspoutSize: z.enum(['2x3', '3x4', 'None']).default('None'),
   downspoutLinearFeet: z.coerce.number().min(0).default(0),
@@ -107,6 +108,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
       gutterCert: 'None',
       includeGutterDownspout: 'Yes',
       demolition: 'No',
+      fascia: 'None',
       downspoutColor: "White (30) (stock)",
       downspoutSize: 'None',
       downspoutLinearFeet: 0,
@@ -150,6 +152,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
   const watchedBaseType = form.watch("gutterBaseType");
   const watchedInclude = form.watch("includeGutterDownspout");
   const watchedDemolition = form.watch("demolition");
+  const watchedFascia = form.watch("fascia");
   const watchedStories = form.watch("buildingStories");
   const watchedDownspoutSize = form.watch("downspoutSize");
   const watchedGutterColor = form.watch("gutterColor");
@@ -203,12 +206,17 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
     const isStockColor = watchedGutterColor?.toLowerCase().includes("stock");
     const colorCost = isStockColor ? 0 : (watchedLinearFeet > 0 ? (pricing.gutterNonStockColor / watchedLinearFeet) : 0);
     
+    // Add fascia cost
+    let fasciaCost = 0;
+    if (watchedFascia === 'Hardwood') fasciaCost = pricing.gutterHardwoodFascia;
+    else if (watchedFascia === 'Standard') fasciaCost = pricing.gutterBasicFascia;
+
     const finalCost = watchedDemolition === "Yes" 
-      ? baseCost + pricing.demolition + colorCost 
-      : baseCost + colorCost;
+      ? baseCost + pricing.demolition + colorCost + fasciaCost
+      : baseCost + colorCost + fasciaCost;
       
     form.setValue("unitCost", Number(finalCost.toFixed(2)));
-  }, [watchedProfile, watchedBaseType, watchedInclude, watchedDemolition, watchedGutterColor, watchedLinearFeet, pricing, form]);
+  }, [watchedProfile, watchedBaseType, watchedInclude, watchedDemolition, watchedFascia, watchedGutterColor, watchedLinearFeet, pricing, form]);
 
   // Downspout Cost Calculation using global pricing
   useEffect(() => {
@@ -593,7 +601,29 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="fascia"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Fascia Board</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="rounded-xl border-amber-300">
+                                <SelectValue placeholder="Select fascia" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="None">None</SelectItem>
+                              <SelectItem value="Hardwood">Hardwood</SelectItem>
+                              <SelectItem value="Standard">Standard</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                     <FormField
                       control={form.control}
                       name="linearFeet"

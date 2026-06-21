@@ -8,10 +8,11 @@ import DataTable from '@/components/DataTable';
 import ExcelImport from '@/components/ExcelImport';
 import ExcelExport from '@/components/ExcelExport';
 import QuoteView from '@/components/QuoteView';
+import SupplyOrderView from '@/components/SupplyOrderView';
 import PricingSettings from '@/components/PricingSettings';
 import PricingLock from '@/components/PricingLock';
 import { MadeWithDyad } from "@/components/made-with-dyad";
-import { LayoutDashboard, Database, FileSpreadsheet, Briefcase, ArrowLeft, Settings2 } from 'lucide-react';
+import { LayoutDashboard, Database, FileSpreadsheet, Briefcase, ArrowLeft, Settings2, ClipboardCheck } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -74,12 +75,12 @@ const Index = () => {
         ) : (
           <>
             <div className="mb-8 no-print">
-              <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Bid Dashboard</h2>
-              <p className="text-gray-500 mt-1">Track proposals, manage costs, and generate professional quotes.</p>
+              <h2 className="text-3xl font-extrabold text-slate-900">Empirical Dashboard</h2>
+              <p className="text-slate-500">Manage your clients, bids, and material supply orders.</p>
             </div>
 
-            <Tabs defaultValue="overview" className="space-y-8 no-print">
-              <TabsList className="bg-white p-1 rounded-2xl border border-indigo-50 shadow-sm inline-flex">
+            <Tabs defaultValue="overview" className="space-y-6">
+              <TabsList className="bg-white p-1 rounded-2xl border border-indigo-50 shadow-sm inline-flex flex-wrap gap-1">
                 <TabsTrigger value="overview" className="rounded-xl px-6 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white transition-all">
                   <LayoutDashboard className="w-4 h-4 mr-2" />
                   Overview
@@ -91,6 +92,10 @@ const Index = () => {
                 <TabsTrigger value="records" className="rounded-xl px-6 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white transition-all">
                   <FileSpreadsheet className="w-4 h-4 mr-2" />
                   All Items
+                </TabsTrigger>
+                <TabsTrigger value="supplies" className="rounded-xl px-6 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white transition-all">
+                  <ClipboardCheck className="w-4 h-4 mr-2" />
+                  Supply Order
                 </TabsTrigger>
                 <TabsTrigger value="pricing" className="rounded-xl px-6 py-2.5 data-[state=active]:bg-indigo-600 data-[state=active]:text-white transition-all">
                   <Settings2 className="w-4 h-4 mr-2" />
@@ -150,6 +155,10 @@ const Index = () => {
 
               <TabsContent value="records" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <DataTable records={records} onDelete={deleteRecord} onUpdate={updateRecord} />
+              </TabsContent>
+
+              <TabsContent value="supplies" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <SupplyOrderView records={records} />
               </TabsContent>
 
               <TabsContent value="pricing" className="animate-in fade-in slide-in-from-bottom-4 duration-500">

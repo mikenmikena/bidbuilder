@@ -61,7 +61,7 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
         <div className="relative w-full sm:max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input 
-            placeholder="Search clients or jobs..." 
+            placeholder="Search clients or addresses..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10 rounded-xl border-indigo-100"
@@ -89,7 +89,7 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
           <TableHeader className="bg-indigo-50/50">
             <TableRow>
               <TableHead className="font-bold text-indigo-900">Date</TableHead>
-              <TableHead className="font-bold text-indigo-900">Client / Job</TableHead>
+              <TableHead className="font-bold text-indigo-900">Client / Address</TableHead>
               <TableHead className="font-bold text-indigo-900">Systems</TableHead>
               <TableHead className="font-bold text-indigo-900">Downspout</TableHead>
               <TableHead className="font-bold text-indigo-900 text-right">Total Price</TableHead>

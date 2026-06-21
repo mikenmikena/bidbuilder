@@ -15,7 +15,7 @@ interface QuoteViewProps {
 const QuoteView = ({ clientName, records }: QuoteViewProps) => {
   const clientItems = records.filter(r => r.client === clientName);
   const date = clientItems[0]?.date || new Date().toLocaleDateString();
-  const jobName = clientItems[0]?.job || "Standard Project";
+  const jobAddress = clientItems[0]?.job || "Standard Address";
 
   const calculateGutterTotal = (r: BidRecord) => r.linearFeet * r.unitCost;
   const calculateDownspoutTotal = (r: BidRecord) => ((r.downspoutLinearFeet || 0) + (r.chainLinearFeet || 0)) * (r.downspoutUnitCost || 0);
@@ -55,7 +55,7 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
                 <p className="font-bold text-lg text-gray-900">{clientName}</p>
                 <div className="flex items-center gap-1 text-indigo-600 font-medium">
                   <Briefcase className="w-3 h-3" />
-                  <span>{jobName}</span>
+                  <span>{jobAddress}</span>
                 </div>
               </div>
             </div>

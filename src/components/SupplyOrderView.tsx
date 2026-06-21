@@ -151,7 +151,7 @@ const SupplyOrderView = ({ records }: SupplyOrderViewProps) => {
             <div className="border-b border-slate-100 pb-6">
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Project / Client Details</h3>
               <p className="text-xl font-black text-slate-900">{selectedClient}</p>
-              <p className="text-sm text-indigo-600 font-medium mt-1">Active Job: {clientItems[0]?.job || "Standard Project"}</p>
+              <p className="text-sm text-indigo-600 font-medium mt-1">Active Address: {clientItems[0]?.job || "Standard Address"}</p>
             </div>
 
             {/* Gutter Supplies */}

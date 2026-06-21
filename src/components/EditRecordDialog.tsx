@@ -19,7 +19,7 @@ import { Switch } from "@/components/ui/switch";
 const formSchema = z.object({
   date: z.string().min(1, "Date is required"),
   client: z.string().min(2, "Client is required"),
-  job: z.string().min(2, "Job name is required"),
+  job: z.string().min(2, "Job address is required"),
   linearFeet: z.coerce.number().min(0),
   unitCost: z.coerce.number().min(0),
   status: z.enum(['Draft', 'Submitted', 'Won', 'Lost']),
@@ -312,7 +312,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                 name="job"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Job</FormLabel>
+                    <FormLabel>Job Address</FormLabel>
                     <FormControl>
                       <Input {...field} className="rounded-xl border-indigo-100" />
                     </FormControl>

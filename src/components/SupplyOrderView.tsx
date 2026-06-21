@@ -20,7 +20,7 @@ const SupplyOrderView = ({ records }: SupplyOrderViewProps) => {
   const date = new Date().toLocaleDateString();
 
   // Aggregate Materials
-  const gutterMaterials: { [key: string]: { lf: number; color: string; cert: string } } = {};
+  const gutterMaterials: { [key: string]: { lf: number; color: string; cert: string; baseType: string } } = {};
   const downspoutMaterials: { [key: string]: { lf: number; color: string; size: string } } = {};
   const helmetMaterials: { [key: string]: { lf: number; color: string; roof: string } } = {};
   const cableMaterials: { [key: string]: { lf: number; layout: string; volt: string; wifi: boolean; switch: boolean; breaker: boolean; electrician: boolean } } = {};
@@ -36,9 +36,14 @@ const SupplyOrderView = ({ records }: SupplyOrderViewProps) => {
   clientItems.forEach(item => {
     // Gutters
     if (item.linearFeet > 0 && item.gutterProfile && item.gutterProfile !== 'None') {
-      const key = `${item.gutterProfile}-${item.gutterColor || 'Default'}`;
+      const key = `${item.gutterProfile}-${item.gutterBaseType || 'Asphalt'}-${item.gutterColor || 'Default'}`;
       if (!gutterMaterials[key]) {
-        gutterMaterials[key] = { lf: 0, color: item.gutterColor || 'Default', cert: item.gutterCert || 'None' };
+        gutterMaterials[key] = { 
+          lf: 0, 
+          color: item.gutterColor || 'Default', 
+          cert: item.gutterCert || 'None',
+          baseType: item.gutterBaseType || 'Asphalt'
+        };
       }
       gutterMaterials[key].lf += item.linearFeet;
     }
@@ -173,7 +178,7 @@ const SupplyOrderView = ({ records }: SupplyOrderViewProps) => {
                   <TableBody>
                     {Object.entries(gutterMaterials).map(([key, data]) => (
                       <TableRow key={key}>
-                        <TableCell className="font-semibold text-slate-900">{key.split('-')[0]} Seamless Gutter</TableCell>
+                        <TableCell className="font-semibold text-slate-900">{key.split('-')[0]} Seamless Gutter ({data.baseType} Base)</TableCell>
                         <TableCell>{data.color}</TableCell>
                         <TableCell>{data.cert}</TableCell>
                         <TableCell className="text-right font-bold text-indigo-900">{data.lf} LF</TableCell>

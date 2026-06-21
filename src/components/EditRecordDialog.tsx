@@ -26,6 +26,7 @@ const formSchema = z.object({
   area: z.string().optional(),
   gutterColor: z.string().optional(),
   gutterProfile: z.enum(['5K', '6B', '6K', 'None']).default('None'),
+  gutterBaseType: z.enum(['Asphalt', 'Metal', 'Membrane']).default('Asphalt'),
   gutterCert: z.enum(['Box Level 1', 'Box Level 2', 'Box Level 3', 'K Level 1', 'K Level 2', 'K Level 3', 'None']).default('None'),
   includeGutterDownspout: z.enum(['Yes', 'No']).default('Yes'),
   demolition: z.enum(['Yes', 'No']).default('No'),
@@ -112,6 +113,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       area: record.area || "",
       gutterColor: record.gutterColor || "White (30) (stock)",
       gutterProfile: record.gutterProfile || 'None',
+      gutterBaseType: record.gutterBaseType || 'Asphalt',
       gutterCert: record.gutterCert || 'None',
       includeGutterDownspout: record.includeGutterDownspout || 'Yes',
       demolition: record.demolition || 'No',
@@ -165,6 +167,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
   }, [record]);
 
   const watchedProfile = form.watch("gutterProfile");
+  const watchedBaseType = form.watch("gutterBaseType");
   const watchedInclude = form.watch("includeGutterDownspout");
   const watchedDemolition = form.watch("demolition");
   const watchedStories = form.watch("buildingStories");
@@ -184,11 +187,17 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
     let baseCost = 0;
     if (watchedInclude === "Yes") {
       if (watchedProfile === "5K") {
-        baseCost = pricing.gutter5K;
+        if (watchedBaseType === "Asphalt") baseCost = pricing.gutter5KAsphalt;
+        else if (watchedBaseType === "Metal") baseCost = pricing.gutter5KMetal;
+        else if (watchedBaseType === "Membrane") baseCost = pricing.gutter5KMembrane;
       } else if (watchedProfile === "6B") {
-        baseCost = pricing.gutter6B;
+        if (watchedBaseType === "Asphalt") baseCost = pricing.gutter6BAsphalt;
+        else if (watchedBaseType === "Metal") baseCost = pricing.gutter6BMetal;
+        else if (watchedBaseType === "Membrane") baseCost = pricing.gutter6BMembrane;
       } else if (watchedProfile === "6K") {
-        baseCost = pricing.gutter6K;
+        if (watchedBaseType === "Asphalt") baseCost = pricing.gutter6KAsphalt;
+        else if (watchedBaseType === "Metal") baseCost = pricing.gutter6KMetal;
+        else if (watchedBaseType === "Membrane") baseCost = pricing.gutter6KMembrane;
       }
     }
     
@@ -201,7 +210,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       : baseCost + colorCost;
       
     form.setValue("unitCost", Number(finalCost.toFixed(2)));
-  }, [watchedProfile, watchedInclude, watchedDemolition, watchedGutterColor, watchedLinearFeet, pricing, form]);
+  }, [watchedProfile, watchedBaseType, watchedInclude, watchedDemolition, watchedGutterColor, watchedLinearFeet, pricing, form]);
 
   // Downspout Cost Calculation
   useEffect(() => {
@@ -432,7 +441,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
                     <FormField
                       control={form.control}
                       name="gutterColor"
@@ -472,6 +481,28 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                               <SelectItem value="5K">5K</SelectItem>
                               <SelectItem value="6B">6B</SelectItem>
                               <SelectItem value="6K">6K</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="gutterBaseType"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Base Type</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="rounded-xl border-amber-300">
+                                <SelectValue placeholder="Select base type" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Asphalt">Asphalt Base</SelectItem>
+                              <SelectItem value="Metal">Metal Base</SelectItem>
+                              <SelectItem value="Membrane">Membrane</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />

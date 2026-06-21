@@ -3,9 +3,15 @@
 import { useState, useEffect } from 'react';
 
 export interface PricingSettings {
-  gutter5K: number;
-  gutter6B: number;
-  gutter6K: number;
+  gutter5KAsphalt: number;
+  gutter5KMetal: number;
+  gutter5KMembrane: number;
+  gutter6BAsphalt: number;
+  gutter6BMetal: number;
+  gutter6BMembrane: number;
+  gutter6KAsphalt: number;
+  gutter6KMetal: number;
+  gutter6KMembrane: number;
   demolition: number;
   downspout2x3: number;
   downspout3x4: number;
@@ -39,9 +45,15 @@ export interface PricingSettings {
 }
 
 const DEFAULT_PRICING: PricingSettings = {
-  gutter5K: 23.83,
-  gutter6B: 34.44,
-  gutter6K: 34.44,
+  gutter5KAsphalt: 23.83,
+  gutter5KMetal: 28.50,
+  gutter5KMembrane: 32.00,
+  gutter6BAsphalt: 34.44,
+  gutter6BMetal: 39.50,
+  gutter6BMembrane: 44.00,
+  gutter6KAsphalt: 34.44,
+  gutter6KMetal: 39.50,
+  gutter6KMembrane: 44.00,
   demolition: 5.28,
   downspout2x3: 12.00,
   downspout3x4: 15.00,
@@ -85,6 +97,7 @@ export interface BidRecord {
   area?: string;
   gutterColor?: string;
   gutterProfile?: '5K' | '6B' | '6K' | 'None';
+  gutterBaseType?: 'Asphalt' | 'Metal' | 'Membrane';
   gutterCert?: 'Box Level 1' | 'Box Level 2' | 'Box Level 3' | 'K Level 1' | 'K Level 2' | 'K Level 3' | 'None';
   includeGutterDownspout?: 'Yes' | 'No';
   demolition?: 'Yes' | 'No';
@@ -137,9 +150,15 @@ export const useDataStore = () => {
     if (saved) {
       const parsed = JSON.parse(saved);
       return {
-        gutter5K: parsed.gutter5K ?? DEFAULT_PRICING.gutter5K,
-        gutter6B: parsed.gutter6B ?? DEFAULT_PRICING.gutter6B,
-        gutter6K: parsed.gutter6K ?? DEFAULT_PRICING.gutter6K,
+        gutter5KAsphalt: parsed.gutter5KAsphalt ?? DEFAULT_PRICING.gutter5KAsphalt,
+        gutter5KMetal: parsed.gutter5KMetal ?? DEFAULT_PRICING.gutter5KMetal,
+        gutter5KMembrane: parsed.gutter5KMembrane ?? DEFAULT_PRICING.gutter5KMembrane,
+        gutter6BAsphalt: parsed.gutter6BAsphalt ?? DEFAULT_PRICING.gutter6BAsphalt,
+        gutter6BMetal: parsed.gutter6BMetal ?? DEFAULT_PRICING.gutter6BMetal,
+        gutter6BMembrane: parsed.gutter6BMembrane ?? DEFAULT_PRICING.gutter6BMembrane,
+        gutter6KAsphalt: parsed.gutter6KAsphalt ?? DEFAULT_PRICING.gutter6KAsphalt,
+        gutter6KMetal: parsed.gutter6KMetal ?? DEFAULT_PRICING.gutter6KMetal,
+        gutter6KMembrane: parsed.gutter6KMembrane ?? DEFAULT_PRICING.gutter6KMembrane,
         demolition: parsed.demolition ?? DEFAULT_PRICING.demolition,
         downspout2x3: parsed.downspout2x3 ?? DEFAULT_PRICING.downspout2x3,
         downspout3x4: parsed.downspout3x4 ?? DEFAULT_PRICING.downspout3x4,

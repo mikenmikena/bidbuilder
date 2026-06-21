@@ -14,9 +14,15 @@ import { showSuccess } from '@/utils/toast';
 import { Separator } from "@/components/ui/separator";
 
 const pricingSchema = z.object({
-  gutter5K: z.coerce.number().min(0),
-  gutter6B: z.coerce.number().min(0),
-  gutter6K: z.coerce.number().min(0),
+  gutter5KAsphalt: z.coerce.number().min(0),
+  gutter5KMetal: z.coerce.number().min(0),
+  gutter5KMembrane: z.coerce.number().min(0),
+  gutter6BAsphalt: z.coerce.number().min(0),
+  gutter6BMetal: z.coerce.number().min(0),
+  gutter6BMembrane: z.coerce.number().min(0),
+  gutter6KAsphalt: z.coerce.number().min(0),
+  gutter6KMetal: z.coerce.number().min(0),
+  gutter6KMembrane: z.coerce.number().min(0),
   demolition: z.coerce.number().min(0),
   downspout2x3: z.coerce.number().min(0),
   downspout3x4: z.coerce.number().min(0),
@@ -67,9 +73,15 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
 
   const resetToDefaults = () => {
     const defaults = {
-      gutter5K: 23.83,
-      gutter6B: 34.44,
-      gutter6K: 34.44,
+      gutter5KAsphalt: 23.83,
+      gutter5KMetal: 28.50,
+      gutter5KMembrane: 32.00,
+      gutter6BAsphalt: 34.44,
+      gutter6BMetal: 39.50,
+      gutter6BMembrane: 44.00,
+      gutter6KAsphalt: 34.44,
+      gutter6KMetal: 39.50,
+      gutter6KMembrane: 44.00,
       demolition: 5.28,
       downspout2x3: 12.00,
       downspout3x4: 15.00,
@@ -128,52 +140,159 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             
             {/* Gutter Section (Amber) */}
-            <div className="space-y-4 bg-amber-50/50 border border-amber-200 p-6 rounded-2xl">
+            <div className="space-y-6 bg-amber-50/50 border border-amber-200 p-6 rounded-2xl">
               <div className="flex items-center gap-2 text-amber-900 font-bold">
                 <Droplets className="w-5 h-5 text-amber-600" />
                 <span>Gutter Pricing</span>
               </div>
               <Separator className="bg-amber-200" />
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <FormField
-                  control={form.control}
-                  name="gutter5K"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-amber-900">Gutter 5K Base ($/LF)</FormLabel>
-                      <FormControl>
-                        <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="gutter6B"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-amber-900">Gutter 6B Base ($/LF)</FormLabel>
-                      <FormControl>
-                        <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="gutter6K"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-amber-900">Gutter 6K Base ($/LF)</FormLabel>
-                      <FormControl>
-                        <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              
+              {/* 5K Gutter */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-bold text-amber-800">Gutter 5K</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="gutter5KAsphalt"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-amber-900">5K Asphalt Base ($/LF)</FormLabel>
+                        <FormControl>
+                          <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="gutter5KMetal"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-amber-900">5K Metal Base ($/LF)</FormLabel>
+                        <FormControl>
+                          <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="gutter5KMembrane"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-amber-900">5K Membrane ($/LF)</FormLabel>
+                        <FormControl>
+                          <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <Separator className="bg-amber-200/50" />
+
+              {/* 6B Gutter */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-bold text-amber-800">Gutter 6B</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="gutter6BAsphalt"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-amber-900">6B Asphalt Base ($/LF)</FormLabel>
+                        <FormControl>
+                          <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="gutter6BMetal"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-amber-900">6B Metal Base ($/LF)</FormLabel>
+                        <FormControl>
+                          <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="gutter6BMembrane"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-amber-900">6B Membrane ($/LF)</FormLabel>
+                        <FormControl>
+                          <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <Separator className="bg-amber-200/50" />
+
+              {/* 6K Gutter */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-bold text-amber-800">Gutter 6K</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="gutter6KAsphalt"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-amber-900">6K Asphalt Base ($/LF)</FormLabel>
+                        <FormControl>
+                          <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="gutter6KMetal"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-amber-900">6K Metal Base ($/LF)</FormLabel>
+                        <FormControl>
+                          <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="gutter6KMembrane"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-amber-900">6K Membrane ($/LF)</FormLabel>
+                        <FormControl>
+                          <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <Separator className="bg-amber-200/50" />
+
+              {/* Demolition & Surcharges */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="demolition"

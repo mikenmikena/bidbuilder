@@ -24,6 +24,8 @@ const pricingSchema = z.object({
   gutter6KMetal: z.coerce.number().min(0),
   gutter6KMembrane: z.coerce.number().min(0),
   demolition: z.coerce.number().min(0),
+  gutterHardwoodFascia: z.coerce.number().min(0),
+  gutterBasicFascia: z.coerce.number().min(0),
   downspout2x3: z.coerce.number().min(0),
   downspout3x4: z.coerce.number().min(0),
   downspoutChain: z.coerce.number().min(0),
@@ -88,6 +90,8 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
       gutter6KMetal: 39.50,
       gutter6KMembrane: 44.00,
       demolition: 5.28,
+      gutterHardwoodFascia: 15.00,
+      gutterBasicFascia: 8.00,
       downspout2x3: 12.00,
       downspout3x4: 15.00,
       downspoutChain: 25.00,
@@ -301,7 +305,7 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
 
               <Separator className="bg-amber-200/50" />
 
-              {/* Demolition & Surcharges */}
+              {/* Demolition, Fascia & Surcharges */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
@@ -322,6 +326,32 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-amber-900">Non-Stock Gutter Color Surcharge ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="gutterHardwoodFascia"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-amber-900">Hardwood Fascia ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="gutterBasicFascia"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-amber-900">Basic Fascia ($/LF)</FormLabel>
                       <FormControl>
                         <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
                       </FormControl>

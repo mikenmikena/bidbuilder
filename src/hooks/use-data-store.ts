@@ -13,6 +13,8 @@ export interface PricingSettings {
   gutter6KMetal: number;
   gutter6KMembrane: number;
   demolition: number;
+  gutterHardwoodFascia: number;
+  gutterBasicFascia: number;
   downspout2x3: number;
   downspout3x4: number;
   downspoutChain: number;
@@ -60,6 +62,8 @@ const DEFAULT_PRICING: PricingSettings = {
   gutter6KMetal: 39.50,
   gutter6KMembrane: 44.00,
   demolition: 5.28,
+  gutterHardwoodFascia: 15.00,
+  gutterBasicFascia: 8.00,
   downspout2x3: 12.00,
   downspout3x4: 15.00,
   downspoutChain: 25.00,
@@ -170,6 +174,8 @@ export const useDataStore = () => {
         gutter6KMetal: parsed.gutter6KMetal ?? DEFAULT_PRICING.gutter6KMetal,
         gutter6KMembrane: parsed.gutter6KMembrane ?? DEFAULT_PRICING.gutter6KMembrane,
         demolition: parsed.demolition ?? DEFAULT_PRICING.demolition,
+        gutterHardwoodFascia: parsed.gutterHardwoodFascia ?? DEFAULT_PRICING.gutterHardwoodFascia,
+        gutterBasicFascia: parsed.gutterBasicFascia ?? DEFAULT_PRICING.gutterBasicFascia,
         downspout2x3: parsed.downspout2x3 ?? DEFAULT_PRICING.downspout2x3,
         downspout3x4: parsed.downspout3x4 ?? DEFAULT_PRICING.downspout3x4,
         downspoutChain: parsed.downspoutChain ?? DEFAULT_PRICING.downspoutChain,

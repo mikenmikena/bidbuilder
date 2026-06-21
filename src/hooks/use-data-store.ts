@@ -122,6 +122,7 @@ export interface BidRecord {
   fasciaUnitCost?: number;
   downspoutColor?: string;
   downspoutSize?: '2x3' | '3x4' | 'None';
+  downspoutCount?: number;
   downspoutLinearFeet?: number;
   chainLinearFeet?: number;
   buildingStories?: number;

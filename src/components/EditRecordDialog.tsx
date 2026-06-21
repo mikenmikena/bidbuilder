@@ -38,6 +38,7 @@ const formSchema = z.object({
   // Downspout fields
   downspoutColor: z.string().optional(),
   downspoutSize: z.enum(['2x3', '3x4', 'None']).default('None'),
+  downspoutCount: z.coerce.number().min(0).default(0),
   downspoutLinearFeet: z.coerce.number().min(0).default(0),
   chainLinearFeet: z.coerce.number().min(0).default(0),
   buildingStories: z.coerce.number().min(1).default(1),
@@ -125,6 +126,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       fasciaUnitCost: record.fasciaUnitCost || 0,
       downspoutColor: record.downspoutColor || "White (30) (stock)",
       downspoutSize: record.downspoutSize || 'None',
+      downspoutCount: record.downspoutCount || 0,
       downspoutLinearFeet: record.downspoutLinearFeet || 0,
       chainLinearFeet: record.chainLinearFeet || 0,
       buildingStories: record.buildingStories || 1,
@@ -179,6 +181,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
   const watchedFascia = form.watch("fascia");
   const watchedStories = form.watch("buildingStories");
   const watchedDownspoutSize = form.watch("downspoutSize");
+  const watchedDownspoutCount = form.watch("downspoutCount") || 0;
   const watchedGutterColor = form.watch("gutterColor");
   const watchedDownspoutColor = form.watch("downspoutColor");
   const watchedLinearFeet = form.watch("linearFeet") || 0;
@@ -293,15 +296,16 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
     form.setValue("snowFenceUnitCost", Number(finalCost.toFixed(2)));
   }, [watchedSnowFenceRoofType, watchedSnowFenceLevel, watchedSnowFenceColor, watchedSnowFenceRow1LF, watchedSnowFenceRow2LF, watchedSnowFenceRow3LF, pricing, form]);
 
+  // Calculate linear feet based on downspout count (12 feet per downspout)
   useEffect(() => {
     if (downspoutType === 'linear') {
-      form.setValue("downspoutLinearFeet", watchedStories * 12);
+      form.setValue("downspoutLinearFeet", watchedDownspoutCount * 12);
       form.setValue("chainLinearFeet", 0);
     } else if (downspoutType === 'chain') {
-      form.setValue("chainLinearFeet", watchedStories * 12);
+      form.setValue("chainLinearFeet", watchedDownspoutCount * 12);
       form.setValue("downspoutLinearFeet", 0);
     }
-  }, [watchedStories, downspoutType, form]);
+  }, [watchedDownspoutCount, downspoutType, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (record) {
@@ -314,6 +318,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       if (!showDownspout) {
         finalValues.downspoutLinearFeet = 0;
         finalValues.chainLinearFeet = 0;
+        finalValues.downspoutCount = 0;
       }
       if (!showHelmet) finalValues.helmetLinearFeet = 0;
       if (!showCable) finalValues.cableLinearFeet = 0;
@@ -593,7 +598,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                       name="unitCost"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Gutter Cost ($)</FormLabel>
+                          <FormLabel>Cost ($)</FormLabel>
                           <FormControl>
                             <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-300" />
                           </FormControl>
@@ -651,7 +656,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
               {showDownspout && (
                 <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
                   <Separator className="bg-sky-200" />
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
                     <FormField
                       control={form.control}
                       name="downspoutColor"
@@ -692,6 +697,19 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                               <SelectItem value="3x4">3x4</SelectItem>
                             </SelectContent>
                           </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="downspoutCount"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Number of Downspouts</FormLabel>
+                          <FormControl>
+                            <Input type="number" {...field} className="rounded-xl border-sky-300" />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -1348,9 +1366,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
             </DialogFooter>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </CardContent>
+    </Card>
   );
 };
 
-export default EditRecordDialog;
+export default DataEntryForm;

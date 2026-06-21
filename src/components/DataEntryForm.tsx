@@ -37,6 +37,7 @@ const formSchema = z.object({
   fasciaUnitCost: z.coerce.number().min(0).default(0),
   downspoutColor: z.string().optional(),
   downspoutSize: z.enum(['2x3', '3x4', 'None']).default('None'),
+  downspoutCount: z.coerce.number().min(0).default(0),
   downspoutLinearFeet: z.coerce.number().min(0).default(0),
   chainLinearFeet: z.coerce.number().min(0).default(0),
   buildingStories: z.coerce.number().min(1).default(1),
@@ -119,6 +120,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
       fasciaUnitCost: 0,
       downspoutColor: "White (30) (stock)",
       downspoutSize: 'None',
+      downspoutCount: 0,
       downspoutLinearFeet: 0,
       chainLinearFeet: 0,
       buildingStories: 1,
@@ -163,6 +165,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
   const watchedFascia = form.watch("fascia");
   const watchedStories = form.watch("buildingStories");
   const watchedDownspoutSize = form.watch("downspoutSize");
+  const watchedDownspoutCount = form.watch("downspoutCount") || 0;
   const watchedGutterColor = form.watch("gutterColor");
   const watchedDownspoutColor = form.watch("downspoutColor");
   const watchedLinearFeet = form.watch("linearFeet") || 0;
@@ -339,15 +342,16 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
     form.setValue("sasquatchPad", pricing.sasquatchPadPrice);
   }, [pricing, form]);
 
+  // Calculate linear feet based on downspout count (12 feet per downspout)
   useEffect(() => {
     if (downspoutType === 'linear') {
-      form.setValue("downspoutLinearFeet", watchedStories * 12);
+      form.setValue("downspoutLinearFeet", watchedDownspoutCount * 12);
       form.setValue("chainLinearFeet", 0);
     } else if (downspoutType === 'chain') {
-      form.setValue("chainLinearFeet", watchedStories * 12);
+      form.setValue("chainLinearFeet", watchedDownspoutCount * 12);
       form.setValue("downspoutLinearFeet", 0);
     }
-  }, [watchedStories, downspoutType, form]);
+  }, [watchedDownspoutCount, downspoutType, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const finalValues = { ...values };
@@ -359,6 +363,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
     if (!showDownspout) {
       finalValues.downspoutLinearFeet = 0;
       finalValues.chainLinearFeet = 0;
+      finalValues.downspoutCount = 0;
     }
     if (!showHelmet) finalValues.helmetLinearFeet = 0;
     if (!showCable) finalValues.cableLinearFeet = 0;
@@ -381,6 +386,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
       unitCost: 0,
       demolitionLinearFeet: 0,
       fasciaLinearFeet: 0,
+      downspoutCount: 0,
       downspoutLinearFeet: 0,
       chainLinearFeet: 0,
       helmetLinearFeet: 0,
@@ -716,7 +722,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
               {showDownspout && (
                 <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
                   <Separator className="bg-sky-200" />
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <FormField
                       control={form.control}
                       name="downspoutColor"
@@ -757,6 +763,19 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                               <SelectItem value="3x4">3x4</SelectItem>
                             </SelectContent>
                           </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="downspoutCount"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Number of Downspouts</FormLabel>
+                          <FormControl>
+                            <Input type="number" {...field} className="rounded-xl border-sky-300" />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}

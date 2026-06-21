@@ -44,6 +44,7 @@ export interface PricingSettings {
   snowFenceProPanelL2: number;
   snowFenceProPanelL3: number;
   sasquatchMobilization: number;
+  sasquatchPadPrice: number;
 }
 
 const DEFAULT_PRICING: PricingSettings = {
@@ -88,6 +89,7 @@ const DEFAULT_PRICING: PricingSettings = {
   snowFenceProPanelL2: 42.00,
   snowFenceProPanelL3: 52.00,
   sasquatchMobilization: 400.00,
+  sasquatchPadPrice: 125.00,
 };
 
 export interface BidRecord {
@@ -195,6 +197,7 @@ export const useDataStore = () => {
         snowFenceProPanelL2: parsed.snowFenceProPanelL2 ?? DEFAULT_PRICING.snowFenceProPanelL2,
         snowFenceProPanelL3: parsed.snowFenceProPanelL3 ?? DEFAULT_PRICING.snowFenceProPanelL3,
         sasquatchMobilization: parsed.sasquatchMobilization ?? DEFAULT_PRICING.sasquatchMobilization,
+        sasquatchPadPrice: parsed.sasquatchPadPrice ?? DEFAULT_PRICING.sasquatchPadPrice,
       };
     }
     return DEFAULT_PRICING;

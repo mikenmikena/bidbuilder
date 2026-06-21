@@ -55,6 +55,7 @@ const pricingSchema = z.object({
   snowFenceProPanelL2: z.coerce.number().min(0),
   snowFenceProPanelL3: z.coerce.number().min(0),
   sasquatchMobilization: z.coerce.number().min(0),
+  sasquatchPadPrice: z.coerce.number().min(0),
 });
 
 interface PricingSettingsProps {
@@ -116,6 +117,7 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
       snowFenceProPanelL2: 42.00,
       snowFenceProPanelL3: 52.00,
       sasquatchMobilization: 400.00,
+      sasquatchPadPrice: 125.00,
     };
     form.reset(defaults);
     onUpdate(defaults);
@@ -396,7 +398,7 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                 <span>Gutter Helmet Pricing</span>
               </div>
               <Separator className="bg-emerald-200" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <FormField
                   control={form.control}
                   name="helmet"
@@ -766,6 +768,19 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                       <FormLabel className="text-slate-900">Sasquatch Mobilization ($)</FormLabel>
                       <FormControl>
                         <Input type="number" step="1" {...field} className="rounded-xl border-slate-200 bg-white focus-visible:ring-slate-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="sasquatchPadPrice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-900">Sasquatch Pad Price ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-slate-200 bg-white focus-visible:ring-slate-500" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

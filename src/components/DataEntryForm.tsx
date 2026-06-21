@@ -141,7 +141,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
       snowFenceRoofType: 'Asphalt Shingle',
       snowFenceLevel: 'Level 1',
       snowFenceUnitCost: pricing.snowFence,
-      sasquatchPad: 0,
+      sasquatchPad: pricing.sasquatchPadPrice,
       sasquatchMobilizationFee: pricing.sasquatchMobilization,
       sasquatchElectrical: 'None',
       sasquatchFasciaBoard: 'None',
@@ -322,6 +322,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
   // Update other unit costs when pricing settings change
   useEffect(() => {
     form.setValue("sasquatchMobilizationFee", pricing.sasquatchMobilization);
+    form.setValue("sasquatchPad", pricing.sasquatchPadPrice);
   }, [pricing, form]);
 
   useEffect(() => {
@@ -367,7 +368,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
       snowFenceRow1LF: 0,
       snowFenceRow2LF: 0,
       snowFenceRow3LF: 0,
-      sasquatchPad: 0,
+      sasquatchPad: pricing.sasquatchPadPrice,
       sasquatchMobilizationFee: pricing.sasquatchMobilization,
       sasquatchCustomWork: 0,
       sasquatchArcticSteamerReserve: 0,

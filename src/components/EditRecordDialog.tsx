@@ -1366,9 +1366,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
             </DialogFooter>
           </form>
         </Form>
-      </CardContent>
-    </Card>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-export default DataEntryForm;
+export default EditRecordDialog;

@@ -18,6 +18,8 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
   const jobAddress = clientItems[0]?.job || "Standard Address";
 
   const calculateGutterTotal = (r: BidRecord) => r.linearFeet * r.unitCost;
+  const calculateDemolitionTotal = (r: BidRecord) => (r.demolitionLinearFeet || 0) * (r.demolitionUnitCost || 0);
+  const calculateFasciaTotal = (r: BidRecord) => (r.fasciaLinearFeet || 0) * (r.fasciaUnitCost || 0);
   const calculateDownspoutTotal = (r: BidRecord) => ((r.downspoutLinearFeet || 0) + (r.chainLinearFeet || 0)) * (r.downspoutUnitCost || 0);
   const calculateHelmetTotal = (r: BidRecord) => (r.helmetLinearFeet || 0) * (r.helmetUnitCost || 0);
   const calculateCableTotal = (r: BidRecord) => (r.cableLinearFeet || 0) * (r.cableUnitCost || 0);
@@ -25,7 +27,7 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
   const calculateSasquatchTotal = (r: BidRecord) => (r.sasquatchPad || 0) + (r.sasquatchMobilizationFee || 0) + (r.sasquatchCustomWork || 0) + (r.sasquatchArcticSteamerReserve || 0);
 
   const subtotal = clientItems.reduce((sum, r) => 
-    sum + calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r) + calculateSnowFenceTotal(r) + calculateSasquatchTotal(r), 0);
+    sum + calculateGutterTotal(r) + calculateDemolitionTotal(r) + calculateFasciaTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r) + calculateSnowFenceTotal(r) + calculateSasquatchTotal(r), 0);
   
   const tax = subtotal * 0.0; 
   const total = subtotal + tax;
@@ -97,14 +99,36 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
                             {item.gutterColor ? `${item.gutterColor} Color` : ''}
                             {item.gutterProfile !== 'None' ? ` • ${item.gutterProfile} Profile` : ''}
                             {item.gutterBaseType ? ` • ${item.gutterBaseType} Base` : ''}
-                            {item.demolition === 'Yes' ? ` • Incl. Demolition` : ''}
-                            {item.fascia && item.fascia !== 'None' ? ` • ${item.fascia} Fascia` : ''}
                           </span>
                         </div>
                       </TableCell>
                       <TableCell className="text-right">{item.linearFeet} LF</TableCell>
                       <TableCell className="text-right">${item.unitCost.toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                       <TableCell className="text-right font-bold">${calculateGutterTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                    </TableRow>
+                  )}
+                  {/* Demolition Row */}
+                  {(item.demolitionLinearFeet || 0) > 0 && (
+                    <TableRow className="bg-rose-50/10">
+                      <TableCell>
+                        <div className="font-bold text-rose-900">{item.area || 'General Area'} (Demolition)</div>
+                        <div className="font-medium">Gutter Demolition & Disposal</div>
+                      </TableCell>
+                      <TableCell className="text-right">{item.demolitionLinearFeet} LF</TableCell>
+                      <TableCell className="text-right">${(item.demolitionUnitCost || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                      <TableCell className="text-right font-bold">${calculateDemolitionTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                    </TableRow>
+                  )}
+                  {/* Fascia Row */}
+                  {(item.fasciaLinearFeet || 0) > 0 && (
+                    <TableRow className="bg-amber-50/10">
+                      <TableCell>
+                        <div className="font-bold text-amber-900">{item.area || 'General Area'} (Fascia Board)</div>
+                        <div className="font-medium">{item.fascia} Fascia Board Installation</div>
+                      </TableCell>
+                      <TableCell className="text-right">{item.fasciaLinearFeet} LF</TableCell>
+                      <TableCell className="text-right">${(item.fasciaUnitCost || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                      <TableCell className="text-right font-bold">${calculateFasciaTotal(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                     </TableRow>
                   )}
                   {/* Downspout Row */}

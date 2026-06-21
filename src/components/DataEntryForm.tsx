@@ -20,8 +20,8 @@ const formSchema = z.object({
   date: z.string().min(1, "Date is required"),
   client: z.string().min(2, "Client is required"),
   job: z.string().min(2, "Job address is required"),
-  linearFeet: z.coerce.number().min(0),
-  unitCost: z.coerce.number().min(0),
+  linearFeet: z.coerce.number().min(0), // Gutter Linear Feet
+  unitCost: z.coerce.number().min(0), // Gutter Unit Cost
   status: z.enum(['Draft', 'Submitted', 'Won', 'Lost']),
   area: z.string().optional(),
   gutterColor: z.string().optional(),
@@ -30,7 +30,11 @@ const formSchema = z.object({
   gutterCert: z.enum(['Box Level 1', 'Box Level 2', 'Box Level 3', 'K Level 1', 'K Level 2', 'K Level 3', 'None']).default('None'),
   includeGutterDownspout: z.enum(['Yes', 'No']).default('Yes'),
   demolition: z.enum(['Yes', 'No']).default('No'),
+  demolitionLinearFeet: z.coerce.number().min(0).default(0),
+  demolitionUnitCost: z.coerce.number().min(0).default(0),
   fascia: z.enum(['None', 'Hardwood', 'Standard']).default('None'),
+  fasciaLinearFeet: z.coerce.number().min(0).default(0),
+  fasciaUnitCost: z.coerce.number().min(0).default(0),
   downspoutColor: z.string().optional(),
   downspoutSize: z.enum(['2x3', '3x4', 'None']).default('None'),
   downspoutLinearFeet: z.coerce.number().min(0).default(0),
@@ -108,7 +112,11 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
       gutterCert: 'None',
       includeGutterDownspout: 'Yes',
       demolition: 'No',
+      demolitionLinearFeet: 0,
+      demolitionUnitCost: pricing.demolition,
       fascia: 'None',
+      fasciaLinearFeet: 0,
+      fasciaUnitCost: 0,
       downspoutColor: "White (30) (stock)",
       downspoutSize: 'None',
       downspoutLinearFeet: 0,
@@ -206,17 +214,19 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
     const isStockColor = watchedGutterColor?.toLowerCase().includes("stock");
     const colorCost = isStockColor ? 0 : (watchedLinearFeet > 0 ? (pricing.gutterNonStockColor / watchedLinearFeet) : 0);
     
-    // Add fascia cost
+    const finalCost = baseCost + colorCost;
+    form.setValue("unitCost", Number(finalCost.toFixed(2)));
+
+    // Set demolition unit cost
+    form.setValue("demolitionUnitCost", pricing.demolition);
+
+    // Set fascia unit cost
     let fasciaCost = 0;
     if (watchedFascia === 'Hardwood') fasciaCost = pricing.gutterHardwoodFascia;
     else if (watchedFascia === 'Standard') fasciaCost = pricing.gutterBasicFascia;
+    form.setValue("fasciaUnitCost", fasciaCost);
 
-    const finalCost = watchedDemolition === "Yes" 
-      ? baseCost + pricing.demolition + colorCost + fasciaCost
-      : baseCost + colorCost + fasciaCost;
-      
-    form.setValue("unitCost", Number(finalCost.toFixed(2)));
-  }, [watchedProfile, watchedBaseType, watchedInclude, watchedDemolition, watchedFascia, watchedGutterColor, watchedLinearFeet, pricing, form]);
+  }, [watchedProfile, watchedBaseType, watchedInclude, watchedFascia, watchedGutterColor, watchedLinearFeet, pricing, form]);
 
   // Downspout Cost Calculation using global pricing
   useEffect(() => {
@@ -341,7 +351,11 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const finalValues = { ...values };
-    if (!showGutter) finalValues.linearFeet = 0;
+    if (!showGutter) {
+      finalValues.linearFeet = 0;
+      finalValues.demolitionLinearFeet = 0;
+      finalValues.fasciaLinearFeet = 0;
+    }
     if (!showDownspout) {
       finalValues.downspoutLinearFeet = 0;
       finalValues.chainLinearFeet = 0;
@@ -365,6 +379,8 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
       ...values,
       linearFeet: 0,
       unitCost: 0,
+      demolitionLinearFeet: 0,
+      fasciaLinearFeet: 0,
       downspoutLinearFeet: 0,
       chainLinearFeet: 0,
       helmetLinearFeet: 0,
@@ -629,7 +645,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                       name="linearFeet"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Linear Feet</FormLabel>
+                          <FormLabel>Gutter Linear Feet</FormLabel>
                           <FormControl>
                             <Input type="number" {...field} className="rounded-xl border-amber-300" />
                           </FormControl>
@@ -642,9 +658,38 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                       name="unitCost"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Unit Cost ($)</FormLabel>
+                          <FormLabel>Gutter Unit Cost ($)</FormLabel>
                           <FormControl>
                             <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-300" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="demolitionLinearFeet"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Demolition Linear Feet</FormLabel>
+                          <FormControl>
+                            <Input type="number" {...field} className="rounded-xl border-amber-300" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="fasciaLinearFeet"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Fascia Linear Feet</FormLabel>
+                          <FormControl>
+                            <Input type="number" {...field} className="rounded-xl border-amber-300" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

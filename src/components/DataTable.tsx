@@ -28,7 +28,12 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
     return matchesSearch && matchesStatus;
   });
 
-  const calculateGutterTotal = (r: BidRecord) => r.linearFeet * r.unitCost;
+  const calculateGutterTotal = (r: BidRecord) => {
+    const gutterCost = r.linearFeet * r.unitCost;
+    const demoCost = (r.demolitionLinearFeet || 0) * (r.demolitionUnitCost || 0);
+    const fasciaCost = (r.fasciaLinearFeet || 0) * (r.fasciaUnitCost || 0);
+    return gutterCost + demoCost + fasciaCost;
+  };
   const calculateDownspoutTotal = (r: BidRecord) => {
     const lf = r.downspoutLinearFeet || 0;
     const chainLf = r.chainLinearFeet || 0;
@@ -118,6 +123,18 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
                         <div className="flex items-center gap-1 text-[10px] font-bold text-indigo-600">
                           <Droplets className="w-2.5 h-2.5" />
                           Gutter: {record.linearFeet} LF
+                        </div>
+                      )}
+                      {(record.demolitionLinearFeet || 0) > 0 && (
+                        <div className="flex items-center gap-1 text-[10px] font-bold text-rose-600">
+                          <Droplets className="w-2.5 h-2.5" />
+                          Demo: {record.demolitionLinearFeet} LF
+                        </div>
+                      )}
+                      {(record.fasciaLinearFeet || 0) > 0 && (
+                        <div className="flex items-center gap-1 text-[10px] font-bold text-amber-600">
+                          <Droplets className="w-2.5 h-2.5" />
+                          Fascia: {record.fasciaLinearFeet} LF
                         </div>
                       )}
                       {(record.helmetLinearFeet || 0) > 0 && (

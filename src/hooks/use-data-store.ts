@@ -105,8 +105,8 @@ export interface BidRecord {
   date: string;
   client: string;
   job: string;
-  linearFeet: number;
-  unitCost: number;
+  linearFeet: number; // Gutter Linear Feet
+  unitCost: number; // Gutter Unit Cost
   status: 'Draft' | 'Submitted' | 'Won' | 'Lost';
   area?: string;
   gutterColor?: string;
@@ -115,7 +115,11 @@ export interface BidRecord {
   gutterCert?: 'Box Level 1' | 'Box Level 2' | 'Box Level 3' | 'K Level 1' | 'K Level 2' | 'K Level 3' | 'None';
   includeGutterDownspout?: 'Yes' | 'No';
   demolition?: 'Yes' | 'No';
+  demolitionLinearFeet?: number;
+  demolitionUnitCost?: number;
   fascia?: 'None' | 'Hardwood' | 'Standard';
+  fasciaLinearFeet?: number;
+  fasciaUnitCost?: number;
   downspoutColor?: string;
   downspoutSize?: '2x3' | '3x4' | 'None';
   downspoutLinearFeet?: number;

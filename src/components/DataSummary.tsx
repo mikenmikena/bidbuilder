@@ -23,7 +23,12 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
   const [editingRecord, setEditingRecord] = useState<BidRecord | null>(null);
 
   // Individual System Calculations
-  const calculateGutterTotal = (r: BidRecord) => r.linearFeet * r.unitCost;
+  const calculateGutterTotal = (r: BidRecord) => {
+    const gutterCost = r.linearFeet * r.unitCost;
+    const demoCost = (r.demolitionLinearFeet || 0) * (r.demolitionUnitCost || 0);
+    const fasciaCost = (r.fasciaLinearFeet || 0) * (r.fasciaUnitCost || 0);
+    return gutterCost + demoCost + fasciaCost;
+  };
   const calculateDownspoutTotal = (r: BidRecord) => {
     const lf = r.downspoutLinearFeet || 0;
     const chainLf = r.chainLinearFeet || 0;

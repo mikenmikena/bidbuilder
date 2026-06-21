@@ -26,6 +26,7 @@ const SupplyOrderView = ({ records }: SupplyOrderViewProps) => {
   const cableMaterials: { [key: string]: { lf: number; layout: string; volt: string; wifi: boolean; switch: boolean; breaker: boolean; electrician: boolean } } = {};
   const snowFenceMaterials: { [key: string]: { lf: number; color: string; roof: string; level: string } } = {};
   const fasciaMaterials: { [key: string]: { lf: number; type: string } } = {};
+  const demolitionMaterials: { lf: number } = { lf: 0 };
   const sasquatchMaterials: { pad: number; mobilization: number; electrical: string; fascia: string; custom: number } = {
     pad: 0,
     mobilization: 0,
@@ -49,13 +50,18 @@ const SupplyOrderView = ({ records }: SupplyOrderViewProps) => {
       gutterMaterials[key].lf += item.linearFeet;
     }
 
+    // Demolition
+    if ((item.demolitionLinearFeet || 0) > 0) {
+      demolitionMaterials.lf += item.demolitionLinearFeet || 0;
+    }
+
     // Fascia Board
-    if (item.linearFeet > 0 && item.fascia && item.fascia !== 'None') {
+    if ((item.fasciaLinearFeet || 0) > 0 && item.fascia && item.fascia !== 'None') {
       const key = item.fascia;
       if (!fasciaMaterials[key]) {
         fasciaMaterials[key] = { lf: 0, type: item.fascia };
       }
-      fasciaMaterials[key].lf += item.linearFeet;
+      fasciaMaterials[key].lf += item.fasciaLinearFeet || 0;
     }
 
     // Downspouts
@@ -194,6 +200,30 @@ const SupplyOrderView = ({ records }: SupplyOrderViewProps) => {
                         <TableCell className="text-right font-bold text-indigo-900">{data.lf} LF</TableCell>
                       </TableRow>
                     ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+
+            {/* Demolition Supplies */}
+            {demolitionMaterials.lf > 0 && (
+              <div className="space-y-3">
+                <h4 className="text-sm font-bold text-rose-800 flex items-center gap-2 bg-rose-50 px-3 py-2 rounded-lg">
+                  <Droplets className="w-4 h-4 text-rose-600" />
+                  Demolition Services
+                </h4>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="font-bold text-slate-700">Service Type</TableHead>
+                      <TableHead className="font-bold text-slate-700 text-right">Quantity Needed</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell className="font-semibold text-slate-900">Gutter Demolition & Disposal</TableCell>
+                      <TableCell className="text-right font-bold text-indigo-900">{demolitionMaterials.lf} LF</TableCell>
+                    </TableRow>
                   </TableBody>
                 </Table>
               </div>

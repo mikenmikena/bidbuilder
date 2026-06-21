@@ -183,6 +183,10 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
   const watchedHelmetLF = form.watch("helmetLinearFeet") || 0;
 
   // Snow Fence watched fields
+  const watchedSnowFenceColor = form.watch("snowFenceColor");
+  const watchedSnowFenceRow1LF = form.watch("snowFenceRow1LF") || 0;
+  const watchedSnowFenceRow2LF = form.watch("snowFenceRow2LF") || 0;
+  const watchedSnowFenceRow3LF = form.watch("snowFenceRow3LF") || 0;
   const watchedSnowFenceRoofType = form.watch("snowFenceRoofType");
   const watchedSnowFenceLevel = form.watch("snowFenceLevel");
 
@@ -250,24 +254,30 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
 
   // Snow Fence Cost Calculation based on Roof Type and Level
   useEffect(() => {
-    let cost = pricing.snowFence; // Default Asphalt Shingle / Base
+    let baseCost = pricing.snowFence; // Default Asphalt Shingle / Base
 
     if (watchedSnowFenceRoofType === 'Corrugated') {
-      if (watchedSnowFenceLevel === 'Level 1') cost = pricing.snowFenceCorrugatedL1;
-      else if (watchedSnowFenceLevel === 'Level 2') cost = pricing.snowFenceCorrugatedL2;
-      else if (watchedSnowFenceLevel === 'Level 3') cost = pricing.snowFenceCorrugatedL3;
+      if (watchedSnowFenceLevel === 'Level 1') baseCost = pricing.snowFenceCorrugatedL1;
+      else if (watchedSnowFenceLevel === 'Level 2') baseCost = pricing.snowFenceCorrugatedL2;
+      else if (watchedSnowFenceLevel === 'Level 3') baseCost = pricing.snowFenceCorrugatedL3;
     } else if (watchedSnowFenceRoofType === 'Raised Seam') {
-      if (watchedSnowFenceLevel === 'Level 1') cost = pricing.snowFenceRaisedSeamL1;
-      else if (watchedSnowFenceLevel === 'Level 2') cost = pricing.snowFenceRaisedSeamL2;
-      else if (watchedSnowFenceLevel === 'Level 3') cost = pricing.snowFenceRaisedSeamL3;
+      if (watchedSnowFenceLevel === 'Level 1') baseCost = pricing.snowFenceRaisedSeamL1;
+      else if (watchedSnowFenceLevel === 'Level 2') baseCost = pricing.snowFenceRaisedSeamL2;
+      else if (watchedSnowFenceLevel === 'Level 3') baseCost = pricing.snowFenceRaisedSeamL3;
     } else if (watchedSnowFenceRoofType === 'Pro Panel') {
-      if (watchedSnowFenceLevel === 'Level 1') cost = pricing.snowFenceProPanelL1;
-      else if (watchedSnowFenceLevel === 'Level 2') cost = pricing.snowFenceProPanelL2;
-      else if (watchedSnowFenceLevel === 'Level 3') cost = pricing.snowFenceProPanelL3;
+      if (watchedSnowFenceLevel === 'Level 1') baseCost = pricing.snowFenceProPanelL1;
+      else if (watchedSnowFenceLevel === 'Level 2') baseCost = pricing.snowFenceProPanelL2;
+      else if (watchedSnowFenceLevel === 'Level 3') baseCost = pricing.snowFenceProPanelL3;
     }
 
-    form.setValue("snowFenceUnitCost", cost);
-  }, [watchedSnowFenceRoofType, watchedSnowFenceLevel, pricing, form]);
+    // Add flat color surcharge distributed over total snow fence linear feet
+    const totalSnowFenceLF = watchedSnowFenceRow1LF + watchedSnowFenceRow2LF + watchedSnowFenceRow3LF;
+    const isStockColor = watchedSnowFenceColor?.toLowerCase().includes("stock");
+    const colorCost = isStockColor ? 0 : (totalSnowFenceLF > 0 ? (pricing.snowFenceNonStockColor / totalSnowFenceLF) : 0);
+
+    const finalCost = baseCost + colorCost;
+    form.setValue("snowFenceUnitCost", Number(finalCost.toFixed(2)));
+  }, [watchedSnowFenceRoofType, watchedSnowFenceLevel, watchedSnowFenceColor, watchedSnowFenceRow1LF, watchedSnowFenceRow2LF, watchedSnowFenceRow3LF, pricing, form]);
 
   useEffect(() => {
     if (downspoutType === 'linear') {

@@ -44,6 +44,7 @@ const pricingSchema = z.object({
   cableBreaker: z.coerce.number().min(0),
   cableElectrician: z.coerce.number().min(0),
   snowFence: z.coerce.number().min(0),
+  snowFenceNonStockColor: z.coerce.number().min(0),
   snowFenceCorrugatedL1: z.coerce.number().min(0),
   snowFenceCorrugatedL2: z.coerce.number().min(0),
   snowFenceCorrugatedL3: z.coerce.number().min(0),
@@ -104,6 +105,7 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
       cableBreaker: 95.00,
       cableElectrician: 150.00,
       snowFence: 25.00,
+      snowFenceNonStockColor: 100.00,
       snowFenceCorrugatedL1: 30.00,
       snowFenceCorrugatedL2: 40.00,
       snowFenceCorrugatedL3: 50.00,
@@ -434,19 +436,6 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <FormField
                   control={form.control}
-                  name="cable"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-orange-900">Base Heat Cable Cost ($/LF)</FormLabel>
-                      <FormControl>
-                        <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-200 bg-white focus-visible:ring-orange-500" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
                   name="cableSerpentine"
                   render={({ field }) => (
                     <FormItem>
@@ -606,6 +595,19 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-purple-900">Asphalt Shingle / Base Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-200 bg-white focus-visible:ring-purple-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="snowFenceNonStockColor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-purple-900">Non-Stock Snow Fence Color Surcharge ($)</FormLabel>
                       <FormControl>
                         <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-200 bg-white focus-visible:ring-purple-500" />
                       </FormControl>

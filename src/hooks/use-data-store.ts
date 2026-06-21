@@ -33,6 +33,7 @@ export interface PricingSettings {
   cableBreaker: number;
   cableElectrician: number;
   snowFence: number; // Asphalt Shingle / Base
+  snowFenceNonStockColor: number;
   snowFenceCorrugatedL1: number;
   snowFenceCorrugatedL2: number;
   snowFenceCorrugatedL3: number;
@@ -76,6 +77,7 @@ const DEFAULT_PRICING: PricingSettings = {
   cableBreaker: 95.00,
   cableElectrician: 150.00,
   snowFence: 25.00,
+  snowFenceNonStockColor: 100.00,
   snowFenceCorrugatedL1: 30.00,
   snowFenceCorrugatedL2: 40.00,
   snowFenceCorrugatedL3: 50.00,
@@ -182,6 +184,7 @@ export const useDataStore = () => {
         cableBreaker: parsed.cableBreaker ?? DEFAULT_PRICING.cableBreaker,
         cableElectrician: parsed.cableElectrician ?? DEFAULT_PRICING.cableElectrician,
         snowFence: parsed.snowFence ?? DEFAULT_PRICING.snowFence,
+        snowFenceNonStockColor: parsed.snowFenceNonStockColor ?? DEFAULT_PRICING.snowFenceNonStockColor,
         snowFenceCorrugatedL1: parsed.snowFenceCorrugatedL1 ?? DEFAULT_PRICING.snowFenceCorrugatedL1,
         snowFenceCorrugatedL2: parsed.snowFenceCorrugatedL2 ?? DEFAULT_PRICING.snowFenceCorrugatedL2,
         snowFenceCorrugatedL3: parsed.snowFenceCorrugatedL3 ?? DEFAULT_PRICING.snowFenceCorrugatedL3,

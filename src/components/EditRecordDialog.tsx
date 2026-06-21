@@ -178,6 +178,10 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
   const watchedDownspoutLF = form.watch("downspoutLinearFeet") || 0;
   const watchedChainLF = form.watch("chainLinearFeet") || 0;
 
+  // Gutter Helmet watched fields
+  const watchedHelmetColor = form.watch("helmetColor");
+  const watchedHelmetLF = form.watch("helmetLinearFeet") || 0;
+
   // Snow Fence watched fields
   const watchedSnowFenceRoofType = form.watch("snowFenceRoofType");
   const watchedSnowFenceLevel = form.watch("snowFenceLevel");
@@ -234,6 +238,15 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
     const finalCost = baseCost + colorCost;
     form.setValue("downspoutUnitCost", Number(finalCost.toFixed(2)));
   }, [watchedDownspoutSize, downspoutType, watchedDownspoutColor, watchedDownspoutLF, watchedChainLF, pricing, form]);
+
+  // Gutter Helmet Cost Calculation using global pricing
+  useEffect(() => {
+    const baseCost = pricing.helmet;
+    const isStockColor = watchedHelmetColor?.toLowerCase().includes("stock");
+    const colorCost = isStockColor ? 0 : (watchedHelmetLF > 0 ? (pricing.helmetNonStockColor / watchedHelmetLF) : 0);
+    const finalCost = baseCost + colorCost;
+    form.setValue("helmetUnitCost", Number(finalCost.toFixed(2)));
+  }, [watchedHelmetColor, watchedHelmetLF, pricing, form]);
 
   // Snow Fence Cost Calculation based on Roof Type and Level
   useEffect(() => {

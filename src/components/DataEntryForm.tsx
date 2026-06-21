@@ -162,6 +162,10 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
   const watchedDownspoutLF = form.watch("downspoutLinearFeet") || 0;
   const watchedChainLF = form.watch("chainLinearFeet") || 0;
 
+  // Gutter Helmet watched fields
+  const watchedHelmetColor = form.watch("helmetColor");
+  const watchedHelmetLF = form.watch("helmetLinearFeet") || 0;
+
   // Heat Cable watched fields
   const watchedCableLayout = form.watch("cableLayout");
   const watchedCableLF = form.watch("cableLinearFeet") || 0;
@@ -228,6 +232,15 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
     const finalCost = baseCost + colorCost;
     form.setValue("downspoutUnitCost", Number(finalCost.toFixed(2)));
   }, [watchedDownspoutSize, downspoutType, watchedDownspoutColor, watchedDownspoutLF, watchedChainLF, pricing, form]);
+
+  // Gutter Helmet Cost Calculation using global pricing
+  useEffect(() => {
+    const baseCost = pricing.helmet;
+    const isStockColor = watchedHelmetColor?.toLowerCase().includes("stock");
+    const colorCost = isStockColor ? 0 : (watchedHelmetLF > 0 ? (pricing.helmetNonStockColor / watchedHelmetLF) : 0);
+    const finalCost = baseCost + colorCost;
+    form.setValue("helmetUnitCost", Number(finalCost.toFixed(2)));
+  }, [watchedHelmetColor, watchedHelmetLF, pricing, form]);
 
   // Heat Cable Cost Calculation
   useEffect(() => {
@@ -298,7 +311,6 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
 
   // Update other unit costs when pricing settings change
   useEffect(() => {
-    form.setValue("helmetUnitCost", pricing.helmet);
     form.setValue("sasquatchMobilizationFee", pricing.sasquatchMobilization);
   }, [pricing, form]);
 

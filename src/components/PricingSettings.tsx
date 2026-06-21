@@ -30,6 +30,7 @@ const pricingSchema = z.object({
   gutterNonStockColor: z.coerce.number().min(0),
   downspoutNonStockColor: z.coerce.number().min(0),
   helmet: z.coerce.number().min(0),
+  helmetNonStockColor: z.coerce.number().min(0),
   cable: z.coerce.number().min(0),
   cableSerpentine: z.coerce.number().min(0),
   cable1Cable: z.coerce.number().min(0),
@@ -89,6 +90,7 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
       gutterNonStockColor: 150.00,
       downspoutNonStockColor: 75.00,
       helmet: 15.00,
+      helmetNonStockColor: 100.00,
       cable: 18.00,
       cableSerpentine: 22.00,
       cable1Cable: 18.00,
@@ -392,13 +394,26 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                 <span>Gutter Helmet Pricing</span>
               </div>
               <Separator className="bg-emerald-200" />
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="helmet"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-emerald-900">Gutter Helmet Unit Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-emerald-200 bg-white focus-visible:ring-emerald-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="helmetNonStockColor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-emerald-900">Non-Stock Helmet Color Surcharge ($)</FormLabel>
                       <FormControl>
                         <Input type="number" step="0.01" {...field} className="rounded-xl border-emerald-200 bg-white focus-visible:ring-emerald-500" />
                       </FormControl>

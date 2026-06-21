@@ -19,6 +19,7 @@ export interface PricingSettings {
   gutterNonStockColor: number;
   downspoutNonStockColor: number;
   helmet: number;
+  helmetNonStockColor: number;
   cable: number;
   cableSerpentine: number;
   cable1Cable: number;
@@ -61,6 +62,7 @@ const DEFAULT_PRICING: PricingSettings = {
   gutterNonStockColor: 150.00,
   downspoutNonStockColor: 75.00,
   helmet: 15.00,
+  helmetNonStockColor: 100.00,
   cable: 18.00,
   cableSerpentine: 22.00,
   cable1Cable: 18.00,
@@ -166,6 +168,7 @@ export const useDataStore = () => {
         gutterNonStockColor: parsed.gutterNonStockColor ?? DEFAULT_PRICING.gutterNonStockColor,
         downspoutNonStockColor: parsed.downspoutNonStockColor ?? DEFAULT_PRICING.downspoutNonStockColor,
         helmet: parsed.helmet ?? DEFAULT_PRICING.helmet,
+        helmetNonStockColor: parsed.helmetNonStockColor ?? DEFAULT_PRICING.helmetNonStockColor,
         cable: parsed.cable ?? DEFAULT_PRICING.cable,
         cableSerpentine: parsed.cableSerpentine ?? DEFAULT_PRICING.cableSerpentine,
         cable1Cable: parsed.cable1Cable ?? DEFAULT_PRICING.cable1Cable,

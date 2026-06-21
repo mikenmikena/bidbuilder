@@ -82,10 +82,6 @@ const GUTTER_COLORS = [
   "Silver Grey", "Victorian Grey", "Village Green", "Wicker"
 ];
 
-const GUTTER_CERTS = [
-  "Box Level 1", "Box Level 2", "Box Level 3", "K Level 1", "K Level 2", "K Level 3"
-];
-
 const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
   const [downspoutType, setDownspoutType] = useState<'linear' | 'chain' | null>(null);
   const [showGutter, setShowGutter] = useState(true);
@@ -368,7 +364,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
       snowFenceRow1LF: 0,
       snowFenceRow2LF: 0,
       snowFenceRow3LF: 0,
-      sasquatchPad: pricing.sasquatchPadPrice,
+      sasquatchPad: 0,
       sasquatchMobilizationFee: pricing.sasquatchMobilization,
       sasquatchCustomWork: 0,
       sasquatchArcticSteamerReserve: 0,
@@ -597,30 +593,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="gutterCert"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Gutter Cert</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger className="rounded-xl border-amber-300">
-                                <SelectValue placeholder="Select cert" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="None">N/A</SelectItem>
-                              {GUTTER_CERTS.map(cert => (
-                                <SelectItem key={cert} value={cert}>{cert}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="linearFeet"

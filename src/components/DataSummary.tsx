@@ -85,10 +85,8 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
     name: string; 
     value: number; 
     linearFeet: number; 
-    hasDemolition: boolean;
-    profiles: Set<string>;
-    colors: Set<string>;
     recordCount: number;
+    products: { name: string; type: 'gutter' | 'downspout' | 'helmet' | 'cable' | 'snow' | 'sasquatch' | 'demo' | 'fascia' }[];
   }[], record) => {
     const areaName = record.area || 'General Area';
     const existing = acc.find(item => item.name === areaName);
@@ -96,34 +94,114 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
     
     const totalLF = record.linearFeet + (record.downspoutLinearFeet || 0) + (record.chainLinearFeet || 0) + (record.helmetLinearFeet || 0) + (record.cableLinearFeet || 0) + (record.snowFenceRow1LF || 0) + (record.snowFenceRow2LF || 0) + (record.snowFenceRow3LF || 0);
 
+    // Build product list for this record
+    const recordProducts: { name: string; type: 'gutter' | 'downspout' | 'helmet' | 'cable' | 'snow' | 'sasquatch' | 'demo' | 'fascia' }[] = [];
+    if (record.linearFeet > 0 && record.gutterProfile && record.gutterProfile !== 'None') {
+      recordProducts.push({
+        name: `${record.gutterProfile} Gutter (${record.linearFeet} LF, ${record.gutterColor || 'White'})`,
+        type: 'gutter'
+      });
+    }
+    if ((record.demolitionLinearFeet || 0) > 0) {
+      recordProducts.push({
+        name: `Demolition (${record.demolitionLinearFeet} LF)`,
+        type: 'demo'
+      });
+    }
+    if ((record.fasciaLinearFeet || 0) > 0 && record.fascia && record.fascia !== 'None') {
+      recordProducts.push({
+        name: `${record.fascia} Fascia (${record.fasciaLinearFeet} LF)`,
+        type: 'fascia'
+      });
+    }
+    const dsLF = (record.downspoutLinearFeet || 0) + (record.chainLinearFeet || 0);
+    if (dsLF > 0 && record.downspoutSize && record.downspoutSize !== 'None') {
+      recordProducts.push({
+        name: `${record.downspoutSize} Downspout (${dsLF} LF, ${record.downspoutColor || 'White'})`,
+        type: 'downspout'
+      });
+    } else if (record.chainLinearFeet && record.chainLinearFeet > 0) {
+      recordProducts.push({
+        name: `Rain Chain (${record.chainLinearFeet} LF)`,
+        type: 'downspout'
+      });
+    }
+    if ((record.helmetLinearFeet || 0) > 0) {
+      recordProducts.push({
+        name: `Gutter Helmet (${record.helmetLinearFeet} LF, ${record.helmetColor || 'White'})`,
+        type: 'helmet'
+      });
+    }
+    if ((record.cableLinearFeet || 0) > 0) {
+      recordProducts.push({
+        name: `Heat Cable: ${record.cableLayout || 'Standard'} (${record.cableLinearFeet} LF)`,
+        type: 'cable'
+      });
+    }
+    const sfLF = (record.snowFenceRow1LF || 0) + (record.snowFenceRow2LF || 0) + (record.snowFenceRow3LF || 0);
+    if (sfLF > 0) {
+      recordProducts.push({
+        name: `Snow Fence (${sfLF} LF, ${record.snowFenceColor || 'White'})`,
+        type: 'snow'
+      });
+    }
+    if (calculateSasquatchTotal(record) > 0) {
+      recordProducts.push({
+        name: `Sasquatch System`,
+        type: 'sasquatch'
+      });
+    }
+
     if (existing) {
       existing.value += val;
       existing.linearFeet += totalLF;
       existing.recordCount += 1;
-      if (record.demolition === 'Yes') existing.hasDemolition = true;
-      if (record.gutterProfile && record.gutterProfile !== 'None') existing.profiles.add(record.gutterProfile);
-      if (record.gutterColor) existing.colors.add(record.gutterColor);
+      recordProducts.forEach(p => {
+        if (!existing.products.some(ep => ep.name === p.name)) {
+          existing.products.push(p);
+        }
+      });
     } else {
-      const profiles = new Set<string>();
-      if (record.gutterProfile && record.gutterProfile !== 'None') profiles.add(record.gutterProfile);
-      
-      const colors = new Set<string>();
-      if (record.gutterColor) colors.add(record.gutterColor);
-
       acc.push({ 
         name: areaName, 
         value: val, 
         linearFeet: totalLF,
-        hasDemolition: record.demolition === 'Yes',
-        profiles,
-        colors,
-        recordCount: 1
+        recordCount: 1,
+        products: recordProducts
       });
     }
     return acc;
   }, []).sort((a, b) => b.value - a.value);
 
   const areaRecords = selectedArea ? records.filter(r => (r.area || 'General Area') === selectedArea) : [];
+
+  const getProductIcon = (type: string) => {
+    switch (type) {
+      case 'gutter': return <Droplets className="w-3 h-3 text-amber-600" />;
+      case 'demo': return <Trash2 className="w-3 h-3 text-rose-600" />;
+      case 'fascia': return <Droplets className="w-3 h-3 text-amber-800" />;
+      case 'downspout': return <ArrowDownCircle className="w-3 h-3 text-sky-600" />;
+      case 'helmet': return <ShieldCheck className="w-3 h-3 text-emerald-600" />;
+      case 'cable': return <Zap className="w-3 h-3 text-orange-600" />;
+      case 'snow': return <Snowflake className="w-3 h-3 text-purple-600" />;
+      case 'sasquatch': return <Footprints className="w-3 h-3 text-slate-600" />;
+      default: return null;
+    }
+  };
+
+  const getProductBg = (type: string) => {
+    switch (type) {
+      case 'gutter': return 'bg-amber-50 border-amber-200 text-amber-900';
+      case 'demo': return 'bg-rose-50 border-rose-200 text-rose-900';
+      case 'fascia': return 'bg-amber-50/50 border-amber-200 text-amber-950';
+      case 'downspout': return 'bg-sky-50 border-sky-200 text-sky-900';
+      case 'helmet': return 'bg-emerald-50 border-emerald-200 text-emerald-900';
+      case 'cable': return 'bg-orange-50 border-orange-200 text-orange-900';
+      case 'snow': return 'bg-purple-50 border-purple-200 text-purple-900';
+      case 'sasquatch': return 'bg-slate-50 border-slate-200 text-slate-900';
+      default: return 'bg-gray-50 border-gray-200 text-gray-900';
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -300,17 +378,17 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
                   <MapPin className="w-3 h-3" />
                   Cost per Area
                 </h4>
-                <ScrollArea className="h-[160px] pr-4">
-                  <div className="space-y-2">
+                <ScrollArea className="h-[240px] pr-4">
+                  <div className="space-y-3">
                     {areaData.length === 0 ? (
                       <p className="text-sm text-gray-400 italic">No areas defined</p>
                     ) : (
                       areaData.map((area, idx) => (
-                        <div key={idx} className="group relative flex flex-col p-2 rounded-lg bg-indigo-50/50 border border-indigo-50 hover:bg-indigo-100/50 transition-colors">
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm font-medium text-indigo-900 truncate max-w-[120px]">{area.name}</span>
+                        <div key={idx} className="group relative flex flex-col p-3 rounded-xl bg-indigo-50/50 border border-indigo-50 hover:bg-indigo-100/50 transition-colors">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm font-bold text-indigo-900 truncate max-w-[120px]">{area.name}</span>
                             <div className="flex items-center gap-2">
-                              <span className="text-sm font-bold text-indigo-600">${area.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                              <span className="text-sm font-black text-indigo-600">${area.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                               <Button 
                                 variant="ghost" 
                                 size="icon" 
@@ -322,22 +400,22 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
                             </div>
                           </div>
                           
-                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
-                            <span className="text-[10px] text-gray-500 font-medium">{area.linearFeet} LF Total</span>
-                            
-                            {area.profiles.size > 0 && (
-                              <div className="flex items-center gap-1 text-[10px] text-indigo-500 font-bold">
-                                <Droplets className="w-2.5 h-2.5" />
-                                {Array.from(area.profiles).join(', ')}
+                          {/* Attached Products List */}
+                          <div className="space-y-1.5">
+                            {area.products.map((prod, pIdx) => (
+                              <div 
+                                key={pIdx} 
+                                className={`flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[10px] font-semibold ${getProductBg(prod.type)}`}
+                              >
+                                {getProductIcon(prod.type)}
+                                <span className="truncate">{prod.name}</span>
                               </div>
-                            )}
-
-                            {area.hasDemolition && (
-                              <div className="flex items-center gap-1 bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded text-[9px] font-bold">
-                                <Check className="w-2 h-2" />
-                                DEMO
-                              </div>
-                            )}
+                            ))}
+                          </div>
+                          
+                          <div className="mt-2 pt-2 border-t border-indigo-100/50 flex justify-between items-center text-[9px] text-gray-400 font-medium">
+                            <span>{area.linearFeet} LF Total</span>
+                            <span>{area.recordCount} item{area.recordCount > 1 ? 's' : ''}</span>
                           </div>
                         </div>
                       ))

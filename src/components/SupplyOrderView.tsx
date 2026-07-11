@@ -161,9 +161,12 @@ const SupplyOrderView = ({ records }: SupplyOrderViewProps) => {
               <h2 className="text-2xl font-bold mb-1 tracking-tight">SUPPLY ORDER SHEET</h2>
               <p className="text-slate-400 text-sm">SWIS Bid Builder • Material Procurement</p>
             </div>
-            <div className="text-right">
-              <p className="text-sm text-slate-400">Date Generated</p>
-              <p className="font-semibold">{date}</p>
+            <div className="text-right flex flex-col items-end">
+              <div className="bg-white p-2 rounded-xl inline-block mb-2">
+                <img src="/Logo.svg" alt="SWIS Logo" className="w-10 h-10 object-contain" />
+              </div>
+              <p className="text-xs text-slate-400">Date Generated</p>
+              <p className="font-semibold text-sm">{date}</p>
             </div>
           </div>
 

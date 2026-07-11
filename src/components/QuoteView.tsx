@@ -39,9 +39,9 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
           <h2 className="text-3xl font-bold mb-2">PROPOSAL</h2>
           <p className="text-indigo-200">Ref: {clientName.toUpperCase().replace(/\s+/g, '-')}</p>
         </div>
-        <div className="text-right">
-          <div className="bg-white/10 p-3 rounded-xl inline-block mb-4">
-            <FileText className="w-8 h-8" />
+        <div className="text-right flex flex-col items-end">
+          <div className="bg-white p-2 rounded-xl inline-block mb-4">
+            <img src="/Logo.svg" alt="SWIS Logo" className="w-12 h-12 object-contain" />
           </div>
           <p className="text-sm text-indigo-200">{date}</p>
         </div>

@@ -611,7 +611,9 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                             </FormControl>
                             <SelectContent>
                               {GUTTER_COLORS.map(color => (
-                                <SelectItem key={color} value={color}>{color}</SelectItem>
+                                <SelectItem key={color} value={color} className={isNonStockColor(color) ? "text-rose-600 font-medium" : ""}>
+                                  {color}
+                                </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -780,7 +782,9 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                             </FormControl>
                             <SelectContent>
                               {GUTTER_COLORS.map(color => (
-                                <SelectItem key={color} value={color}>{color}</SelectItem>
+                                <SelectItem key={color} value={color} className={isNonStockColor(color) ? "text-rose-600 font-medium" : ""}>
+                                  {color}
+                                </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -934,7 +938,9 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                             </FormControl>
                             <SelectContent>
                               {GUTTER_COLORS.map(color => (
-                                <SelectItem key={color} value={color}>{color}</SelectItem>
+                                <SelectItem key={color} value={color} className={isNonStockColor(color) ? "text-rose-600 font-medium" : ""}>
+                                  {color}
+                                </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -1299,7 +1305,9 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                             </FormControl>
                             <SelectContent>
                               {GUTTER_COLORS.map(color => (
-                                <SelectItem key={color} value={color}>{color}</SelectItem>
+                                <SelectItem key={color} value={color} className={isNonStockColor(color) ? "text-rose-600 font-medium" : ""}>
+                                  {color}
+                                </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>

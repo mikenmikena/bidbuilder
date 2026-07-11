@@ -827,7 +827,7 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   name="sasquatchMobilizationHigh"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-900">High Mobilization Cost (Job < $15k) ($)</FormLabel>
+                      <FormLabel className="text-slate-900">{"High Mobilization Cost (Job < $15k) ($)"}</FormLabel>
                       <FormControl>
                         <Input type="number" step="1" {...field} className="rounded-xl border-slate-200 bg-white focus-visible:ring-slate-500" />
                       </FormControl>
@@ -840,7 +840,7 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   name="sasquatchMobilizationLow"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-900">Low Mobilization Cost (Job &ge; $15k) ($)</FormLabel>
+                      <FormLabel className="text-slate-900">{"Low Mobilization Cost (Job \u2265 $15k) ($)"}</FormLabel>
                       <FormControl>
                         <Input type="number" step="1" {...field} className="rounded-xl border-slate-200 bg-white focus-visible:ring-slate-500" />
                       </FormControl>

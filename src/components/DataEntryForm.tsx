@@ -441,6 +441,10 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
     showSuccess("Bid item added!");
   };
 
+  const isNonStockColor = (color: string) => {
+    return !color.toLowerCase().includes("stock") && color !== "TBD";
+  };
+
   return (
     <Card className="w-full border-none shadow-lg bg-white/50 backdrop-blur-sm">
       <CardHeader>
@@ -606,7 +610,9 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                             </FormControl>
                             <SelectContent>
                               {GUTTER_COLORS.map(color => (
-                                <SelectItem key={color} value={color}>{color}</SelectItem>
+                                <SelectItem key={color} value={color} className={isNonStockColor(color) ? "text-rose-600 font-medium" : ""}>
+                                  {color}
+                                </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -775,7 +781,9 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                             </FormControl>
                             <SelectContent>
                               {GUTTER_COLORS.map(color => (
-                                <SelectItem key={color} value={color}>{color}</SelectItem>
+                                <SelectItem key={color} value={color} className={isNonStockColor(color) ? "text-rose-600 font-medium" : ""}>
+                                  {color}
+                                </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -929,7 +937,9 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                             </FormControl>
                             <SelectContent>
                               {GUTTER_COLORS.map(color => (
-                                <SelectItem key={color} value={color}>{color}</SelectItem>
+                                <SelectItem key={color} value={color} className={isNonStockColor(color) ? "text-rose-600 font-medium" : ""}>
+                                  {color}
+                                </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -1294,7 +1304,9 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                             </FormControl>
                             <SelectContent>
                               {GUTTER_COLORS.map(color => (
-                                <SelectItem key={color} value={color}>{color}</SelectItem>
+                                <SelectItem key={color} value={color} className={isNonStockColor(color) ? "text-rose-600 font-medium" : ""}>
+                                  {color}
+                                </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>

@@ -377,6 +377,10 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
     }
   };
 
+  const isNonStockColor = (color: string) => {
+    return !color.toLowerCase().includes("stock") && color !== "TBD";
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px] rounded-2xl max-h-[90vh] overflow-y-auto">
@@ -539,7 +543,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                             </FormControl>
                             <SelectContent>
                               {GUTTER_COLORS.map(color => (
-                                <SelectItem key={color} value={color}>{color}</SelectItem>
+                                <SelectItem key={color} value={color} className={isNonStockColor(color) ? "text-rose-600 font-medium" : ""}>
+                                  {color}
+                                </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -708,7 +714,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                             </FormControl>
                             <SelectContent>
                               {GUTTER_COLORS.map(color => (
-                                <SelectItem key={color} value={color}>{color}</SelectItem>
+                                <SelectItem key={color} value={color} className={isNonStockColor(color) ? "text-rose-600 font-medium" : ""}>
+                                  {color}
+                                </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -862,7 +870,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                             </FormControl>
                             <SelectContent>
                               {GUTTER_COLORS.map(color => (
-                                <SelectItem key={color} value={color}>{color}</SelectItem>
+                                <SelectItem key={color} value={color} className={isNonStockColor(color) ? "text-rose-600 font-medium" : ""}>
+                                  {color}
+                                </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -1132,7 +1142,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                             </FormControl>
                             <SelectContent>
                               {GUTTER_COLORS.map(color => (
-                                <SelectItem key={color} value={color}>{color}</SelectItem>
+                                <SelectItem key={color} value={color} className={isNonStockColor(color) ? "text-rose-600 font-medium" : ""}>
+                                  {color}
+                                </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>

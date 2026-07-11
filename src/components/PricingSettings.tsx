@@ -138,6 +138,62 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
     showSuccess("Pricing reset to defaults.");
   };
 
+  const resetGutterSection = () => {
+    const fields: (keyof PricingType)[] = [
+      'gutter5KStraight', 'gutter5KCorner', 'gutter5KRake',
+      'gutter6BStraight', 'gutter6BCorner', 'gutter6BRake',
+      'gutter6KStraight', 'gutter6KCorner', 'gutter6KRake',
+      'demolition', 'gutterNonStockColor', 'gutterHardwoodFascia', 'gutterBasicFascia'
+    ];
+    fields.forEach(field => form.setValue(field, pricing[field]));
+    showSuccess("Gutter pricing changes disregarded.");
+  };
+
+  const resetDownspoutSection = () => {
+    const fields: (keyof PricingType)[] = [
+      'downspout2x3', 'downspout3x4', 'downspoutChain', 'downspoutNonStockColor'
+    ];
+    fields.forEach(field => form.setValue(field, pricing[field]));
+    showSuccess("Downspout pricing changes disregarded.");
+  };
+
+  const resetHelmetSection = () => {
+    const fields: (keyof PricingType)[] = [
+      'helmetAsphaltShingle', 'helmetMetal', 'helmetMembrane', 'helmetNonStockColor'
+    ];
+    fields.forEach(field => form.setValue(field, pricing[field]));
+    showSuccess("Gutter Helmet pricing changes disregarded.");
+  };
+
+  const resetCableSection = () => {
+    const fields: (keyof PricingType)[] = [
+      'cableSerpentine', 'cable1Cable', 'cable2Cable', 'cable3Cable',
+      'cable120V', 'cable240V', 'cableFirstCircuit', 'cableAdditionalCircuit',
+      'cableRetrofit', 'cableWifi', 'cableSwitch', 'cableBreaker', 'cableElectrician'
+    ];
+    fields.forEach(field => form.setValue(field, pricing[field]));
+    showSuccess("Heat Cable pricing changes disregarded.");
+  };
+
+  const resetSnowFenceSection = () => {
+    const fields: (keyof PricingType)[] = [
+      'snowFence', 'snowFenceNonStockColor',
+      'snowFenceCorrugatedL1', 'snowFenceCorrugatedL2', 'snowFenceCorrugatedL3',
+      'snowFenceRaisedSeamL1', 'snowFenceRaisedSeamL2', 'snowFenceRaisedSeamL3',
+      'snowFenceProPanelL1', 'snowFenceProPanelL2', 'snowFenceProPanelL3'
+    ];
+    fields.forEach(field => form.setValue(field, pricing[field]));
+    showSuccess("Snow Fence pricing changes disregarded.");
+  };
+
+  const resetSasquatchSection = () => {
+    const fields: (keyof PricingType)[] = [
+      'sasquatchMobilizationHigh', 'sasquatchMobilizationLow', 'sasquatchPadPrice'
+    ];
+    fields.forEach(field => form.setValue(field, pricing[field]));
+    showSuccess("Sasquatch pricing changes disregarded.");
+  };
+
   return (
     <Card className="border-none shadow-lg bg-white">
       <CardHeader className="pb-4">
@@ -366,6 +422,15 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   )}
                 />
               </div>
+
+              <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-amber-200/50">
+                <Button type="button" variant="ghost" onClick={resetGutterSection} className="rounded-xl text-amber-700 hover:bg-amber-100/50">
+                  Cancel
+                </Button>
+                <Button type="submit" className="bg-amber-600 hover:bg-amber-700 text-white rounded-xl">
+                  Save Gutter Pricing
+                </Button>
+              </div>
             </div>
 
             {/* Downspout Section (Sky) */}
@@ -429,6 +494,15 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   )}
                 />
               </div>
+
+              <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-sky-200/50">
+                <Button type="button" variant="ghost" onClick={resetDownspoutSection} className="rounded-xl text-sky-700 hover:bg-sky-100/50">
+                  Cancel
+                </Button>
+                <Button type="submit" className="bg-sky-600 hover:bg-sky-700 text-white rounded-xl">
+                  Save Downspout Pricing
+                </Button>
+              </div>
             </div>
 
             {/* Gutter Helmet Section (Emerald) */}
@@ -491,6 +565,15 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                     </FormItem>
                   )}
                 />
+              </div>
+
+              <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-emerald-200/50">
+                <Button type="button" variant="ghost" onClick={resetHelmetSection} className="rounded-xl text-emerald-700 hover:bg-emerald-100/50">
+                  Cancel
+                </Button>
+                <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl">
+                  Save Helmet Pricing
+                </Button>
               </div>
             </div>
 
@@ -672,6 +755,15 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   )}
                 />
               </div>
+
+              <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-orange-200/50">
+                <Button type="button" variant="ghost" onClick={resetCableSection} className="rounded-xl text-orange-700 hover:bg-orange-100/50">
+                  Cancel
+                </Button>
+                <Button type="submit" className="bg-orange-600 hover:bg-orange-700 text-white rounded-xl">
+                  Save Cable Pricing
+                </Button>
+              </div>
             </div>
 
             {/* Snow Fence Section (Purple) */}
@@ -842,6 +934,15 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   )}
                 />
               </div>
+
+              <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-purple-200/50">
+                <Button type="button" variant="ghost" onClick={resetSnowFenceSection} className="rounded-xl text-purple-700 hover:bg-purple-100/50">
+                  Cancel
+                </Button>
+                <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl">
+                  Save Snow Fence Pricing
+                </Button>
+              </div>
             </div>
 
             {/* Sasquatch Section (Slate) */}
@@ -892,13 +993,15 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   )}
                 />
               </div>
-            </div>
 
-            <div className="flex justify-end">
-              <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-8 py-6 font-semibold">
-                <Save className="w-4 h-4 mr-2" />
-                Save Pricing Settings
-              </Button>
+              <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-slate-200">
+                <Button type="button" variant="ghost" onClick={resetSasquatchSection} className="rounded-xl text-slate-700 hover:bg-slate-100/50">
+                  Cancel
+                </Button>
+                <Button type="submit" className="bg-slate-600 hover:bg-slate-700 text-white rounded-xl">
+                  Save Sasquatch Pricing
+                </Button>
+              </div>
             </div>
           </form>
         </Form>

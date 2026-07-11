@@ -46,7 +46,7 @@ const DataTable = ({ records, onDelete, onUpdate }: DataTableProps) => {
     const totalLF = (r.snowFenceRow1LF || 0) + (r.snowFenceRow2LF || 0) + (r.snowFenceRow3LF || 0);
     return totalLF * (r.snowFenceUnitCost || 0);
   };
-  const calculateSasquatchTotal = (r: BidRecord) => (r.sasquatchPad || 0) + (r.sasquatchMobilizationFee || 0) + (r.sasquatchCustomWork || 0) + (r.sasquatchArcticSteamerReserve || 0);
+  const calculateSasquatchTotal = (r: BidRecord) => (r.sasquatchPad || 0) + (r.sasquatchMobilizationFee || 0) + (r.sasquatchCustomWork || 0) + (r.sasquatchArcticSteamerReserve || 0) + (r.sasquatchSpecialOrder || 0);
   
   const calculateTotal = (r: BidRecord) => calculateGutterTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r) + calculateSnowFenceTotal(r) + calculateSasquatchTotal(r);
 

@@ -42,7 +42,7 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
     return totalLF * (r.snowFenceUnitCost || 0);
   };
   const calculateSasquatchTotal = (r: BidRecord) => {
-    return (r.sasquatchPad || 0) + (r.sasquatchMobilizationFee || 0) + (r.sasquatchCustomWork || 0) + (r.sasquatchArcticSteamerReserve || 0);
+    return (r.sasquatchPad || 0) + (r.sasquatchMobilizationFee || 0) + (r.sasquatchCustomWork || 0) + (r.sasquatchArcticSteamerReserve || 0) + (r.sasquatchSpecialOrder || 0);
   };
 
   const calculateTotal = (r: BidRecord) => {

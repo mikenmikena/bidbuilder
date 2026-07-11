@@ -24,7 +24,7 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
   const calculateHelmetTotal = (r: BidRecord) => (r.helmetLinearFeet || 0) * (r.helmetUnitCost || 0);
   const calculateCableTotal = (r: BidRecord) => (r.cableLinearFeet || 0) * (r.cableUnitCost || 0);
   const calculateSnowFenceTotal = (r: BidRecord) => ((r.snowFenceRow1LF || 0) + (r.snowFenceRow2LF || 0) + (r.snowFenceRow3LF || 0)) * (r.snowFenceUnitCost || 0);
-  const calculateSasquatchTotal = (r: BidRecord) => (r.sasquatchPad || 0) + (r.sasquatchMobilizationFee || 0) + (r.sasquatchCustomWork || 0) + (r.sasquatchArcticSteamerReserve || 0);
+  const calculateSasquatchTotal = (r: BidRecord) => (r.sasquatchPad || 0) + (r.sasquatchMobilizationFee || 0) + (r.sasquatchCustomWork || 0) + (r.sasquatchArcticSteamerReserve || 0) + (r.sasquatchSpecialOrder || 0);
 
   const subtotal = clientItems.reduce((sum, r) => 
     sum + calculateGutterTotal(r) + calculateDemolitionTotal(r) + calculateFasciaTotal(r) + calculateDownspoutTotal(r) + calculateHelmetTotal(r) + calculateCableTotal(r) + calculateSnowFenceTotal(r) + calculateSasquatchTotal(r), 0);
@@ -222,6 +222,7 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
                             {item.sasquatchElectrical !== 'None' ? `Electrical: ${item.sasquatchElectrical}` : ''}
                             {item.sasquatchFasciaBoard !== 'None' ? ` • Board: ${item.sasquatchFasciaBoard}` : ''}
                             {item.sasquatchMobilizationFee ? ` • Mobilization: $${item.sasquatchMobilizationFee}` : ''}
+                            {item.sasquatchSpecialOrder ? ` • Special Order: $${item.sasquatchSpecialOrder}` : ''}
                           </span>
                         </div>
                       </TableCell>

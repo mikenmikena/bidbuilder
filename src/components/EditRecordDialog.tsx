@@ -73,6 +73,7 @@ const formSchema = z.object({
   sasquatchFasciaBoard: z.enum(['Standard', 'Hardwood', 'None']).default('None'),
   sasquatchCustomWork: z.coerce.number().min(0).default(0),
   sasquatchArcticSteamerReserve: z.coerce.number().min(0).default(0),
+  sasquatchSpecialOrder: z.coerce.number().min(0).default(0),
 });
 
 interface EditRecordDialogProps {
@@ -157,6 +158,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       sasquatchFasciaBoard: record.sasquatchFasciaBoard || 'None',
       sasquatchCustomWork: record.sasquatchCustomWork || 0,
       sasquatchArcticSteamerReserve: record.sasquatchArcticSteamerReserve || 0,
+      sasquatchSpecialOrder: record.sasquatchSpecialOrder || 0,
     } : undefined,
   });
 
@@ -303,6 +305,33 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
     form.setValue("snowFenceUnitCost", Number(finalCost.toFixed(2)));
   }, [watchedSnowFenceRoofType, watchedSnowFenceLevel, watchedSnowFenceColor, watchedSnowFenceRow1LF, watchedSnowFenceRow2LF, watchedSnowFenceRow3LF, pricing, form]);
 
+  // Special Order Calculation Logic
+  useEffect(() => {
+    let specialOrderCost = 0;
+
+    if (showGutter && watchedLinearFeet > 0 && watchedGutterColor && !watchedGutterColor.toLowerCase().includes("stock") && watchedGutterColor !== "TBD") {
+      specialOrderCost += 900;
+    }
+    if (showDownspout && (watchedDownspoutLF + watchedChainLF) > 0 && watchedDownspoutColor && !watchedDownspoutColor.toLowerCase().includes("stock") && watchedDownspoutColor !== "TBD") {
+      specialOrderCost += 900;
+    }
+    if (showHelmet && watchedHelmetLF > 0 && watchedHelmetColor && !watchedHelmetColor.toLowerCase().includes("stock") && watchedHelmetColor !== "TBD") {
+      specialOrderCost += 900;
+    }
+    const totalSnowFenceLF = watchedSnowFenceRow1LF + watchedSnowFenceRow2LF + watchedSnowFenceRow3LF;
+    if (showSnowFence && totalSnowFenceLF > 0 && watchedSnowFenceColor && !watchedSnowFenceColor.toLowerCase().includes("stock") && watchedSnowFenceColor !== "TBD") {
+      specialOrderCost += 900;
+    }
+
+    form.setValue("sasquatchSpecialOrder", specialOrderCost);
+  }, [
+    showGutter, watchedLinearFeet, watchedGutterColor,
+    showDownspout, watchedDownspoutLF, watchedChainLF, watchedDownspoutColor,
+    showHelmet, watchedHelmetLF, watchedHelmetColor,
+    showSnowFence, watchedSnowFenceRow1LF, watchedSnowFenceRow2LF, watchedSnowFenceRow3LF, watchedSnowFenceColor,
+    form
+  ]);
+
   // Calculate linear feet based on downspout count (12 feet per downspout)
   useEffect(() => {
     if (downspoutType === 'linear') {
@@ -339,6 +368,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
         finalValues.sasquatchPad = 0;
         finalValues.sasquatchCustomWork = 0;
         finalValues.sasquatchArcticSteamerReserve = 0;
+        finalValues.sasquatchSpecialOrder = 0;
       }
 
       onUpdate(record.id, finalValues);
@@ -1234,7 +1264,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
               {showSasquatch && (
                 <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
                   <Separator className="bg-slate-200" />
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
                     <FormField
                       control={form.control}
                       name="sasquatchPad"
@@ -1258,6 +1288,20 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                             <Input type="number" step="100" {...field} className="rounded-xl border-slate-300" disabled />
                           </FormControl>
                           <p className="text-[10px] text-slate-500 italic mt-1">Calculated dynamically based on job total threshold.</p>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="sasquatchSpecialOrder"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Special Order ($)</FormLabel>
+                          <FormControl>
+                            <Input type="number" step="100" {...field} className="rounded-xl border-slate-300 font-bold text-indigo-600" disabled />
+                          </FormControl>
+                          <p className="text-[10px] text-slate-500 italic mt-1">+$900 for each custom color selection.</p>
                           <FormMessage />
                         </FormItem>
                       )}

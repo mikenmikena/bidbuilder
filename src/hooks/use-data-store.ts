@@ -163,6 +163,7 @@ export interface BidRecord {
   sasquatchFasciaBoard?: 'Standard' | 'Hardwood' | 'None';
   sasquatchCustomWork?: number;
   sasquatchArcticSteamerReserve?: number;
+  sasquatchSpecialOrder?: number;
 }
 
 export const useDataStore = () => {
@@ -250,7 +251,7 @@ export const useDataStore = () => {
         const helmet = (r.helmetLinearFeet || 0) * (r.helmetUnitCost || 0);
         const cable = (r.cableLinearFeet || 0) * (r.cableUnitCost || 0);
         const snowFence = ((r.snowFenceRow1LF || 0) + (r.snowFenceRow2LF || 0) + (r.snowFenceRow3LF || 0)) * (r.snowFenceUnitCost || 0);
-        const sasquatchOthers = (r.sasquatchPad || 0) + (r.sasquatchCustomWork || 0) + (r.sasquatchArcticSteamerReserve || 0);
+        const sasquatchOthers = (r.sasquatchPad || 0) + (r.sasquatchCustomWork || 0) + (r.sasquatchArcticSteamerReserve || 0) + (r.sasquatchSpecialOrder || 0);
         return sum + gutter + demo + fascia + downspout + helmet + cable + snowFence + sasquatchOthers;
       }, 0);
   };

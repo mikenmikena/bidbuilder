@@ -11,7 +11,6 @@ import QuoteView from '@/components/QuoteView';
 import SupplyOrderView from '@/components/SupplyOrderView';
 import PricingSettings from '@/components/PricingSettings';
 import PricingLock from '@/components/PricingLock';
-import { MadeWithDyad } from "@/components/made-with-dyad";
 import { LayoutDashboard, Database, FileSpreadsheet, Briefcase, ArrowLeft, Settings2, ClipboardCheck } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -169,7 +168,9 @@ const Index = () => {
         )}
       </main>
 
-      <MadeWithDyad />
+      <footer className="p-4 text-center text-sm text-gray-500 no-print">
+        © 2026 SWHI. All rights reserved.
+      </footer>
     </div>
   );
 };

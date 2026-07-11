@@ -73,7 +73,7 @@ const Index = () => {
         ) : (
           <>
             <div className="mb-8 no-print">
-              <h2 className="text-3xl font-extrabold text-slate-900">Estimate Dashboard</h2>
+              <h2 className="text-3xl font-extrabold text-slate-900">Estimates Dashboard</h2>
               <p className="text-slate-500">Manage your clients, bids, and material supply orders.</p>
             </div>
 

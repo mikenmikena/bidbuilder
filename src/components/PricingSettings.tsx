@@ -58,7 +58,8 @@ const pricingSchema = z.object({
   snowFenceProPanelL1: z.coerce.number().min(0),
   snowFenceProPanelL2: z.coerce.number().min(0),
   snowFenceProPanelL3: z.coerce.number().min(0),
-  sasquatchMobilization: z.coerce.number().min(0),
+  sasquatchMobilizationHigh: z.coerce.number().min(0),
+  sasquatchMobilizationLow: z.coerce.number().min(0),
   sasquatchPadPrice: z.coerce.number().min(0),
 });
 
@@ -124,7 +125,8 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
       snowFenceProPanelL1: 32.00,
       snowFenceProPanelL2: 42.00,
       snowFenceProPanelL3: 52.00,
-      sasquatchMobilization: 400.00,
+      sasquatchMobilizationHigh: 900.00,
+      sasquatchMobilizationLow: 400.00,
       sasquatchPadPrice: 125.00,
     };
     form.reset(defaults);
@@ -822,10 +824,23 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <FormField
                   control={form.control}
-                  name="sasquatchMobilization"
+                  name="sasquatchMobilizationHigh"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-900">Sasquatch Mobilization ($)</FormLabel>
+                      <FormLabel className="text-slate-900">High Mobilization Cost (Job < $15k) ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="1" {...field} className="rounded-xl border-slate-200 bg-white focus-visible:ring-slate-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="sasquatchMobilizationLow"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-900">Low Mobilization Cost (Job &ge; $15k) ($)</FormLabel>
                       <FormControl>
                         <Input type="number" step="1" {...field} className="rounded-xl border-slate-200 bg-white focus-visible:ring-slate-500" />
                       </FormControl>

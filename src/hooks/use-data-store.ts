@@ -47,7 +47,8 @@ export interface PricingSettings {
   snowFenceProPanelL1: number;
   snowFenceProPanelL2: number;
   snowFenceProPanelL3: number;
-  sasquatchMobilization: number;
+  sasquatchMobilizationHigh: number;
+  sasquatchMobilizationLow: number;
   sasquatchPadPrice: number;
 }
 
@@ -96,7 +97,8 @@ const DEFAULT_PRICING: PricingSettings = {
   snowFenceProPanelL1: 32.00,
   snowFenceProPanelL2: 42.00,
   snowFenceProPanelL3: 52.00,
-  sasquatchMobilization: 400.00,
+  sasquatchMobilizationHigh: 900.00,
+  sasquatchMobilizationLow: 400.00,
   sasquatchPadPrice: 125.00,
 };
 
@@ -214,7 +216,8 @@ export const useDataStore = () => {
         snowFenceProPanelL1: parsed.snowFenceProPanelL1 ?? DEFAULT_PRICING.snowFenceProPanelL1,
         snowFenceProPanelL2: parsed.snowFenceProPanelL2 ?? DEFAULT_PRICING.snowFenceProPanelL2,
         snowFenceProPanelL3: parsed.snowFenceProPanelL3 ?? DEFAULT_PRICING.snowFenceProPanelL3,
-        sasquatchMobilization: parsed.sasquatchMobilization ?? DEFAULT_PRICING.sasquatchMobilization,
+        sasquatchMobilizationHigh: parsed.sasquatchMobilizationHigh ?? DEFAULT_PRICING.sasquatchMobilizationHigh,
+        sasquatchMobilizationLow: parsed.sasquatchMobilizationLow ?? DEFAULT_PRICING.sasquatchMobilizationLow,
         sasquatchPadPrice: parsed.sasquatchPadPrice ?? DEFAULT_PRICING.sasquatchPadPrice,
       };
     }
@@ -228,6 +231,50 @@ export const useDataStore = () => {
   useEffect(() => {
     localStorage.setItem('bid_pricing', JSON.stringify(pricing));
   }, [pricing]);
+
+  // Helper to calculate base pipeline for a client (excluding mobilization fees)
+  const getClientBasePipeline = (clientName: string, allRecords: BidRecord[]) => {
+    return allRecords
+      .filter(r => r.client === clientName)
+      .reduce((sum, r) => {
+        const gutter = r.linearFeet * r.unitCost;
+        const demo = (r.demolitionLinearFeet || 0) * (r.demolitionUnitCost || 0);
+        const fascia = (r.fasciaLinearFeet || 0) * (r.fasciaUnitCost || 0);
+        const downspout = ((r.downspoutLinearFeet || 0) + (r.chainLinearFeet || 0)) * (r.downspoutUnitCost || 0);
+        const helmet = (r.helmetLinearFeet || 0) * (r.helmetUnitCost || 0);
+        const cable = (r.cableLinearFeet || 0) * (r.cableUnitCost || 0);
+        const snowFence = ((r.snowFenceRow1LF || 0) + (r.snowFenceRow2LF || 0) + (r.snowFenceRow3LF || 0)) * (r.snowFenceUnitCost || 0);
+        const sasquatchOthers = (r.sasquatchPad || 0) + (r.sasquatchCustomWork || 0) + (r.sasquatchArcticSteamerReserve || 0);
+        return sum + gutter + demo + fascia + downspout + helmet + cable + snowFence + sasquatchOthers;
+      }, 0);
+  };
+
+  // Dynamically compute mobilization fees for all records
+  const computedRecords = records.map((record, index, self) => {
+    if (record.sasquatchMobilizationFee !== undefined && record.sasquatchMobilizationFee > 0) {
+      const basePipeline = getClientBasePipeline(record.client, self);
+      
+      // Check if the first record for this client with Sasquatch enabled is this one
+      const firstSasquatchRecord = self.find(r => r.client === record.client && r.sasquatchMobilizationFee !== undefined && r.sasquatchMobilizationFee > 0);
+      
+      if (firstSasquatchRecord && firstSasquatchRecord.id === record.id) {
+        // If base pipeline + low mobilization >= 15000, use low mobilization, else high mobilization
+        const isHighValue = (basePipeline + pricing.sasquatchMobilizationLow) >= 15000;
+        const calculatedFee = isHighValue ? pricing.sasquatchMobilizationLow : pricing.sasquatchMobilizationHigh;
+        return {
+          ...record,
+          sasquatchMobilizationFee: calculatedFee
+        };
+      } else {
+        // Only apply mobilization fee once per client
+        return {
+          ...record,
+          sasquatchMobilizationFee: 0
+        };
+      }
+    }
+    return record;
+  });
 
   const addRecord = (record: Omit<BidRecord, 'id'>) => {
     const newRecord = { ...record, id: crypto.randomUUID() };
@@ -251,7 +298,7 @@ export const useDataStore = () => {
   };
 
   return { 
-    records, 
+    records: computedRecords, 
     pricing,
     addRecord, 
     updateRecord, 

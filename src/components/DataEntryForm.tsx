@@ -150,7 +150,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
       snowFenceLevel: 'Level 1',
       snowFenceUnitCost: pricing.snowFence,
       sasquatchPad: pricing.sasquatchPadPrice,
-      sasquatchMobilizationFee: pricing.sasquatchMobilization,
+      sasquatchMobilizationFee: pricing.sasquatchMobilizationLow,
       sasquatchElectrical: 'None',
       sasquatchFasciaBoard: 'None',
       sasquatchCustomWork: 0,
@@ -338,7 +338,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
 
   // Update other unit costs when pricing settings change
   useEffect(() => {
-    form.setValue("sasquatchMobilizationFee", pricing.sasquatchMobilization);
+    form.setValue("sasquatchMobilizationFee", pricing.sasquatchMobilizationLow);
     form.setValue("sasquatchPad", pricing.sasquatchPadPrice);
   }, [pricing, form]);
 
@@ -395,7 +395,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
       snowFenceRow2LF: 0,
       snowFenceRow3LF: 0,
       sasquatchPad: 0,
-      sasquatchMobilizationFee: pricing.sasquatchMobilization,
+      sasquatchMobilizationFee: pricing.sasquatchMobilizationLow,
       sasquatchCustomWork: 0,
       sasquatchArcticSteamerReserve: 0,
     });
@@ -1408,8 +1408,9 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                         <FormItem>
                           <FormLabel>Mobilization Fee ($)</FormLabel>
                           <FormControl>
-                            <Input type="number" step="100" {...field} className="rounded-xl border-slate-300" />
+                            <Input type="number" step="100" {...field} className="rounded-xl border-slate-300" disabled />
                           </FormControl>
+                          <p className="text-[10px] text-slate-500 italic mt-1">Calculated dynamically based on job total threshold.</p>
                           <FormMessage />
                         </FormItem>
                       )}

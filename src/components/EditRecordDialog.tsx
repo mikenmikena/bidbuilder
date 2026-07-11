@@ -1247,8 +1247,9 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                         <FormItem>
                           <FormLabel>Mobilization Fee ($)</FormLabel>
                           <FormControl>
-                            <Input type="number" step="100" {...field} className="rounded-xl border-slate-300" />
+                            <Input type="number" step="100" {...field} className="rounded-xl border-slate-300" disabled />
                           </FormControl>
+                          <p className="text-[10px] text-slate-500 italic mt-1">Calculated dynamically based on job total threshold.</p>
                           <FormMessage />
                         </FormItem>
                       )}

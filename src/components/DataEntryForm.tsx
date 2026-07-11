@@ -378,16 +378,17 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
     form.setValue("sasquatchPad", pricing.sasquatchPadPrice);
   }, [pricing, form]);
 
-  // Calculate linear feet based on downspout count (12 feet per downspout)
+  // Calculate linear feet based on downspout count (12 feet per downspout) multiplied by building stories
   useEffect(() => {
+    const multiplier = watchedStories || 1;
     if (downspoutType === 'linear') {
-      form.setValue("downspoutLinearFeet", watchedDownspoutCount * 12);
+      form.setValue("downspoutLinearFeet", watchedDownspoutCount * 12 * multiplier);
       form.setValue("chainLinearFeet", 0);
     } else if (downspoutType === 'chain') {
-      form.setValue("chainLinearFeet", watchedDownspoutCount * 12);
+      form.setValue("chainLinearFeet", watchedDownspoutCount * 12 * multiplier);
       form.setValue("downspoutLinearFeet", 0);
     }
-  }, [watchedDownspoutCount, downspoutType, form]);
+  }, [watchedDownspoutCount, downspoutType, watchedStories, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const finalValues = { ...values };
@@ -610,9 +611,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                             </FormControl>
                             <SelectContent>
                               {GUTTER_COLORS.map(color => (
-                                <SelectItem key={color} value={color} className={isNonStockColor(color) ? "text-rose-600 font-medium" : ""}>
-                                  {color}
-                                </SelectItem>
+                                <SelectItem key={color} value={color}>{color}</SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -781,9 +780,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                             </FormControl>
                             <SelectContent>
                               {GUTTER_COLORS.map(color => (
-                                <SelectItem key={color} value={color} className={isNonStockColor(color) ? "text-rose-600 font-medium" : ""}>
-                                  {color}
-                                </SelectItem>
+                                <SelectItem key={color} value={color}>{color}</SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -937,9 +934,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                             </FormControl>
                             <SelectContent>
                               {GUTTER_COLORS.map(color => (
-                                <SelectItem key={color} value={color} className={isNonStockColor(color) ? "text-rose-600 font-medium" : ""}>
-                                  {color}
-                                </SelectItem>
+                                <SelectItem key={color} value={color}>{color}</SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -1304,9 +1299,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                             </FormControl>
                             <SelectContent>
                               {GUTTER_COLORS.map(color => (
-                                <SelectItem key={color} value={color} className={isNonStockColor(color) ? "text-rose-600 font-medium" : ""}>
-                                  {color}
-                                </SelectItem>
+                                <SelectItem key={color} value={color}>{color}</SelectItem>
                               ))}
                             </SelectContent>
                           </Select>

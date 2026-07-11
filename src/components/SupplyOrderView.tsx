@@ -38,13 +38,13 @@ const SupplyOrderView = ({ records }: SupplyOrderViewProps) => {
   clientItems.forEach(item => {
     // Gutters
     if (item.linearFeet > 0 && item.gutterProfile && item.gutterProfile !== 'None') {
-      const key = `${item.gutterProfile}-${item.gutterBaseType || 'Asphalt'}-${item.gutterColor || 'Default'}`;
+      const key = `${item.gutterProfile}-${item.gutterBaseType || 'Straight'}-${item.gutterColor || 'Default'}`;
       if (!gutterMaterials[key]) {
         gutterMaterials[key] = { 
           lf: 0, 
           color: item.gutterColor || 'Default', 
           cert: item.gutterCert || 'None',
-          baseType: item.gutterBaseType || 'Asphalt'
+          baseType: item.gutterBaseType || 'Straight'
         };
       }
       gutterMaterials[key].lf += item.linearFeet;
@@ -194,7 +194,7 @@ const SupplyOrderView = ({ records }: SupplyOrderViewProps) => {
                   <TableBody>
                     {Object.entries(gutterMaterials).map(([key, data]) => (
                       <TableRow key={key}>
-                        <TableCell className="font-semibold text-slate-900">{key.split('-')[0]} Seamless Gutter ({data.baseType} Base)</TableCell>
+                        <TableCell className="font-semibold text-slate-900">{key.split('-')[0]} Seamless Gutter ({data.baseType})</TableCell>
                         <TableCell>{data.color}</TableCell>
                         <TableCell>{data.cert}</TableCell>
                         <TableCell className="text-right font-bold text-indigo-900">{data.lf} LF</TableCell>

@@ -26,7 +26,7 @@ const formSchema = z.object({
   area: z.string().optional(),
   gutterColor: z.string().optional(),
   gutterProfile: z.enum(['5K', '6B', '6K', 'None']).default('None'),
-  gutterBaseType: z.enum(['Asphalt', 'Metal', 'Membrane']).default('Asphalt'),
+  gutterBaseType: z.enum(['Straight', 'Corner', 'Rake']).default('Straight'),
   gutterCert: z.enum(['Box Level 1', 'Box Level 2', 'Box Level 3', 'K Level 1', 'K Level 2', 'K Level 3', 'None']).default('None'),
   includeGutterDownspout: z.enum(['Yes', 'No']).default('Yes'),
   demolition: z.enum(['Yes', 'No']).default('No'),
@@ -109,7 +109,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
       area: "",
       gutterColor: "White (30) (stock)",
       gutterProfile: 'None',
-      gutterBaseType: 'Asphalt',
+      gutterBaseType: 'Straight',
       gutterCert: 'None',
       includeGutterDownspout: 'Yes',
       demolition: 'No',
@@ -199,17 +199,17 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
     let baseCost = 0;
     if (watchedInclude === "Yes") {
       if (watchedProfile === "5K") {
-        if (watchedBaseType === "Asphalt") baseCost = pricing.gutter5KAsphalt;
-        else if (watchedBaseType === "Metal") baseCost = pricing.gutter5KMetal;
-        else if (watchedBaseType === "Membrane") baseCost = pricing.gutter5KMembrane;
+        if (watchedBaseType === "Straight") baseCost = pricing.gutter5KStraight;
+        else if (watchedBaseType === "Corner") baseCost = pricing.gutter5KCorner;
+        else if (watchedBaseType === "Rake") baseCost = pricing.gutter5KRake;
       } else if (watchedProfile === "6B") {
-        if (watchedBaseType === "Asphalt") baseCost = pricing.gutter6BAsphalt;
-        else if (watchedBaseType === "Metal") baseCost = pricing.gutter6BMetal;
-        else if (watchedBaseType === "Membrane") baseCost = pricing.gutter6BMembrane;
+        if (watchedBaseType === "Straight") baseCost = pricing.gutter6BStraight;
+        else if (watchedBaseType === "Corner") baseCost = pricing.gutter6BCorner;
+        else if (watchedBaseType === "Rake") baseCost = pricing.gutter6BRake;
       } else if (watchedProfile === "6K") {
-        if (watchedBaseType === "Asphalt") baseCost = pricing.gutter6KAsphalt;
-        else if (watchedBaseType === "Metal") baseCost = pricing.gutter6KMetal;
-        else if (watchedBaseType === "Membrane") baseCost = pricing.gutter6KMembrane;
+        if (watchedBaseType === "Straight") baseCost = pricing.gutter6KStraight;
+        else if (watchedBaseType === "Corner") baseCost = pricing.gutter6KCorner;
+        else if (watchedBaseType === "Rake") baseCost = pricing.gutter6KRake;
       }
     }
     
@@ -604,17 +604,17 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                       name="gutterBaseType"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Gutter Base Type</FormLabel>
+                          <FormLabel>Gutter Option</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger className="rounded-xl border-amber-300">
-                                <SelectValue placeholder="Select base type" />
+                                <SelectValue placeholder="Select option" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="Asphalt">Asphalt Base</SelectItem>
-                              <SelectItem value="Metal">Metal Base</SelectItem>
-                              <SelectItem value="Membrane">Membrane</SelectItem>
+                              <SelectItem value="Straight">Straight</SelectItem>
+                              <SelectItem value="Corner">Corner</SelectItem>
+                              <SelectItem value="Rake">Rake</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />

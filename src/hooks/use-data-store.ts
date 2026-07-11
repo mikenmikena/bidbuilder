@@ -3,15 +3,15 @@
 import { useState, useEffect } from 'react';
 
 export interface PricingSettings {
-  gutter5KAsphalt: number;
-  gutter5KMetal: number;
-  gutter5KMembrane: number;
-  gutter6BAsphalt: number;
-  gutter6BMetal: number;
-  gutter6BMembrane: number;
-  gutter6KAsphalt: number;
-  gutter6KMetal: number;
-  gutter6KMembrane: number;
+  gutter5KStraight: number;
+  gutter5KCorner: number;
+  gutter5KRake: number;
+  gutter6BStraight: number;
+  gutter6BCorner: number;
+  gutter6BRake: number;
+  gutter6KStraight: number;
+  gutter6KCorner: number;
+  gutter6KRake: number;
   demolition: number;
   gutterHardwoodFascia: number;
   gutterBasicFascia: number;
@@ -53,15 +53,15 @@ export interface PricingSettings {
 }
 
 const DEFAULT_PRICING: PricingSettings = {
-  gutter5KAsphalt: 23.83,
-  gutter5KMetal: 28.50,
-  gutter5KMembrane: 32.00,
-  gutter6BAsphalt: 34.44,
-  gutter6BMetal: 39.50,
-  gutter6BMembrane: 44.00,
-  gutter6KAsphalt: 34.44,
-  gutter6KMetal: 39.50,
-  gutter6KMembrane: 44.00,
+  gutter5KStraight: 23.83,
+  gutter5KCorner: 28.50,
+  gutter5KRake: 32.00,
+  gutter6BStraight: 34.44,
+  gutter6BCorner: 39.50,
+  gutter6BRake: 44.00,
+  gutter6KStraight: 34.44,
+  gutter6KCorner: 39.50,
+  gutter6KRake: 44.00,
   demolition: 5.28,
   gutterHardwoodFascia: 15.00,
   gutterBasicFascia: 8.00,
@@ -113,7 +113,7 @@ export interface BidRecord {
   area?: string;
   gutterColor?: string;
   gutterProfile?: '5K' | '6B' | '6K' | 'None';
-  gutterBaseType?: 'Asphalt' | 'Metal' | 'Membrane';
+  gutterBaseType?: 'Straight' | 'Corner' | 'Rake';
   gutterCert?: 'Box Level 1' | 'Box Level 2' | 'Box Level 3' | 'K Level 1' | 'K Level 2' | 'K Level 3' | 'None';
   includeGutterDownspout?: 'Yes' | 'No';
   demolition?: 'Yes' | 'No';
@@ -172,15 +172,15 @@ export const useDataStore = () => {
     if (saved) {
       const parsed = JSON.parse(saved);
       return {
-        gutter5KAsphalt: parsed.gutter5KAsphalt ?? DEFAULT_PRICING.gutter5KAsphalt,
-        gutter5KMetal: parsed.gutter5KMetal ?? DEFAULT_PRICING.gutter5KMetal,
-        gutter5KMembrane: parsed.gutter5KMembrane ?? DEFAULT_PRICING.gutter5KMembrane,
-        gutter6BAsphalt: parsed.gutter6BAsphalt ?? DEFAULT_PRICING.gutter6BAsphalt,
-        gutter6BMetal: parsed.gutter6BMetal ?? DEFAULT_PRICING.gutter6BMetal,
-        gutter6BMembrane: parsed.gutter6BMembrane ?? DEFAULT_PRICING.gutter6BMembrane,
-        gutter6KAsphalt: parsed.gutter6KAsphalt ?? DEFAULT_PRICING.gutter6KAsphalt,
-        gutter6KMetal: parsed.gutter6KMetal ?? DEFAULT_PRICING.gutter6KMetal,
-        gutter6KMembrane: parsed.gutter6KMembrane ?? DEFAULT_PRICING.gutter6KMembrane,
+        gutter5KStraight: parsed.gutter5KStraight ?? parsed.gutter5KAsphalt ?? DEFAULT_PRICING.gutter5KStraight,
+        gutter5KCorner: parsed.gutter5KCorner ?? parsed.gutter5KMetal ?? DEFAULT_PRICING.gutter5KCorner,
+        gutter5KRake: parsed.gutter5KRake ?? parsed.gutter5KMembrane ?? DEFAULT_PRICING.gutter5KRake,
+        gutter6BStraight: parsed.gutter6BStraight ?? parsed.gutter6BAsphalt ?? DEFAULT_PRICING.gutter6BStraight,
+        gutter6BCorner: parsed.gutter6BCorner ?? parsed.gutter6BMetal ?? DEFAULT_PRICING.gutter6BCorner,
+        gutter6BRake: parsed.gutter6BRake ?? parsed.gutter6BMembrane ?? DEFAULT_PRICING.gutter6BRake,
+        gutter6KStraight: parsed.gutter6KStraight ?? parsed.gutter6KAsphalt ?? DEFAULT_PRICING.gutter6KStraight,
+        gutter6KCorner: parsed.gutter6KCorner ?? parsed.gutter6KMetal ?? DEFAULT_PRICING.gutter6KCorner,
+        gutter6KRake: parsed.gutter6KRake ?? parsed.gutter6KMembrane ?? DEFAULT_PRICING.gutter6KRake,
         demolition: parsed.demolition ?? DEFAULT_PRICING.demolition,
         gutterHardwoodFascia: parsed.gutterHardwoodFascia ?? DEFAULT_PRICING.gutterHardwoodFascia,
         gutterBasicFascia: parsed.gutterBasicFascia ?? DEFAULT_PRICING.gutterBasicFascia,
@@ -251,29 +251,40 @@ export const useDataStore = () => {
 
   // Dynamically compute mobilization fees for all records
   const computedRecords = records.map((record, index, self) => {
-    if (record.sasquatchMobilizationFee !== undefined && record.sasquatchMobilizationFee > 0) {
-      const basePipeline = getClientBasePipeline(record.client, self);
+    // Map old gutterBaseType values if they exist
+    let mappedBaseType = record.gutterBaseType;
+    if (record.gutterBaseType === 'Asphalt') mappedBaseType = 'Straight';
+    else if (record.gutterBaseType === 'Metal') mappedBaseType = 'Corner';
+    else if (record.gutterBaseType === 'Membrane') mappedBaseType = 'Rake';
+
+    const updatedRecord = {
+      ...record,
+      gutterBaseType: mappedBaseType
+    };
+
+    if (updatedRecord.sasquatchMobilizationFee !== undefined && updatedRecord.sasquatchMobilizationFee > 0) {
+      const basePipeline = getClientBasePipeline(updatedRecord.client, self);
       
       // Check if the first record for this client with Sasquatch enabled is this one
-      const firstSasquatchRecord = self.find(r => r.client === record.client && r.sasquatchMobilizationFee !== undefined && r.sasquatchMobilizationFee > 0);
+      const firstSasquatchRecord = self.find(r => r.client === updatedRecord.client && r.sasquatchMobilizationFee !== undefined && r.sasquatchMobilizationFee > 0);
       
-      if (firstSasquatchRecord && firstSasquatchRecord.id === record.id) {
+      if (firstSasquatchRecord && firstSasquatchRecord.id === updatedRecord.id) {
         // If base pipeline + low mobilization >= 15000, use low mobilization, else high mobilization
         const isHighValue = (basePipeline + pricing.sasquatchMobilizationLow) >= 15000;
         const calculatedFee = isHighValue ? pricing.sasquatchMobilizationLow : pricing.sasquatchMobilizationHigh;
         return {
-          ...record,
+          ...updatedRecord,
           sasquatchMobilizationFee: calculatedFee
         };
       } else {
         // Only apply mobilization fee once per client
         return {
-          ...record,
+          ...updatedRecord,
           sasquatchMobilizationFee: 0
         };
       }
     }
-    return record;
+    return updatedRecord;
   });
 
   const addRecord = (record: Omit<BidRecord, 'id'>) => {

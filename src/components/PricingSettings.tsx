@@ -14,15 +14,15 @@ import { showSuccess } from '@/utils/toast';
 import { Separator } from "@/components/ui/separator";
 
 const pricingSchema = z.object({
-  gutter5KAsphalt: z.coerce.number().min(0),
-  gutter5KMetal: z.coerce.number().min(0),
-  gutter5KMembrane: z.coerce.number().min(0),
-  gutter6BAsphalt: z.coerce.number().min(0),
-  gutter6BMetal: z.coerce.number().min(0),
-  gutter6BMembrane: z.coerce.number().min(0),
-  gutter6KAsphalt: z.coerce.number().min(0),
-  gutter6KMetal: z.coerce.number().min(0),
-  gutter6KMembrane: z.coerce.number().min(0),
+  gutter5KStraight: z.coerce.number().min(0),
+  gutter5KCorner: z.coerce.number().min(0),
+  gutter5KRake: z.coerce.number().min(0),
+  gutter6BStraight: z.coerce.number().min(0),
+  gutter6BCorner: z.coerce.number().min(0),
+  gutter6BRake: z.coerce.number().min(0),
+  gutter6KStraight: z.coerce.number().min(0),
+  gutter6KCorner: z.coerce.number().min(0),
+  gutter6KRake: z.coerce.number().min(0),
   demolition: z.coerce.number().min(0),
   gutterHardwoodFascia: z.coerce.number().min(0),
   gutterBasicFascia: z.coerce.number().min(0),
@@ -81,15 +81,15 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
 
   const resetToDefaults = () => {
     const defaults = {
-      gutter5KAsphalt: 23.83,
-      gutter5KMetal: 28.50,
-      gutter5KMembrane: 32.00,
-      gutter6BAsphalt: 34.44,
-      gutter6BMetal: 39.50,
-      gutter6BMembrane: 44.00,
-      gutter6KAsphalt: 34.44,
-      gutter6KMetal: 39.50,
-      gutter6KMembrane: 44.00,
+      gutter5KStraight: 23.83,
+      gutter5KCorner: 28.50,
+      gutter5KRake: 32.00,
+      gutter6BStraight: 34.44,
+      gutter6BCorner: 39.50,
+      gutter6BRake: 44.00,
+      gutter6KStraight: 34.44,
+      gutter6KCorner: 39.50,
+      gutter6KRake: 44.00,
       demolition: 5.28,
       gutterHardwoodFascia: 15.00,
       gutterBasicFascia: 8.00,
@@ -169,10 +169,10 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <FormField
                     control={form.control}
-                    name="gutter5KAsphalt"
+                    name="gutter5KStraight"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-amber-900">5K Asphalt Base ($/LF)</FormLabel>
+                        <FormLabel className="text-amber-900">5K Straight ($/LF)</FormLabel>
                         <FormControl>
                           <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
                         </FormControl>
@@ -182,10 +182,10 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   />
                   <FormField
                     control={form.control}
-                    name="gutter5KMetal"
+                    name="gutter5KCorner"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-amber-900">5K Metal Base ($/LF)</FormLabel>
+                        <FormLabel className="text-amber-900">5K Corner ($/LF)</FormLabel>
                         <FormControl>
                           <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
                         </FormControl>
@@ -195,10 +195,10 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   />
                   <FormField
                     control={form.control}
-                    name="gutter5KMembrane"
+                    name="gutter5KRake"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-amber-900">5K Membrane ($/LF)</FormLabel>
+                        <FormLabel className="text-amber-900">5K Rake ($/LF)</FormLabel>
                         <FormControl>
                           <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
                         </FormControl>
@@ -217,10 +217,10 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <FormField
                     control={form.control}
-                    name="gutter6BAsphalt"
+                    name="gutter6BStraight"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-amber-900">6B Asphalt Base ($/LF)</FormLabel>
+                        <FormLabel className="text-amber-900">6B Straight ($/LF)</FormLabel>
                         <FormControl>
                           <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
                         </FormControl>
@@ -230,10 +230,10 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   />
                   <FormField
                     control={form.control}
-                    name="gutter6BMetal"
+                    name="gutter6BCorner"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-amber-900">6B Metal Base ($/LF)</FormLabel>
+                        <FormLabel className="text-amber-900">6B Corner ($/LF)</FormLabel>
                         <FormControl>
                           <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
                         </FormControl>
@@ -243,10 +243,10 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   />
                   <FormField
                     control={form.control}
-                    name="gutter6BMembrane"
+                    name="gutter6BRake"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-amber-900">6B Membrane ($/LF)</FormLabel>
+                        <FormLabel className="text-amber-900">6B Rake ($/LF)</FormLabel>
                         <FormControl>
                           <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
                         </FormControl>
@@ -265,10 +265,10 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <FormField
                     control={form.control}
-                    name="gutter6KAsphalt"
+                    name="gutter6KStraight"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-amber-900">6K Asphalt Base ($/LF)</FormLabel>
+                        <FormLabel className="text-amber-900">6K Straight ($/LF)</FormLabel>
                         <FormControl>
                           <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
                         </FormControl>
@@ -278,10 +278,10 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   />
                   <FormField
                     control={form.control}
-                    name="gutter6KMetal"
+                    name="gutter6KCorner"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-amber-900">6K Metal Base ($/LF)</FormLabel>
+                        <FormLabel className="text-amber-900">6K Corner ($/LF)</FormLabel>
                         <FormControl>
                           <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
                         </FormControl>
@@ -291,10 +291,10 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
                   />
                   <FormField
                     control={form.control}
-                    name="gutter6KMembrane"
+                    name="gutter6KRake"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-amber-900">6K Membrane ($/LF)</FormLabel>
+                        <FormLabel className="text-amber-900">6K Rake ($/LF)</FormLabel>
                         <FormControl>
                           <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500" />
                         </FormControl>

@@ -98,7 +98,7 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
                           <span>
                             {item.gutterColor ? `${item.gutterColor} Color` : ''}
                             {item.gutterProfile !== 'None' ? ` • ${item.gutterProfile} Profile` : ''}
-                            {item.gutterBaseType ? ` • ${item.gutterBaseType} Base` : ''}
+                            {item.gutterBaseType ? ` • ${item.gutterBaseType}` : ''}
                           </span>
                         </div>
                       </TableCell>

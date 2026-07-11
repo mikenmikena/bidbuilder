@@ -139,7 +139,7 @@ export interface BidRecord {
   roofType?: 'Asphalt Shingle' | 'Pro Panel' | 'Corrugated' | 'Raised Seam' | 'Membrane';
   valleyCount?: number;
   daylightLF?: number;
-  cableLayout?: 'Gutter and Downspout' | 'Serpentine' | '2 cable' | '3 cable' | 'Serpentine Metal' | 'None';
+  cableLayout?: '1 cable' | 'Serpentine' | '2 cable' | '3 cable' | 'Serpentine Metal' | 'None';
   cableLinearFeet?: number;
   volt?: number;
   amperage?: number;

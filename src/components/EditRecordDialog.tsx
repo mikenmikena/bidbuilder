@@ -51,7 +51,7 @@ const formSchema = z.object({
   // Heat Cable fields
   valleyCount: z.coerce.number().min(0).default(0),
   daylightLF: z.coerce.number().min(0).default(0),
-  cableLayout: z.enum(['Gutter and Downspout', 'Serpentine', '2 cable', '3 cable', 'Serpentine Metal', 'None']).default('None'),
+  cableLayout: z.enum(['1 cable', 'Serpentine', '2 cable', '3 cable', 'Serpentine Metal', 'None']).default('None'),
   cableLinearFeet: z.coerce.number().min(0).default(0),
   volt: z.coerce.number().min(0).default(120),
   amperage: z.coerce.number().min(0).default(0),
@@ -332,17 +332,16 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
     form
   ]);
 
-  // Calculate linear feet based on downspout count (12 feet per downspout) multiplied by building stories
+  // Calculate linear feet based on downspout count (12 feet per downspout)
   useEffect(() => {
-    const multiplier = watchedStories || 1;
     if (downspoutType === 'linear') {
-      form.setValue("downspoutLinearFeet", watchedDownspoutCount * 12 * multiplier);
+      form.setValue("downspoutLinearFeet", watchedDownspoutCount * 12);
       form.setValue("chainLinearFeet", 0);
     } else if (downspoutType === 'chain') {
-      form.setValue("chainLinearFeet", watchedDownspoutCount * 12 * multiplier);
+      form.setValue("chainLinearFeet", watchedDownspoutCount * 12);
       form.setValue("downspoutLinearFeet", 0);
     }
-  }, [watchedDownspoutCount, downspoutType, watchedStories, form]);
+  }, [watchedDownspoutCount, downspoutType, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (record) {
@@ -376,6 +375,10 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
       showSuccess("Bid item updated!");
       onClose();
     }
+  };
+
+  const isNonStockColor = (color: string) => {
+    return !color.toLowerCase().includes("stock") && color !== "TBD";
   };
 
   return (
@@ -992,10 +995,10 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                             </FormControl>
                             <SelectContent>
                               <SelectItem value="None">None</SelectItem>
-                              <SelectItem value="Gutter and Downspout">Gutter and Downspout</SelectItem>
+                              <SelectItem value="1 cable">1 cable</SelectItem>
                               <SelectItem value="Serpentine">Serpentine</SelectItem>
-                              <SelectItem value="2 cable">2 cable</SelectItem>
-                              <SelectItem value="3 cable">3 cable</SelectItem>
+                              <SelectItem value="2 cable">2 cable (includes gutter & downspout)</SelectItem>
+                              <SelectItem value="3 cable">3 cable (includes gutter & downspout)</SelectItem>
                               <SelectItem value="Serpentine Metal">Serpentine Metal</SelectItem>
                             </SelectContent>
                           </Select>

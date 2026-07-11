@@ -48,7 +48,7 @@ const formSchema = z.object({
   roofType: z.enum(['Asphalt Shingle', 'Pro Panel', 'Corrugated', 'Raised Seam', 'Membrane']).default('Asphalt Shingle'),
   valleyCount: z.coerce.number().min(0).default(0),
   daylightLF: z.coerce.number().min(0).default(0),
-  cableLayout: z.enum(['Gutter and Downspout', 'Serpentine', '2 cable', '3 cable', 'Serpentine Metal', 'None']).default('None'),
+  cableLayout: z.enum(['1 cable', 'Serpentine', '2 cable', '3 cable', 'Serpentine Metal', 'None']).default('None'),
   cableLinearFeet: z.coerce.number().min(0).default(0),
   volt: z.coerce.number().min(0).default(120),
   amperage: z.coerce.number().min(0).default(0),
@@ -283,7 +283,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
       baseCost = pricing.cable2Cable;
     } else if (watchedCableLayout === '3 cable') {
       baseCost = pricing.cable3Cable;
-    } else if (watchedCableLayout === 'Gutter and Downspout') {
+    } else if (watchedCableLayout === '1 cable') {
       baseCost = pricing.cable1Cable;
     }
 
@@ -1057,10 +1057,10 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                             </FormControl>
                             <SelectContent>
                               <SelectItem value="None">None</SelectItem>
-                              <SelectItem value="Gutter and Downspout">Gutter and Downspout</SelectItem>
+                              <SelectItem value="1 cable">1 cable</SelectItem>
                               <SelectItem value="Serpentine">Serpentine</SelectItem>
-                              <SelectItem value="2 cable">2 cable</SelectItem>
-                              <SelectItem value="3 cable">3 cable</SelectItem>
+                              <SelectItem value="2 cable">2 cable (includes gutter & downspout)</SelectItem>
+                              <SelectItem value="3 cable">3 cable (includes gutter & downspout)</SelectItem>
                               <SelectItem value="Serpentine Metal">Serpentine Metal</SelectItem>
                             </SelectContent>
                           </Select>

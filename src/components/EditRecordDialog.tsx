@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormItem, FormLabel, FormMessage, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BidRecord, useDataStore } from '@/hooks/use-data-store';
@@ -47,7 +47,7 @@ const formSchema = z.object({
   helmetColor: z.string().optional(),
   helmetLinearFeet: z.coerce.number().min(0).default(0),
   helmetUnitCost: z.coerce.number().min(0).default(0),
-  roofType: z.enum(['Asphalt Shingle', 'Pro Panel', 'Corrugated', 'Raised Seam']).default('Asphalt Shingle'),
+  roofType: z.enum(['Asphalt Shingle', 'Pro Panel', 'Corrugated', 'Raised Seam', 'Membrane']).default('Asphalt Shingle'),
   // Heat Cable fields
   valleyCount: z.coerce.number().min(0).default(0),
   daylightLF: z.coerce.number().min(0).default(0),
@@ -191,6 +191,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
   // Gutter Helmet watched fields
   const watchedHelmetColor = form.watch("helmetColor");
   const watchedHelmetLF = form.watch("helmetLinearFeet") || 0;
+  const watchedRoofType = form.watch("roofType");
 
   // Snow Fence watched fields
   const watchedSnowFenceColor = form.watch("snowFenceColor");
@@ -262,12 +263,18 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
 
   // Gutter Helmet Cost Calculation using global pricing
   useEffect(() => {
-    const baseCost = pricing.helmet;
+    let baseCost = pricing.helmetAsphaltShingle;
+    if (watchedRoofType === 'Membrane') {
+      baseCost = pricing.helmetMembrane;
+    } else if (watchedRoofType === 'Pro Panel' || watchedRoofType === 'Corrugated' || watchedRoofType === 'Raised Seam') {
+      baseCost = pricing.helmetMetal;
+    }
+
     const isStockColor = watchedHelmetColor?.toLowerCase().includes("stock");
     const colorCost = isStockColor ? 0 : (watchedHelmetLF > 0 ? (pricing.helmetNonStockColor / watchedHelmetLF) : 0);
     const finalCost = baseCost + colorCost;
     form.setValue("helmetUnitCost", Number(finalCost.toFixed(2)));
-  }, [watchedHelmetColor, watchedHelmetLF, pricing, form]);
+  }, [watchedHelmetColor, watchedHelmetLF, watchedRoofType, pricing, form]);
 
   // Snow Fence Cost Calculation based on Roof Type and Level
   useEffect(() => {
@@ -850,6 +857,7 @@ const EditRecordDialog = ({ record, isOpen, onClose, onUpdate }: EditRecordDialo
                               <SelectItem value="Pro Panel">Pro Panel</SelectItem>
                               <SelectItem value="Corrugated">Corrugated</SelectItem>
                               <SelectItem value="Raised Seam">Raised Seam</SelectItem>
+                              <SelectItem value="Membrane">Membrane</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />

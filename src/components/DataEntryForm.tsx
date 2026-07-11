@@ -45,7 +45,7 @@ const formSchema = z.object({
   helmetColor: z.string().optional(),
   helmetLinearFeet: z.coerce.number().min(0).default(0),
   helmetUnitCost: z.coerce.number().min(0).default(0),
-  roofType: z.enum(['Asphalt Shingle', 'Pro Panel', 'Corrugated', 'Raised Seam']).default('Asphalt Shingle'),
+  roofType: z.enum(['Asphalt Shingle', 'Pro Panel', 'Corrugated', 'Raised Seam', 'Membrane']).default('Asphalt Shingle'),
   valleyCount: z.coerce.number().min(0).default(0),
   daylightLF: z.coerce.number().min(0).default(0),
   cableLayout: z.enum(['Gutter and Downspout', 'Serpentine', '2 cable', '3 cable', 'Serpentine Metal', 'None']).default('None'),
@@ -127,7 +127,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
       downspoutUnitCost: pricing.downspout2x3,
       helmetColor: "White (30) (stock)",
       helmetLinearFeet: 0,
-      helmetUnitCost: pricing.helmet,
+      helmetUnitCost: pricing.helmetAsphaltShingle,
       roofType: 'Asphalt Shingle',
       valleyCount: 0,
       daylightLF: 0,
@@ -175,6 +175,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
   // Gutter Helmet watched fields
   const watchedHelmetColor = form.watch("helmetColor");
   const watchedHelmetLF = form.watch("helmetLinearFeet") || 0;
+  const watchedRoofType = form.watch("roofType");
 
   // Heat Cable watched fields
   const watchedCableLayout = form.watch("cableLayout");
@@ -256,12 +257,18 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
 
   // Gutter Helmet Cost Calculation using global pricing
   useEffect(() => {
-    const baseCost = pricing.helmet;
+    let baseCost = pricing.helmetAsphaltShingle;
+    if (watchedRoofType === 'Membrane') {
+      baseCost = pricing.helmetMembrane;
+    } else if (watchedRoofType === 'Pro Panel' || watchedRoofType === 'Corrugated' || watchedRoofType === 'Raised Seam') {
+      baseCost = pricing.helmetMetal;
+    }
+
     const isStockColor = watchedHelmetColor?.toLowerCase().includes("stock");
     const colorCost = isStockColor ? 0 : (watchedHelmetLF > 0 ? (pricing.helmetNonStockColor / watchedHelmetLF) : 0);
     const finalCost = baseCost + colorCost;
     form.setValue("helmetUnitCost", Number(finalCost.toFixed(2)));
-  }, [watchedHelmetColor, watchedHelmetLF, pricing, form]);
+  }, [watchedHelmetColor, watchedHelmetLF, watchedRoofType, pricing, form]);
 
   // Heat Cable Cost Calculation
   useEffect(() => {
@@ -916,6 +923,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                               <SelectItem value="Pro Panel">Pro Panel</SelectItem>
                               <SelectItem value="Corrugated">Corrugated</SelectItem>
                               <SelectItem value="Raised Seam">Raised Seam</SelectItem>
+                              <SelectItem value="Membrane">Membrane</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />

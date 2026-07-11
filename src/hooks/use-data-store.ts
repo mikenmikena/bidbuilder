@@ -20,7 +20,9 @@ export interface PricingSettings {
   downspoutChain: number;
   gutterNonStockColor: number;
   downspoutNonStockColor: number;
-  helmet: number;
+  helmetAsphaltShingle: number;
+  helmetMetal: number;
+  helmetMembrane: number;
   helmetNonStockColor: number;
   cable: number;
   cableSerpentine: number;
@@ -70,7 +72,9 @@ const DEFAULT_PRICING: PricingSettings = {
   downspoutChain: 25.00,
   gutterNonStockColor: 150.00,
   downspoutNonStockColor: 75.00,
-  helmet: 15.00,
+  helmetAsphaltShingle: 15.00,
+  helmetMetal: 20.00,
+  helmetMembrane: 22.00,
   helmetNonStockColor: 100.00,
   cable: 18.00,
   cableSerpentine: 22.00,
@@ -132,7 +136,7 @@ export interface BidRecord {
   helmetColor?: string;
   helmetLinearFeet?: number;
   helmetUnitCost?: number;
-  roofType?: 'Asphalt Shingle' | 'Pro Panel' | 'Corrugated' | 'Raised Seam';
+  roofType?: 'Asphalt Shingle' | 'Pro Panel' | 'Corrugated' | 'Raised Seam' | 'Membrane';
   valleyCount?: number;
   daylightLF?: number;
   cableLayout?: 'Gutter and Downspout' | 'Serpentine' | '2 cable' | '3 cable' | 'Serpentine Metal' | 'None';
@@ -189,7 +193,9 @@ export const useDataStore = () => {
         downspoutChain: parsed.downspoutChain ?? DEFAULT_PRICING.downspoutChain,
         gutterNonStockColor: parsed.gutterNonStockColor ?? DEFAULT_PRICING.gutterNonStockColor,
         downspoutNonStockColor: parsed.downspoutNonStockColor ?? DEFAULT_PRICING.downspoutNonStockColor,
-        helmet: parsed.helmet ?? DEFAULT_PRICING.helmet,
+        helmetAsphaltShingle: parsed.helmetAsphaltShingle ?? parsed.helmet ?? DEFAULT_PRICING.helmetAsphaltShingle,
+        helmetMetal: parsed.helmetMetal ?? parsed.helmet ?? DEFAULT_PRICING.helmetMetal,
+        helmetMembrane: parsed.helmetMembrane ?? parsed.helmet ?? DEFAULT_PRICING.helmetMembrane,
         helmetNonStockColor: parsed.helmetNonStockColor ?? DEFAULT_PRICING.helmetNonStockColor,
         cable: parsed.cable ?? DEFAULT_PRICING.cable,
         cableSerpentine: parsed.cableSerpentine ?? DEFAULT_PRICING.cableSerpentine,

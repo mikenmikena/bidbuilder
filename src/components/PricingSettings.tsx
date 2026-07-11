@@ -31,7 +31,9 @@ const pricingSchema = z.object({
   downspoutChain: z.coerce.number().min(0),
   gutterNonStockColor: z.coerce.number().min(0),
   downspoutNonStockColor: z.coerce.number().min(0),
-  helmet: z.coerce.number().min(0),
+  helmetAsphaltShingle: z.coerce.number().min(0),
+  helmetMetal: z.coerce.number().min(0),
+  helmetMembrane: z.coerce.number().min(0),
   helmetNonStockColor: z.coerce.number().min(0),
   cable: z.coerce.number().min(0),
   cableSerpentine: z.coerce.number().min(0),
@@ -98,7 +100,9 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
       downspoutChain: 25.00,
       gutterNonStockColor: 150.00,
       downspoutNonStockColor: 75.00,
-      helmet: 15.00,
+      helmetAsphaltShingle: 15.00,
+      helmetMetal: 20.00,
+      helmetMembrane: 22.00,
       helmetNonStockColor: 100.00,
       cable: 18.00,
       cableSerpentine: 22.00,
@@ -437,10 +441,36 @@ const PricingSettings = ({ pricing, onUpdate }: PricingSettingsProps) => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <FormField
                   control={form.control}
-                  name="helmet"
+                  name="helmetAsphaltShingle"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-emerald-900">Gutter Helmet Unit Cost ($/LF)</FormLabel>
+                      <FormLabel className="text-emerald-900">Asphalt Shingle Roof Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-emerald-200 bg-white focus-visible:ring-emerald-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="helmetMetal"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-emerald-900">Metal Roof Cost ($/LF)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} className="rounded-xl border-emerald-200 bg-white focus-visible:ring-emerald-500" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="helmetMembrane"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-emerald-900">Membrane Roof Cost ($/LF)</FormLabel>
                       <FormControl>
                         <Input type="number" step="0.01" {...field} className="rounded-xl border-emerald-200 bg-white focus-visible:ring-emerald-500" />
                       </FormControl>

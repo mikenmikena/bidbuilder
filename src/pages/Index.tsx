@@ -101,13 +101,9 @@ const Index = () => {
               </TabsList>
 
               <TabsContent value="overview" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="grid grid-cols-3 gap-8">
-                  <div className="col-span-1">
-                    <DataEntryForm onAdd={addRecord} pricing={pricing} />
-                  </div>
-                  <div className="col-span-2">
-                    <DataSummary records={records} onUpdate={updateRecord} onDelete={deleteRecord} />
-                  </div>
+                <div className="space-y-8">
+                  <DataEntryForm onAdd={addRecord} pricing={pricing} />
+                  <DataSummary records={records} onUpdate={updateRecord} onDelete={deleteRecord} />
                 </div>
               </TabsContent>
 

@@ -32,6 +32,10 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
   const tax = subtotal * 0.0; 
   const total = subtotal + tax;
 
+  const handleDownloadPDF = () => {
+    window.print();
+  };
+
   return (
     <Card className="border-none shadow-2xl bg-white max-w-4xl mx-auto overflow-hidden">
       <div className="bg-indigo-900 p-8 text-white flex justify-between items-start">
@@ -255,7 +259,7 @@ const QuoteView = ({ clientName, records }: QuoteViewProps) => {
             <Printer className="w-4 h-4 mr-2" />
             Print Proposal
           </Button>
-          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl">
+          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl" onClick={handleDownloadPDF}>
             <Download className="w-4 h-4 mr-2" />
             Download PDF
           </Button>

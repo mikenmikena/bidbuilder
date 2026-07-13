@@ -256,7 +256,78 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
         </Card>
       </div>
 
-      {/* Charts & Area Breakdown */}
+      {/* Color-Coded Section Pricing Breakdown */}
+      <div className="space-y-3">
+        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Section Pricing Breakdown</h4>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          {/* Gutter */}
+          <Card className="border border-amber-200 bg-amber-50/50 shadow-sm">
+            <CardContent className="p-4 flex flex-col justify-between h-24">
+              <div className="flex items-center justify-between text-amber-800">
+                <span className="text-xs font-bold">Gutter</span>
+                <Droplets className="w-4 h-4" />
+              </div>
+              <h4 className="text-lg font-black text-amber-900">${gutterPipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
+            </CardContent>
+          </Card>
+
+          {/* Downspout */}
+          <Card className="border border-sky-200 bg-sky-50/50 shadow-sm">
+            <CardContent className="p-4 flex flex-col justify-between h-24">
+              <div className="flex items-center justify-between text-sky-800">
+                <span className="text-xs font-bold">Downspout</span>
+                <ArrowDownCircle className="w-4 h-4" />
+              </div>
+              <h4 className="text-lg font-black text-sky-900">${downspoutPipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
+            </CardContent>
+          </Card>
+
+          {/* Gutter Helmet */}
+          <Card className="border border-emerald-200 bg-emerald-50/50 shadow-sm">
+            <CardContent className="p-4 flex flex-col justify-between h-24">
+              <div className="flex items-center justify-between text-emerald-800">
+                <span className="text-xs font-bold">Helmet</span>
+                <ShieldCheck className="w-4 h-4" />
+              </div>
+              <h4 className="text-lg font-black text-emerald-900">${helmetPipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
+            </CardContent>
+          </Card>
+
+          {/* Heat Cable */}
+          <Card className="border border-orange-200 bg-orange-50/50 shadow-sm">
+            <CardContent className="p-4 flex flex-col justify-between h-24">
+              <div className="flex items-center justify-between text-orange-800">
+                <span className="text-xs font-bold">Heat Cable</span>
+                <Zap className="w-4 h-4" />
+              </div>
+              <h4 className="text-lg font-black text-orange-900">${cablePipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
+            </CardContent>
+          </Card>
+
+          {/* Snow Fence */}
+          <Card className="border border-purple-200 bg-purple-50/50 shadow-sm">
+            <CardContent className="p-4 flex flex-col justify-between h-24">
+              <div className="flex items-center justify-between text-purple-800">
+                <span className="text-xs font-bold">Snow Fence</span>
+                <Snowflake className="w-4 h-4" />
+              </div>
+              <h4 className="text-lg font-black text-purple-900">${snowFencePipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
+            </CardContent>
+          </Card>
+
+          {/* Sasquatch */}
+          <Card className="border border-slate-200 bg-slate-50/50 shadow-sm">
+            <CardContent className="p-4 flex flex-col justify-between h-24">
+              <div className="flex items-center justify-between text-slate-800">
+                <span className="text-xs font-bold">Sasquatch</span>
+                <Footprints className="w-4 h-4" />
+              </div>
+              <h4 className="text-lg font-black text-slate-900">${sasquatchPipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="border-none shadow-lg bg-white">
           <CardHeader>
@@ -355,78 +426,6 @@ const DataSummary = ({ records, onUpdate, onDelete }: DataSummaryProps) => {
             </div>
           </CardContent>
         </Card>
-      </div>
-
-      {/* Color-Coded Section Pricing Breakdown (Moved to the bottom) */}
-      <div className="space-y-3 pt-4">
-        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Section Pricing Breakdown</h4>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          {/* Gutter */}
-          <Card className="border border-amber-200 bg-amber-50/50 shadow-sm">
-            <CardContent className="p-4 flex flex-col justify-between h-24">
-              <div className="flex items-center justify-between text-amber-800">
-                <span className="text-xs font-bold">Gutter</span>
-                <Droplets className="w-4 h-4" />
-              </div>
-              <h4 className="text-lg font-black text-amber-900">${gutterPipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
-            </CardContent>
-          </Card>
-
-          {/* Downspout */}
-          <Card className="border border-sky-200 bg-sky-50/50 shadow-sm">
-            <CardContent className="p-4 flex flex-col justify-between h-24">
-              <div className="flex items-center justify-between text-sky-800">
-                <span className="text-xs font-bold">Downspout</span>
-                <ArrowDownCircle className="w-4 h-4" />
-              </div>
-              <h4 className="text-lg font-black text-sky-900">${downspoutPipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
-            </CardContent>
-          </Card>
-
-          {/* Gutter Helmet */}
-          <Card className="border border-emerald-200 bg-emerald-50/50 shadow-sm">
-            <CardContent className="p-4 flex flex-col justify-between h-24">
-              <div className="flex items-center justify-between text-emerald-800">
-                <span className="text-xs font-bold">Helmet</span>
-                <ShieldCheck className="w-4 h-4" />
-              </div>
-              <h4 className="text-lg font-black text-emerald-900">${helmetPipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
-            </CardContent>
-          </Card>
-
-          {/* Heat Cable */}
-          <Card className="border border-orange-200 bg-orange-50/50 shadow-sm">
-            <CardContent className="p-4 flex flex-col justify-between h-24">
-              <div className="flex items-center justify-between text-orange-800">
-                <span className="text-xs font-bold">Heat Cable</span>
-                <Zap className="w-4 h-4" />
-              </div>
-              <h4 className="text-lg font-black text-orange-900">${cablePipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
-            </CardContent>
-          </Card>
-
-          {/* Snow Fence */}
-          <Card className="border border-purple-200 bg-purple-50/50 shadow-sm">
-            <CardContent className="p-4 flex flex-col justify-between h-24">
-              <div className="flex items-center justify-between text-purple-800">
-                <span className="text-xs font-bold">Snow Fence</span>
-                <Snowflake className="w-4 h-4" />
-              </div>
-              <h4 className="text-lg font-black text-purple-900">${snowFencePipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
-            </CardContent>
-          </Card>
-
-          {/* Sasquatch */}
-          <Card className="border border-slate-200 bg-slate-50/50 shadow-sm">
-            <CardContent className="p-4 flex flex-col justify-between h-24">
-              <div className="flex items-center justify-between text-slate-800">
-                <span className="text-xs font-bold">Sasquatch</span>
-                <Footprints className="w-4 h-4" />
-              </div>
-              <h4 className="text-lg font-black text-slate-900">${sasquatchPipeline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</h4>
-            </CardContent>
-          </Card>
-        </div>
       </div>
 
       {/* Area Records Dialog */}

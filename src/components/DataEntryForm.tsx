@@ -711,7 +711,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                         <FormItem>
                           <FormLabel>Unit Cost ($)</FormLabel>
                           <FormControl>
-                            <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-300" />
+                            <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-300 bg-gray-100 cursor-not-allowed" disabled />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -896,7 +896,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                         <FormItem>
                           <FormLabel>Unit Cost ($)</FormLabel>
                           <FormControl>
-                            <Input type="number" step="0.01" {...field} className="rounded-xl border-sky-300" />
+                            <Input type="number" step="0.01" {...field} className="rounded-xl border-sky-300 bg-gray-100 cursor-not-allowed" disabled />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -995,7 +995,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                         <FormItem>
                           <FormLabel>Unit Cost ($)</FormLabel>
                           <FormControl>
-                            <Input type="number" step="0.01" {...field} className="rounded-xl border-emerald-300" />
+                            <Input type="number" step="0.01" {...field} className="rounded-xl border-emerald-300 bg-gray-100 cursor-not-allowed" disabled />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1263,7 +1263,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                         <FormItem>
                           <FormLabel>Unit Cost ($)</FormLabel>
                           <FormControl>
-                            <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-300" />
+                            <Input type="number" step="0.01" {...field} className="rounded-xl border-orange-300 bg-gray-100 cursor-not-allowed" disabled />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1412,7 +1412,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                         <FormItem>
                           <FormLabel>Unit Cost ($)</FormLabel>
                           <FormControl>
-                            <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-300" />
+                            <Input type="number" step="0.01" {...field} className="rounded-xl border-purple-300 bg-gray-100 cursor-not-allowed" disabled />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

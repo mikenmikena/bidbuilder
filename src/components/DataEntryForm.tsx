@@ -709,7 +709,7 @@ const DataEntryForm = ({ onAdd, pricing }: DataEntryFormProps) => {
                       name="unitCost"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Gutter Unit Cost ($)</FormLabel>
+                          <FormLabel>Unit Cost ($)</FormLabel>
                           <FormControl>
                             <Input type="number" step="0.01" {...field} className="rounded-xl border-amber-300" />
                           </FormControl>

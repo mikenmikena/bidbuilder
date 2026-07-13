@@ -101,18 +101,18 @@ const Index = () => {
               </TabsList>
 
               <TabsContent value="overview" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  <div className="lg:col-span-1">
+                <div className="grid grid-cols-3 gap-8">
+                  <div className="col-span-1">
                     <DataEntryForm onAdd={addRecord} pricing={pricing} />
                   </div>
-                  <div className="lg:col-span-2">
+                  <div className="col-span-2">
                     <DataSummary records={records} onUpdate={updateRecord} onDelete={deleteRecord} />
                   </div>
                 </div>
               </TabsContent>
 
               <TabsContent value="clients" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-3 gap-6">
                   {uniqueClients.map(client => {
                     const stats = getClientStats(client);
                     return (
